@@ -1,5 +1,7 @@
 #[macro_use]
 extern crate lazy_static;
+#[macro_use]
+extern crate derive_builder;
 
 mod api;
 mod configuration;
@@ -7,12 +9,11 @@ mod model;
 
 #[cfg(test)]
 mod tests {
-    use validator::Validate;
-
     // Module organization is neat and simple.
     use crate::api::sms::SmsClient;
     use crate::configuration::Configuration;
-    use crate::model::sms::PreviewSmsRequestBody;
+    use crate::model::sms::{PreviewSmsRequestBody, PreviewSmsRequestBodyBuilder};
+    use validator::Validate;
 
     /*#[test]
     fn send_basic_sms() {
@@ -44,17 +45,30 @@ mod tests {
         let config = Configuration::from_env_api_key().expect("error reading API key or base URL");
         let sms_client = SmsClient::with_configuration(config);
 
-        let request_body = PreviewSmsRequestBody {
-            language_code: Some("AUTODETECT".to_string()),
-            text: "This is some text.".to_string(),
+        let request_body = PreviewSmsRequestBodyBuilder::default()
+            .text("Some text to be previewed".to_string())
+            .language_code("ES".to_string())
+            .transliteration("GREEK".to_string())
+            .build()
+            .unwrap();
+
+        let request_body2 = PreviewSmsRequestBody {
+            text: "Some text to be previewed.".to_string(),
             transliteration: Some("GREEK".to_string()),
+            language_code: Some("ES".to_string()),
         };
 
-        if request_body.validate().is_ok() {
-            let response = sms_client.preview(request_body).await.unwrap();
-            println!("{}", serde_json::to_string(&response).unwrap());
-        } else {
-            eprintln!("Request body is not correct.");
-        }
+        let request_body3 = PreviewSmsRequestBodyBuilder::default()
+            .text("Some text to be previewed".to_string())
+            .build()
+            .unwrap();
+
+        let response = sms_client.preview(request_body).await.unwrap();
+
+        println!(
+            "{} {}",
+            response.status,
+            serde_json::to_string_pretty(&response.response_body).unwrap()
+        );
     }
 }

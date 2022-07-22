@@ -1,7 +1,5 @@
 use std::env::{self, VarError};
 
-use crate::api::ApiError;
-
 #[derive(Debug, Clone)]
 pub struct Configuration {
     pub base_path: String,

@@ -23,11 +23,13 @@ impl fmt::Display for SendSmsResponseBody {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate, Builder)]
+#[builder(setter(strip_option))]
 pub struct PreviewSmsRequestBody {
     /// Code for language character set of a message text.
     #[validate(regex = "LANGUAGE_CODES")]
     #[serde(rename = "languageCode", skip_serializing_if = "Option::is_none")]
+    #[builder(default = "None")]
     pub language_code: Option<String>,
 
     /// Message text to preview.
@@ -37,6 +39,7 @@ pub struct PreviewSmsRequestBody {
     /// Conversion of a message text from one script to another.
     #[serde(rename = "transliteration", skip_serializing_if = "Option::is_none")]
     #[validate(regex = "TRANSLITERATIONS")]
+    #[builder(default = "None")]
     pub transliteration: Option<String>,
 }
 

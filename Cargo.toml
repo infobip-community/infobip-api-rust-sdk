@@ -1,19 +1,21 @@
 [package]
-name = "infobip-api-rust-sdk"
+name = "infobip-sdk"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-reqwest = "*"
+derive_builder = "*"
+lazy_static = "*"
+regex = "*"
+reqwest = { version = "*", features = ["json"] }
 serde = { version = "*", features = ["derive"] }
 serde_derive = "*"
 serde_json = "*"
+thiserror = "*"
 tokio = { version = "*", features = ["full"] }
 validator = { version = "*", features = ["derive"] }
-lazy_static = "*"
-regex = "*"
 
 [features]
 default = ["sms"]
