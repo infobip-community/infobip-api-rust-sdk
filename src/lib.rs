@@ -1,74 +1,36 @@
-#[macro_use]
-extern crate lazy_static;
+//! # Infobip SDK
+//! This is a client library to use Infobip's communication channels API through pure Rust.
+//!
+//! This library enables you to use multiple Infobip communication channels, like SMS, MMS,
+//! Whatsapp, Email, etc. It abstracts the needed HTTP calls, and models payloads and error
+//! handling. The modules structure is divided by communication channels, which can be enabled as
+//! library features.
+//!
+//! ## Supported Channels
+//! - SMS
+//!
+//! More Channels to be added in the future.
+//!
+//! ## Authentication
+//! To use the library, you'll need to setup an Infobip account. Then you can use your API Key and
+//! custom URL to call the endpoints.
+//!
+//! ## Installation
+//! To use the library, add the dependency to your projects `Cargo.toml`
+//! ```toml
+//! [dependencies]
+//! infobip-sdk = "0.1"
+//! ```
+//!
+//! ## Usage
+//! To use the library, import the client and channel-specific models. For SMS, you can do it
+//! like this:
+
 #[macro_use]
 extern crate derive_builder;
+#[macro_use]
+extern crate lazy_static;
 
-mod api;
-mod configuration;
-mod model;
-
-#[cfg(test)]
-mod tests {
-    // Module organization is neat and simple.
-    use crate::api::sms::SmsClient;
-    use crate::configuration::Configuration;
-    use crate::model::sms::{PreviewSmsRequestBody, PreviewSmsRequestBodyBuilder};
-    use validator::Validate;
-
-    /*#[test]
-    fn send_basic_sms() {
-        // A good DX:
-
-        // Config can be loaded from environment without boilerplate code.
-        let config = Configuration::from_env_api_key().expect("error reading API key or base URL");
-
-        // Create a client.
-        // Client features may be conditionally compiled, so library compilation is fast.
-        let sms_client = SmsClient::with_configuration(config);
-
-        let req_body = SendSmsRequestBody {};
-
-        // Gives the option to validate before calling send method.
-        if req_body.validate().is_ok() {
-            // Automatically validates body, and parameters. Has short, yet descriptive usage and naming.
-            let response = sms_client.send(req_body);
-
-            // Easy to print human-readable responses. Implements a nice Debug trait.
-            println!("Response: {}", response)
-        } else {
-            eprintln!("Something wasn't valid in the model.")
-        }
-    }*/
-
-    #[tokio::test]
-    async fn preview_sms() {
-        let config = Configuration::from_env_api_key().expect("error reading API key or base URL");
-        let sms_client = SmsClient::with_configuration(config);
-
-        let request_body = PreviewSmsRequestBodyBuilder::default()
-            .text("Some text to be previewed".to_string())
-            .language_code("ES".to_string())
-            .transliteration("GREEK".to_string())
-            .build()
-            .unwrap();
-
-        let request_body2 = PreviewSmsRequestBody {
-            text: "Some text to be previewed.".to_string(),
-            transliteration: Some("GREEK".to_string()),
-            language_code: Some("ES".to_string()),
-        };
-
-        let request_body3 = PreviewSmsRequestBodyBuilder::default()
-            .text("Some text to be previewed".to_string())
-            .build()
-            .unwrap();
-
-        let response = sms_client.preview(request_body).await.unwrap();
-
-        println!(
-            "{} {}",
-            response.status,
-            serde_json::to_string_pretty(&response.response_body).unwrap()
-        );
-    }
-}
+pub mod api;
+pub mod configuration;
+pub mod model;

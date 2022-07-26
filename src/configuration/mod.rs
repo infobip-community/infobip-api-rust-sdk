@@ -1,3 +1,4 @@
+//! Configuration of the Infobip client
 use std::env::{self, VarError};
 
 #[derive(Debug, Clone)]

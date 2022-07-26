@@ -1,6 +1,7 @@
+use std::fmt;
+
 use regex::Regex;
 use serde_derive::{Deserialize, Serialize};
-use std::fmt;
 use validator::Validate;
 
 lazy_static! {
@@ -19,7 +20,7 @@ pub struct SendSmsResponseBody {}
 
 impl fmt::Display for SendSmsResponseBody {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", "Displayed response!")
+        write!(f, "Displayed response!")
     }
 }
 

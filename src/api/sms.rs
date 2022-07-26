@@ -1,10 +1,10 @@
-use super::SdkError;
-use crate::api::SdkResponse;
+use validator::Validate;
+
+use crate::api::{ApiError, RequestError, SdkError, SdkResponse};
 use crate::{
     configuration::Configuration,
     model::sms::{PreviewSmsRequestBody, PreviewSmsResponseBody},
 };
-use validator::Validate;
 
 pub struct SmsClient {
     configuration: Configuration,
@@ -30,12 +30,7 @@ impl SmsClient {
         self,
         body: PreviewSmsRequestBody,
     ) -> Result<SdkResponse<PreviewSmsResponseBody>, SdkError> {
-        match body.validate() {
-            Ok(_) => {}
-            Err(e) => {
-                eprintln!("{}", e);
-            }
-        }
+        body.validate()?;
 
         let key_prefix = self
             .configuration
@@ -43,7 +38,7 @@ impl SmsClient {
             .clone()
             .unwrap()
             .prefix
-            .unwrap_or("App ".to_string());
+            .unwrap_or_else(|| "App ".to_string());
         let api_key = self.configuration.api_key.unwrap().key;
 
         let response = self
@@ -60,11 +55,20 @@ impl SmsClient {
         let status = response.status();
         let response_text = response.text().await?;
 
-        let response_body: PreviewSmsResponseBody = serde_json::from_str(&response_text)?;
+        if status.is_success() {
+            let response_body: PreviewSmsResponseBody = serde_json::from_str(&response_text)?;
 
-        Ok(SdkResponse {
-            response_body,
-            status,
-        })
+            Ok(SdkResponse {
+                response_body,
+                status,
+            })
+        } else {
+            let request_error: RequestError = serde_json::from_str(&response_text)?;
+            let api_error = ApiError {
+                source: request_error,
+                status,
+            };
+            Err(SdkError::ApiRequestError(api_error))
+        }
     }
 }
