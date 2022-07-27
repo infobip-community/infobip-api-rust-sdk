@@ -54,7 +54,7 @@ pub struct Language {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PreviewLanguageConfiguration {
     #[serde(rename = "language", skip_serializing_if = "Option::is_none")]
-    pub language: Option<Box<Language>>,
+    pub language: Option<Language>,
     /// Conversion of a message text from one script to another.
     #[serde(rename = "transliteration", skip_serializing_if = "Option::is_none")]
     pub transliteration: Option<String>,
@@ -70,7 +70,7 @@ pub struct SendSmsPreview {
     pub characters_remaining: Option<i32>,
     /// Configuration that, when sent with the original text, results in this preview.
     #[serde(rename = "configuration", skip_serializing_if = "Option::is_none")]
-    pub configuration: Option<Box<PreviewLanguageConfiguration>>,
+    pub configuration: Option<PreviewLanguageConfiguration>,
     /// Number of SMS message parts required to deliver the message.
     #[serde(rename = "messageCount", skip_serializing_if = "Option::is_none")]
     pub message_count: Option<i32>,

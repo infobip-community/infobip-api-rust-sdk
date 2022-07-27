@@ -9,7 +9,11 @@ pub struct Configuration {
     pub api_key: Option<ApiKey>,
 }
 
-pub type BasicAuth = (String, Option<String>);
+#[derive(Debug, Clone)]
+pub struct BasicAuth {
+    pub username: String,
+    pub password: Option<String>,
+}
 
 #[derive(Debug, Clone)]
 pub struct ApiKey {

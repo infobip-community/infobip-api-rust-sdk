@@ -1,6 +1,6 @@
 use validator::Validate;
 
-use crate::api::{ApiError, RequestError, SdkError, SdkResponse};
+use crate::api::{add_auth, ApiError, SdkError, SdkResponse};
 use crate::{
     configuration::Configuration,
     model::sms::{PreviewSmsRequestBody, PreviewSmsResponseBody},
@@ -32,25 +32,16 @@ impl SmsClient {
     ) -> Result<SdkResponse<PreviewSmsResponseBody>, SdkError> {
         body.validate()?;
 
-        let key_prefix = self
-            .configuration
-            .api_key
-            .clone()
-            .unwrap()
-            .prefix
-            .unwrap_or_else(|| "App ".to_string());
-        let api_key = self.configuration.api_key.unwrap().key;
+        let mut req_builder = self.client.post(format!(
+            "{}{}",
+            self.configuration.base_path, "/sms/1/preview"
+        ));
 
-        let response = self
-            .client
-            .post(format!(
-                "{}{}",
-                self.configuration.base_path, "/sms/1/preview"
-            ))
-            .header("Authorization", format!("{}{}", key_prefix, api_key))
-            .json(&body)
-            .send()
-            .await?;
+        req_builder = add_auth(req_builder, &self.configuration);
+
+        println!("Builder: {:?}", req_builder);
+
+        let response = req_builder.json(&body).send().await?;
 
         let status = response.status();
         let response_text = response.text().await?;
@@ -63,11 +54,11 @@ impl SmsClient {
                 status,
             })
         } else {
-            let request_error: RequestError = serde_json::from_str(&response_text)?;
             let api_error = ApiError {
-                source: request_error,
+                details: serde_json::from_str(&response_text)?,
                 status,
             };
+
             Err(SdkError::ApiRequestError(api_error))
         }
     }
