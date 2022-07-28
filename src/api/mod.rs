@@ -1,11 +1,13 @@
 //! Endpoint functions and base response and error types
 use std::fmt;
 
-use crate::configuration::Configuration;
 use reqwest;
-use reqwest::StatusCode;
+use reqwest::{RequestBuilder, Response, StatusCode};
 use serde_derive::{Deserialize, Serialize};
 use thiserror::Error;
+use validator::Validate;
+
+use crate::configuration::Configuration;
 
 #[cfg(feature = "sms")]
 pub mod sms;
@@ -79,10 +81,13 @@ pub struct SdkResponse<T> {
     pub status: StatusCode,
 }
 
-pub fn add_auth(
-    mut builder: reqwest::RequestBuilder,
-    configuration: &Configuration,
-) -> reqwest::RequestBuilder {
+#[derive(Clone, Debug, PartialEq)]
+pub struct QueryParameter {
+    pub key: String,
+    pub value: String,
+}
+
+fn add_auth(mut builder: RequestBuilder, configuration: &Configuration) -> RequestBuilder {
     if let Some(api_key) = &configuration.api_key {
         let key = api_key.key.to_owned();
         let prefix = api_key
@@ -101,4 +106,71 @@ pub fn add_auth(
     };
 
     builder
+}
+
+fn add_auth_blocking(
+    mut builder: reqwest::blocking::RequestBuilder,
+    configuration: &Configuration,
+) -> reqwest::blocking::RequestBuilder {
+    if let Some(api_key) = &configuration.api_key {
+        let key = api_key.key.to_owned();
+        let prefix = api_key
+            .prefix
+            .to_owned()
+            .unwrap_or_else(|| "App".to_string());
+
+        builder = builder.header("Authorization", format!("{}{}", prefix, key));
+    } else if let Some(basic_auth) = &configuration.basic_auth {
+        builder = builder.basic_auth(
+            basic_auth.username.to_owned(),
+            basic_auth.password.to_owned(),
+        );
+    } else if let Some(token) = &configuration.bearer_access_token {
+        builder = builder.bearer_auth(token);
+    };
+
+    builder
+}
+
+fn build_api_error(status: StatusCode, text: &str) -> SdkError {
+    match serde_json::from_str(text) {
+        Ok(details) => SdkError::ApiRequestError(ApiError { details, status }),
+        Err(e) => SdkError::Serde(e),
+    }
+}
+
+async fn send_request<T: Validate + serde::Serialize>(
+    client: &reqwest::Client,
+    configuration: &Configuration,
+    request_body: T,
+    _query_parameters: Option<Vec<QueryParameter>>,
+    method: reqwest::Method,
+    path: &str,
+) -> Result<Response, SdkError> {
+    request_body.validate()?;
+
+    let url = format!("{}/{}", configuration.base_path, path);
+    let mut builder = client.request(method, url);
+
+    builder = add_auth(builder, configuration);
+
+    Ok(builder.json(&request_body).send().await?)
+}
+
+fn send_blocking_request<T: Validate + serde::Serialize>(
+    client: &reqwest::blocking::Client,
+    configuration: &Configuration,
+    request_body: T,
+    _query_parameters: Option<Vec<QueryParameter>>,
+    method: reqwest::Method,
+    path: &str,
+) -> Result<reqwest::blocking::Response, SdkError> {
+    request_body.validate()?;
+
+    let url = format!("{}/{}", configuration.base_path, path);
+    let mut builder = client.request(method, url);
+
+    builder = add_auth_blocking(builder, configuration);
+
+    Ok(builder.json(&request_body).send()?)
 }

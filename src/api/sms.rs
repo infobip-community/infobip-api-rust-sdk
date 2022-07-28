@@ -1,10 +1,12 @@
-use validator::Validate;
-
-use crate::api::{add_auth, ApiError, SdkError, SdkResponse};
+use crate::api::{
+    build_api_error, send_blocking_request, send_request, ApiError, SdkError, SdkResponse,
+};
 use crate::{
     configuration::Configuration,
     model::sms::{PreviewSmsRequestBody, PreviewSmsResponseBody},
 };
+
+const PATH_PREVIEW: &str = "sms/1/preview";
 
 pub struct SmsClient {
     configuration: Configuration,
@@ -27,35 +29,70 @@ impl SmsClient {
     }*/
 
     pub async fn preview(
-        self,
-        body: PreviewSmsRequestBody,
+        &self,
+        request_body: PreviewSmsRequestBody,
     ) -> Result<SdkResponse<PreviewSmsResponseBody>, SdkError> {
-        body.validate()?;
-
-        let mut req_builder = self.client.post(format!(
-            "{}{}",
-            self.configuration.base_path, "/sms/1/preview"
-        ));
-
-        req_builder = add_auth(req_builder, &self.configuration);
-
-        println!("Builder: {:?}", req_builder);
-
-        let response = req_builder.json(&body).send().await?;
+        let response = send_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            None,
+            reqwest::Method::POST,
+            PATH_PREVIEW,
+        )
+        .await?;
 
         let status = response.status();
-        let response_text = response.text().await?;
+        let text = response.text().await?;
 
         if status.is_success() {
-            let response_body: PreviewSmsResponseBody = serde_json::from_str(&response_text)?;
-
             Ok(SdkResponse {
-                response_body,
+                response_body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+}
+
+pub struct BlockingSmsClient {
+    configuration: Configuration,
+    client: reqwest::blocking::Client,
+}
+
+impl BlockingSmsClient {
+    pub fn with_configuration(configuration: Configuration) -> BlockingSmsClient {
+        BlockingSmsClient {
+            configuration,
+            client: reqwest::blocking::Client::new(),
+        }
+    }
+
+    pub fn preview(
+        &self,
+        body: PreviewSmsRequestBody,
+    ) -> Result<SdkResponse<PreviewSmsResponseBody>, SdkError> {
+        let response = send_blocking_request(
+            &self.client,
+            &self.configuration,
+            body,
+            None,
+            reqwest::Method::POST,
+            PATH_PREVIEW,
+        )?;
+
+        let status = response.status();
+        let text = response.text()?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                response_body: serde_json::from_str(&text)?,
                 status,
             })
         } else {
             let api_error = ApiError {
-                details: serde_json::from_str(&response_text)?,
+                details: serde_json::from_str(&text)?,
                 status,
             };
 

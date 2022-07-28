@@ -9,7 +9,7 @@ edition = "2021"
 derive_builder = "*"
 lazy_static = "*"
 regex = "*"
-reqwest = { version = "*", features = ["json"] }
+reqwest = { version = "*", features = ["blocking", "json"] }
 serde = { version = "*", features = ["derive"] }
 serde_derive = "*"
 serde_json = "*"
