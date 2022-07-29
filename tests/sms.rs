@@ -2,7 +2,7 @@ use reqwest::StatusCode;
 
 use infobip_sdk::api::sms::{BlockingSmsClient, SmsClient};
 use infobip_sdk::configuration;
-use infobip_sdk::model::sms::PreviewSmsRequestBodyBuilder;
+use infobip_sdk::model::sms::{PreviewSmsRequestBodyBuilder, GetDeliveryReportsQueryParametersBuilder};
 
 #[tokio::test]
 async fn preview_sms() {
@@ -154,4 +154,20 @@ fn preview_sms_multiple_blocking() {
     assert!(response2.response_body.previews.unwrap().len() > 0usize);
     assert!(response3.response_body.previews.unwrap().len() > 0usize);
     assert!(response4.response_body.previews.unwrap().len() > 0usize);
+}
+
+#[tokio::test]
+async fn get_sms_delivery_reports() {
+    let config = configuration::Configuration::from_env_api_key()
+        .expect("error reading API key or base URL");
+    let sms_client = SmsClient::with_configuration(config);
+
+    let parameters = GetDeliveryReportsQueryParametersBuilder::default()
+        .limit(10)
+        .build()
+        .unwrap();
+
+    let response = sms_client.get_delivery_reports(parameters).await.unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
 }

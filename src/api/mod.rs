@@ -1,4 +1,5 @@
 //! Endpoint functions and base response and error types
+use std::collections::HashMap;
 use std::fmt;
 
 use reqwest;
@@ -139,22 +140,55 @@ fn build_api_error(status: StatusCode, text: &str) -> SdkError {
     }
 }
 
-async fn send_request<T: Validate + serde::Serialize>(
+async fn send_no_body_request(
     client: &reqwest::Client,
     configuration: &Configuration,
-    request_body: T,
-    _query_parameters: Option<Vec<QueryParameter>>,
+    query_parameters: HashMap<String, String>,
     method: reqwest::Method,
     path: &str,
 ) -> Result<Response, SdkError> {
-    request_body.validate()?;
+    let url = format!("{}/{}", configuration.base_path, path);
+    let mut builder = client
+        .request(method, url)
+        .query(&query_parameters);
 
+    builder = add_auth(builder, configuration);
+
+    Ok(builder.send().await?)
+}
+
+async fn send_json_request<T: Validate + serde::Serialize>(
+    client: &reqwest::Client,
+    configuration: &Configuration,
+    request_body: T,
+    query_parameters: HashMap<String, String>,
+    method: reqwest::Method,
+    path: &str,
+) -> Result<Response, SdkError> {
+    let url = format!("{}/{}", configuration.base_path, path);
+    let mut builder = client
+        .request(method, url)
+        .json(&request_body)
+        .query(&query_parameters);
+
+    builder = add_auth(builder, configuration);
+
+    Ok(builder.send().await?)
+}
+
+async fn _send_multipart_request(
+    client: &reqwest::Client,
+    configuration: &Configuration,
+    form: reqwest::multipart::Form,
+    method: reqwest::Method,
+    path: &str,
+) -> Result<Response, SdkError> {
     let url = format!("{}/{}", configuration.base_path, path);
     let mut builder = client.request(method, url);
 
     builder = add_auth(builder, configuration);
 
-    Ok(builder.json(&request_body).send().await?)
+    Ok(builder.multipart(form).send().await?)
 }
 
 fn send_blocking_request<T: Validate + serde::Serialize>(
