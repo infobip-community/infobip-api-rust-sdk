@@ -2,7 +2,9 @@ use reqwest::StatusCode;
 
 use infobip_sdk::api::sms::{BlockingSmsClient, SmsClient};
 use infobip_sdk::configuration;
-use infobip_sdk::model::sms::{PreviewSmsRequestBodyBuilder, GetDeliveryReportsQueryParametersBuilder};
+use infobip_sdk::model::sms::{
+    GetDeliveryReportsQueryParametersBuilder, PreviewSmsRequestBodyBuilder,
+};
 
 #[tokio::test]
 async fn preview_sms() {

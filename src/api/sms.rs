@@ -1,21 +1,28 @@
 use std::collections::HashMap;
+
 use validator::Validate;
-use crate::api::{build_api_error, send_blocking_request, send_json_request, ApiError, SdkError, SdkResponse, send_no_body_request};
+
+use crate::api::{
+    build_api_error, send_blocking_json_request, send_json_request, send_no_body_request, ApiError,
+    SdkError, SdkResponse,
+};
+use crate::model::sms::{GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody};
 use crate::{
     configuration::Configuration,
     model::sms::{PreviewSmsRequestBody, PreviewSmsResponseBody},
 };
-use crate::model::sms::{GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody};
 
 const PATH_PREVIEW: &str = "sms/1/preview";
 const PATH_DELIVERY_REPORTS: &str = "sms/1/reports";
 
+/// Main asynchronous client for the Infobip SMS channel.
 pub struct SmsClient {
     configuration: Configuration,
     client: reqwest::Client,
 }
 
 impl SmsClient {
+    /// Builds and returns a new asynchronous `SmsClient` with specified configuration.
     pub fn with_configuration(configuration: Configuration) -> SmsClient {
         SmsClient {
             configuration,
@@ -23,6 +30,8 @@ impl SmsClient {
         }
     }
 
+    /// Check how different message configurations will affect your message text, number of
+    /// characters and message parts.
     pub async fn preview(
         &self,
         request_body: PreviewSmsRequestBody,
@@ -31,7 +40,7 @@ impl SmsClient {
             &self.client,
             &self.configuration,
             request_body,
-           HashMap::new(),
+            HashMap::new(),
             reqwest::Method::POST,
             PATH_PREVIEW,
         )
@@ -50,6 +59,13 @@ impl SmsClient {
         }
     }
 
+    /// Get delivery reports for recently sent SMS messages.
+    ///
+    /// If you are for any reason unable to receive real-time delivery reports on your webhook
+    /// endpoint, you can use this API method to learn if and when the message has been delivered
+    /// to the recipient. Each request will return a batch of delivery reports - only once.
+    /// This API request will return only new reports that arrived since the last API
+    /// request in the last 48 hours.
     pub async fn get_delivery_reports(
         &self,
         query_parameters: GetDeliveryReportsQueryParameters,
@@ -62,7 +78,7 @@ impl SmsClient {
         if let Some(message_id) = query_parameters.message_id {
             parameters_map.insert("messageId".to_string(), message_id);
         }
-        if let Some(limit) = query_parameters.limit{
+        if let Some(limit) = query_parameters.limit {
             parameters_map.insert("limit".to_string(), limit.to_string());
         }
 
@@ -72,7 +88,8 @@ impl SmsClient {
             parameters_map,
             reqwest::Method::GET,
             PATH_DELIVERY_REPORTS,
-        ).await?;
+        )
+        .await?;
 
         let status = response.status();
         let text = response.text().await?;
@@ -88,12 +105,14 @@ impl SmsClient {
     }
 }
 
+/// Blocking client for the Infobip SMS channel.
 pub struct BlockingSmsClient {
     configuration: Configuration,
     client: reqwest::blocking::Client,
 }
 
 impl BlockingSmsClient {
+    /// Builds and returns a new `BlockingSmsClient` with specified configuration.
     pub fn with_configuration(configuration: Configuration) -> BlockingSmsClient {
         BlockingSmsClient {
             configuration,
@@ -101,15 +120,16 @@ impl BlockingSmsClient {
         }
     }
 
+    /// Check how different message configurations will affect your message text, number of
+    /// characters and message parts. This is the blocking version.
     pub fn preview(
         &self,
         body: PreviewSmsRequestBody,
     ) -> Result<SdkResponse<PreviewSmsResponseBody>, SdkError> {
-        let response = send_blocking_request(
+        let response = send_blocking_json_request(
             &self.client,
             &self.configuration,
             body,
-            None,
             reqwest::Method::POST,
             PATH_PREVIEW,
         )?;

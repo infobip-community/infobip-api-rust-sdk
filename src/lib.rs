@@ -25,6 +25,11 @@
 //! ## Usage
 //! To use the library, import the client and channel-specific models. For SMS, you can do it
 //! like this:
+//! ```rust
+//! ```
+//!
+//! For more examples on how to use the library, you can check the tests/ directory and the
+//! included CLI examples.
 
 #[macro_use]
 extern crate derive_builder;

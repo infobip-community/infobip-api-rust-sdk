@@ -1,5 +1,3 @@
-use std::fmt;
-
 use regex::Regex;
 use serde_derive::{Deserialize, Serialize};
 use validator::Validate;
@@ -10,18 +8,6 @@ lazy_static! {
         r"^(TURKISH|GREEK|CYRILLIC|SERBIAN_CYRILLIC|CENTRAL_EUROPEAN|BALTIC|NON_UNICODE)$"
     )
     .unwrap();
-}
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SendSmsRequestBody {}
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SendSmsResponseBody {}
-
-impl fmt::Display for SendSmsResponseBody {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Displayed response!")
-    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate, Builder)]
@@ -201,10 +187,9 @@ pub struct SmsReport {
     /// Destination address.
     #[serde(rename = "to", skip_serializing_if = "Option::is_none")]
     pub to: Option<String>,
-
 }
 
-#[derive(Builder, Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GetDeliveryReportsResponseBody {
     #[serde(rename = "results", skip_serializing_if = "Option::is_none")]
     pub results: Option<Vec<SmsReport>>,
