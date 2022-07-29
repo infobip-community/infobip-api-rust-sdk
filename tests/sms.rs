@@ -6,6 +6,7 @@ use infobip_sdk::model::sms::{
     GetDeliveryReportsQueryParametersBuilder, PreviewSmsRequestBodyBuilder,
 };
 
+#[ignore]
 #[tokio::test]
 async fn preview_sms() {
     let config = configuration::Configuration::from_env_api_key()
@@ -23,6 +24,7 @@ async fn preview_sms() {
     assert!(response.response_body.previews.unwrap().len() > 0usize);
 }
 
+#[ignore]
 #[test]
 fn preview_sms_blocking() {
     let config = configuration::Configuration::from_env_api_key()
@@ -40,6 +42,7 @@ fn preview_sms_blocking() {
     assert!(response.response_body.previews.unwrap().len() > 0usize);
 }
 
+#[ignore]
 #[tokio::test]
 async fn preview_sms_multiple() {
     let config = configuration::Configuration::from_env_api_key()
@@ -120,6 +123,7 @@ async fn preview_sms_multiple() {
     );
 }
 
+#[ignore]
 #[test]
 fn preview_sms_multiple_blocking() {
     let config = configuration::Configuration::from_env_api_key()
@@ -158,6 +162,7 @@ fn preview_sms_multiple_blocking() {
     assert!(response4.response_body.previews.unwrap().len() > 0usize);
 }
 
+#[ignore]
 #[tokio::test]
 async fn get_sms_delivery_reports() {
     let config = configuration::Configuration::from_env_api_key()
