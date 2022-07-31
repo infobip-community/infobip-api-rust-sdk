@@ -205,3 +205,5 @@ fn send_blocking_json_request<T: Validate + serde::Serialize>(
 
     Ok(builder.json(&request_body).send()?)
 }
+
+mod tests;

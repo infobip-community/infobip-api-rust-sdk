@@ -1,3 +1,5 @@
+#![cfg(test)]
+
 use reqwest::StatusCode;
 
 use infobip_sdk::api::sms::{BlockingSmsClient, SmsClient};

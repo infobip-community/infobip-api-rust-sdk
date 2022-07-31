@@ -12,8 +12,8 @@ use crate::{
     model::sms::{PreviewSmsRequestBody, PreviewSmsResponseBody},
 };
 
-const PATH_PREVIEW: &str = "sms/1/preview";
-const PATH_DELIVERY_REPORTS: &str = "sms/1/reports";
+pub const PATH_PREVIEW: &str = "sms/1/preview";
+pub const PATH_DELIVERY_REPORTS: &str = "sms/1/reports";
 
 /// Main asynchronous client for the Infobip SMS channel.
 pub struct SmsClient {

@@ -17,6 +17,9 @@ thiserror = "*"
 tokio = { version = "*", features = ["full"] }
 validator = { version = "*", features = ["derive"] }
 
+[dev-dependencies]
+wiremock = "*"
+
 [features]
 default = ["sms"]
 sms = []
