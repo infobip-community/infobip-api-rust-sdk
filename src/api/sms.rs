@@ -36,6 +36,8 @@ impl SmsClient {
         &self,
         request_body: PreviewSmsRequestBody,
     ) -> Result<SdkResponse<PreviewSmsResponseBody>, SdkError> {
+        request_body.validate()?;
+
         let response = send_json_request(
             &self.client,
             &self.configuration,
@@ -71,6 +73,7 @@ impl SmsClient {
         query_parameters: GetDeliveryReportsQueryParameters,
     ) -> Result<SdkResponse<GetDeliveryReportsResponseBody>, SdkError> {
         query_parameters.validate()?;
+
         let mut parameters_map = HashMap::<String, String>::new();
         if let Some(bulk_id) = query_parameters.bulk_id {
             parameters_map.insert("bulkId".to_string(), bulk_id);
@@ -124,12 +127,14 @@ impl BlockingSmsClient {
     /// characters and message parts. This is the blocking version.
     pub fn preview(
         &self,
-        body: PreviewSmsRequestBody,
+        request_body: PreviewSmsRequestBody,
     ) -> Result<SdkResponse<PreviewSmsResponseBody>, SdkError> {
+        request_body.validate()?;
+
         let response = send_blocking_json_request(
             &self.client,
             &self.configuration,
-            body,
+            request_body,
             reqwest::Method::POST,
             PATH_PREVIEW,
         )?;
