@@ -47,7 +47,7 @@ pub struct PreviewLanguageConfiguration {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SendSmsPreview {
+pub struct SmsPreview {
     /// Number of remaining characters in the last SMS part.
     #[serde(
         rename = "charactersRemaining",
@@ -72,7 +72,7 @@ pub struct PreviewSmsResponseBody {
     pub original_text: Option<String>,
     /// Previews of applying different configurations to the original text.
     #[serde(rename = "previews", skip_serializing_if = "Option::is_none")]
-    pub previews: Option<Vec<SendSmsPreview>>,
+    pub previews: Option<Vec<SmsPreview>>,
 }
 
 #[derive(Builder, Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
