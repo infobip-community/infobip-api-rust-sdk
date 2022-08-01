@@ -1,0 +1,26 @@
+[package]
+name = "infobip_sdk"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+derive_builder = "*"
+lazy_static = "*"
+regex = "*"
+reqwest = { version = "*", features = ["blocking", "json", "multipart"] }
+serde = { version = "*", features = ["derive"] }
+serde_derive = "*"
+serde_json = "*"
+thiserror = "*"
+tokio = { version = "*", features = ["full"] }
+validator = { version = "*", features = ["derive"] }
+
+[dev-dependencies]
+httpmock = "*"
+
+[features]
+default = ["sms"]
+sms = []
