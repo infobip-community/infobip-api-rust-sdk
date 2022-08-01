@@ -1,6 +1,6 @@
 # Infobip API Rust SDK
 ![Workflow](https://github.com/infobip-community/infobip-api-rust-sdk/actions/workflows/rust.yml/badge.svg)
-[![Licence](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE)
+[![Licence](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-MIT)
 
 This is a client library to use the Infobip API with pure Rust.
 

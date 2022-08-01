@@ -4,7 +4,7 @@ use std::env::{self, VarError};
 /// Holds the necessary configuration URL and authentication details of an Infobip client.
 #[derive(Debug, Clone)]
 pub struct Configuration {
-    pub base_path: String,
+    pub base_url: String,
     pub basic_auth: Option<BasicAuth>,
     pub bearer_access_token: Option<String>,
     pub api_key: Option<ApiKey>,
@@ -39,7 +39,7 @@ impl Configuration {
     /// `Configuration` instance.
     pub fn from_env_api_key() -> Result<Configuration, VarError> {
         Ok(Configuration {
-            base_path: env::var("IB_BASE_URL")?,
+            base_url: env::var("IB_BASE_URL")?,
             api_key: Some(ApiKey::from_env()?),
             basic_auth: None,
             bearer_access_token: None,
@@ -49,7 +49,7 @@ impl Configuration {
     // Builds and returns a `Configuration` instance set with an API key.
     pub fn with_api_key(api_key: ApiKey) -> Configuration {
         Configuration {
-            base_path: "https://base.path".to_string(),
+            base_url: "https://base.path".to_string(),
             api_key: Some(api_key),
             basic_auth: None,
             bearer_access_token: None,

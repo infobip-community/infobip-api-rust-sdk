@@ -147,7 +147,7 @@ async fn send_no_body_request(
     method: reqwest::Method,
     path: &str,
 ) -> Result<Response, SdkError> {
-    let url = format!("{}/{}", configuration.base_path, path);
+    let url = format!("{}{}", configuration.base_url, path);
     let mut builder = client.request(method, url).query(&query_parameters);
 
     builder = add_auth(builder, configuration);
@@ -163,7 +163,7 @@ async fn send_json_request<T: Validate + serde::Serialize>(
     method: reqwest::Method,
     path: &str,
 ) -> Result<Response, SdkError> {
-    let url = format!("{}/{}", configuration.base_path, path);
+    let url = format!("{}{}", configuration.base_url, path);
     let mut builder = client
         .request(method, url)
         .json(&request_body)
@@ -181,7 +181,7 @@ async fn _send_multipart_request(
     method: reqwest::Method,
     path: &str,
 ) -> Result<Response, SdkError> {
-    let url = format!("{}/{}", configuration.base_path, path);
+    let url = format!("{}{}", configuration.base_url, path);
     let mut builder = client.request(method, url);
 
     builder = add_auth(builder, configuration);
@@ -198,7 +198,7 @@ fn send_blocking_json_request<T: Validate + serde::Serialize>(
 ) -> Result<reqwest::blocking::Response, SdkError> {
     request_body.validate()?;
 
-    let url = format!("{}/{}", configuration.base_path, path);
+    let url = format!("{}{}", configuration.base_url, path);
     let mut builder = client.request(method, url);
 
     builder = add_auth_blocking(builder, configuration);
