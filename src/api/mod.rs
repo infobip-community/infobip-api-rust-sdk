@@ -30,7 +30,7 @@ pub enum SdkError {
 }
 
 /// Holds the status code and error details when a 4xx or 5xx response is received.
-#[derive(Error, Debug)]
+#[derive(Error, Clone, Debug)]
 pub struct ApiError {
     pub details: ApiErrorDetails,
     pub status: StatusCode,

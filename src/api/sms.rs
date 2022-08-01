@@ -16,6 +16,7 @@ pub const PATH_PREVIEW: &str = "/sms/1/preview";
 pub const PATH_DELIVERY_REPORTS: &str = "/sms/1/reports";
 
 /// Main asynchronous client for the Infobip SMS channel.
+#[derive(Clone, Debug)]
 pub struct SmsClient {
     configuration: Configuration,
     client: reqwest::Client,
