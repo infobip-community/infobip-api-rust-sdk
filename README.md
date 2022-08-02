@@ -7,18 +7,17 @@ Client SDK to use the Infobip API with pure Rust.
 
 This library enables you to use multiple Infobip communication channels, like SMS, MMS,
 Whatsapp, Email, etc. It abstracts the needed HTTP calls, and models payloads and error
-handling. The modules structure is divided by communication channel, which can be enabled as
-library features.
+handling. The module structure is divided by communication channel.
 
 ---
 
 ## 📡 Supported Channels
 - [SMS](https://www.infobip.com/docs/api/channels/sms) (in progress)
 
-More Channels to be added in the future.
+More Channels to be added in the near future!
 
 ## 🔐 Authentication
-To use the library, you'll need to setup an Infobip account. Then you can use your API Key and
+To use the library, you'll need to set up an Infobip account. Then you can use your API Key and
 custom URL to call the endpoints. You can use the `Configuration::from_env_api_key()` method to
 load the configuration from the environment. To do that, export the variables `IB_API_KEY` and
 `IB_BASE_URL`.
@@ -32,19 +31,18 @@ infobip-sdk = "0.1"
 
 ## 🚀 Usage
 To use the library, import the client and channel-specific models. Then create a client and
-call the associated functions. For example, te send an SMS, you can do it like this:
+call the associated functions. For example, te send an SMS, you can do this:
 ```rust
 use infobip_sdk::model::sms::{DestinationBuilder, MessageBuilder, SendRequestBodyBuilder};
 use infobip_sdk::api::sms::SmsClient;
 use infobip_sdk::configuration::Configuration;
 
-#[ignore]
 #[tokio::main]
 async fn main() {
     // Build SMS client with configuration from the environment.
     let sms_client = SmsClient::with_configuration(
-        Configuration::from_env_api_key()
-            .expect("failed to build default test SMS client"),
+        // Load IB_API_KEY and IB_BASE_URL environment variables.
+        Configuration::from_env_api_key().unwrap()
     );
 
     // Build a Destination instance.
@@ -75,17 +73,16 @@ async fn main() {
 }
 ```
 
-For more examples on how to use the library, you can check the tests/ directory and the
-included CLI examples.
-
-## Examples
-The best way to learn how to use the library is to look at the integration tests under the
-[tests](./tests) directory, which work as you would use them in a real scenario.
+## 👀 Examples
+The best way to learn how to use the library is to look at the official docs.rs documentation.
+You can also look at integration tests under the [tests](./tests) directory, which work as you
+would use them in a real scenario.
 
 ## ℹ Notes
+
 ### Using features
 You can speed up compile-times a bit by turning only the needed channels as library features.
-For example, to only build SMS, add the depedency like this:
+For example, to only build SMS, add the dependency like this:
 ```toml
 infobip-sdk = { version = "0.1", features = ["sms"] }
 ```
@@ -96,5 +93,17 @@ follow channel names.
 Structs that represent the models have public fields, so you can either build them with the
 provided Builders, or by calling the true constructor.
 
+## 🧡 Contributing
+
+If you would like to help this project improve, please check our [contributing guide](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
+
 ## ⚖️ License
-This library is distributed under the MIT license, found in the [LICENSE-MIT](LICENSE-MIT) file.
+
+This project is licensed under either of
+
+ * Apache License, Version 2.0
+   ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+ * MIT license
+   ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+at your option.

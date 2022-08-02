@@ -5,6 +5,10 @@
 
 {{readme}}
 
+## 🧡 Contributing
+
+If you would like to help this project improve, please check our [contributing guide](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
+
 ## ⚖️ License
 
 This project is licensed under either of
