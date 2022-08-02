@@ -6,7 +6,7 @@ const DUMMY_TEXT: &str = "Dummy text for tests. Some special chars: áéíø";
 
 #[test]
 fn test_sms_preview_request_body_valid() {
-    let request_body = PreviewSmsRequestBodyBuilder::default()
+    let request_body = PreviewRequestBodyBuilder::default()
         .text(DUMMY_TEXT.to_string())
         .language_code("ES".to_string())
         .transliteration("GREEK".to_string())
@@ -18,7 +18,7 @@ fn test_sms_preview_request_body_valid() {
 
 #[test]
 fn test_sms_preview_request_body_invalid_language_code() {
-    let request_body = PreviewSmsRequestBodyBuilder::default()
+    let request_body = PreviewRequestBodyBuilder::default()
         .text(DUMMY_TEXT.to_string())
         .language_code("BAD".to_string())
         .build()
@@ -29,7 +29,7 @@ fn test_sms_preview_request_body_invalid_language_code() {
 
 #[test]
 fn test_sms_preview_request_body_invalid_transliteration() {
-    let request_body = PreviewSmsRequestBodyBuilder::default()
+    let request_body = PreviewRequestBodyBuilder::default()
         .text(DUMMY_TEXT.to_string())
         .transliteration("BAD".to_string())
         .build()

@@ -7,12 +7,12 @@ use crate::api::{
     send_valid_json_request, ApiError, SdkError, SdkResponse,
 };
 use crate::model::sms::{
-    GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody, SendSmsRequestBody,
-    SendSmsResponseBody,
+    GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody, SendRequestBody,
+    SendResponseBody,
 };
 use crate::{
     configuration::Configuration,
-    model::sms::{PreviewSmsRequestBody, PreviewSmsResponseBody},
+    model::sms::{PreviewRequestBody, PreviewResponseBody},
 };
 
 pub const PATH_DELIVERY_REPORTS: &str = "/sms/1/reports";
@@ -39,8 +39,8 @@ impl SmsClient {
     /// characters and message parts.
     pub async fn preview(
         &self,
-        request_body: PreviewSmsRequestBody,
-    ) -> Result<SdkResponse<PreviewSmsResponseBody>, SdkError> {
+        request_body: PreviewRequestBody,
+    ) -> Result<SdkResponse<PreviewResponseBody>, SdkError> {
         let response = send_valid_json_request(
             &self.client,
             &self.configuration,
@@ -118,8 +118,8 @@ impl SmsClient {
     /// supported.
     pub async fn send(
         &self,
-        request_body: SendSmsRequestBody,
-    ) -> Result<SdkResponse<SendSmsResponseBody>, SdkError> {
+        request_body: SendRequestBody,
+    ) -> Result<SdkResponse<SendResponseBody>, SdkError> {
         let response = send_valid_json_request(
             &self.client,
             &self.configuration,
@@ -163,8 +163,8 @@ impl BlockingSmsClient {
     /// characters and message parts. This is the blocking version.
     pub fn preview(
         &self,
-        request_body: PreviewSmsRequestBody,
-    ) -> Result<SdkResponse<PreviewSmsResponseBody>, SdkError> {
+        request_body: PreviewRequestBody,
+    ) -> Result<SdkResponse<PreviewResponseBody>, SdkError> {
         let response = send_blocking_valid_json_request(
             &self.client,
             &self.configuration,

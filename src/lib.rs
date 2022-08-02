@@ -25,9 +25,47 @@
 //! ```
 //!
 //! ## Usage
-//! To use the library, import the client and channel-specific models. For SMS, you can do it
-//! like this:
+//! To use the library, import the client and channel-specific models. Then create a client and
+//! call the associated functions. For example, te send an SMS, you can do it like this:
 //! ```rust
+//! use infobip_sdk::model::sms::{DestinationBuilder, MessageBuilder, SendRequestBodyBuilder};
+//! use infobip_sdk::api::sms::SmsClient;
+//! use infobip_sdk::configuration::Configuration;
+//!
+//! #[tokio::main]
+//! async fn main() {
+//!     // Build SMS client with configuration from the environment.
+//!     let sms_client = SmsClient::with_configuration(
+//!         Configuration::from_env_api_key()
+//!             .expect("failed to build default test SMS client"),
+//!     );
+//!
+//!     // Build a Destination instance.
+//!     let destination = DestinationBuilder::default()
+//!         .to("123456789012".to_string())
+//!         .build()
+//!         .unwrap();
+//!
+//!     // Build a Message instance.
+//!     let message = MessageBuilder::default()
+//!         .destinations(vec![destination])
+//!         .text("Your message text".to_string())
+//!         .build()
+//!         .unwrap();
+//!
+//!     // Build the SendRequestBody instance.
+//!     let request_body = SendRequestBodyBuilder::default()
+//!         .messages(vec![message])
+//!         .build()
+//!         .unwrap();
+//!
+//!     // Send the SMS.
+//!     let response = sms_client.send(request_body).await.unwrap();
+//!
+//!     // Do what you want with the response.
+//!     assert_eq!(response.status, reqwest::StatusCode::OK);
+//!     println!("{:?}", response.response_body);
+//! }
 //! ```
 //!
 //! For more examples on how to use the library, you can check the tests/ directory and the

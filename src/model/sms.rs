@@ -12,7 +12,7 @@ lazy_static! {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate, Builder)]
 #[builder(setter(strip_option))]
-pub struct PreviewSmsRequestBody {
+pub struct PreviewRequestBody {
     /// Code for language character set of a message text.
     #[validate(regex = "LANGUAGE_CODES")]
     #[serde(rename = "languageCode", skip_serializing_if = "Option::is_none")]
@@ -47,7 +47,7 @@ pub struct PreviewLanguageConfiguration {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SmsPreview {
+pub struct Preview {
     /// Number of remaining characters in the last SMS part.
     #[serde(
         rename = "charactersRemaining",
@@ -66,13 +66,13 @@ pub struct SmsPreview {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct PreviewSmsResponseBody {
+pub struct PreviewResponseBody {
     /// Text supplied in the request.
     #[serde(rename = "originalText", skip_serializing_if = "Option::is_none")]
     pub original_text: Option<String>,
     /// Previews of applying different configurations to the original text.
     #[serde(rename = "previews", skip_serializing_if = "Option::is_none")]
-    pub previews: Option<Vec<SmsPreview>>,
+    pub previews: Option<Vec<Preview>>,
 }
 
 #[derive(Builder, Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
@@ -96,7 +96,7 @@ pub struct GetDeliveryReportsQueryParameters {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SmsStatus {
+pub struct Status {
     /// Action that should be taken to eliminate the error.
     #[serde(rename = "action", skip_serializing_if = "Option::is_none")]
     pub action: Option<String>,
@@ -118,7 +118,7 @@ pub struct SmsStatus {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SmsPrice {
+pub struct Price {
     /// The currency in which the price is expressed.
     #[serde(rename = "currency", skip_serializing_if = "Option::is_none")]
     pub currency: Option<String>,
@@ -128,7 +128,7 @@ pub struct SmsPrice {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SmsError {
+pub struct Error {
     /// Human-readable description of the error.
     #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -150,7 +150,7 @@ pub struct SmsError {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SmsReport {
+pub struct Report {
     /// Bulk ID.
     #[serde(rename = "bulkId", skip_serializing_if = "Option::is_none")]
     pub bulk_id: Option<String>,
@@ -162,7 +162,7 @@ pub struct SmsReport {
     pub done_at: Option<String>,
     /// Indicates whether the error occurred during the query execution.
     #[serde(rename = "error", skip_serializing_if = "Option::is_none")]
-    pub error: Option<SmsError>,
+    pub error: Option<Error>,
     /// Sender ID that can be alphanumeric or numeric.
     #[serde(rename = "from", skip_serializing_if = "Option::is_none")]
     pub from: Option<String>,
@@ -174,7 +174,7 @@ pub struct SmsReport {
     pub message_id: Option<String>,
     /// Sent SMS price.
     #[serde(rename = "price", skip_serializing_if = "Option::is_none")]
-    pub price: Option<SmsPrice>,
+    pub price: Option<Price>,
     /// Tells when the SMS was sent. Has the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
     #[serde(rename = "sentAt", skip_serializing_if = "Option::is_none")]
     pub sent_at: Option<String>,
@@ -183,7 +183,7 @@ pub struct SmsReport {
     pub sms_count: Option<i32>,
     /// Indicates whether the message is successfully sent, not sent, delivered, not delivered, waiting for delivery or any other possible status.
     #[serde(rename = "status", skip_serializing_if = "Option::is_none")]
-    pub status: Option<SmsStatus>,
+    pub status: Option<Status>,
     /// Destination address.
     #[serde(rename = "to", skip_serializing_if = "Option::is_none")]
     pub to: Option<String>,
@@ -192,11 +192,11 @@ pub struct SmsReport {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct GetDeliveryReportsResponseBody {
     #[serde(rename = "results", skip_serializing_if = "Option::is_none")]
-    pub results: Option<Vec<SmsReport>>,
+    pub results: Option<Vec<Report>>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SmsTracking {
+pub struct Tracking {
     /// Custom base url used for shortening links from SMS text in `URL` Conversion rate tracking use-case.
     #[serde(rename = "baseUrl", skip_serializing_if = "Option::is_none")]
     pub base_url: Option<String>,
@@ -212,7 +212,7 @@ pub struct SmsTracking {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum SmsTimeUnit {
+pub enum TimeUnit {
     #[serde(rename = "MINUTE")]
     MINUTE,
     #[serde(rename = "HOUR")]
@@ -222,7 +222,7 @@ pub enum SmsTimeUnit {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SmsDeliveryTime {
+pub struct DeliveryTime {
     /// Hour when the time window opens when used in from property or closes when used into the property.
     pub hour: i32,
     /// Minute when the time window opens when used in from property or closes when used into the property.
@@ -230,16 +230,16 @@ pub struct SmsDeliveryTime {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SmsSpeedLimit {
+pub struct SpeedLimit {
     /// The number of messages to send per time unit. By default, Infobip sends your messages as fast as the infrastructure allows. Use this parameter to reduce the traffic if you find the default sending speed too fast for your use case. Note that boosting this parameter will not result in faster sending speeds beyond infrastructure capabilities.
     pub amount: i32,
     /// The time unit in which the defined message amount will be sent. The default value is `MINUTE`.
     #[serde(rename = "timeUnit", skip_serializing_if = "Option::is_none")]
-    pub time_unit: Option<SmsTimeUnit>,
+    pub time_unit: Option<TimeUnit>,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
-pub enum SmsDeliveryDay {
+pub enum DeliveryDay {
     #[serde(rename = "MONDAY")]
     MONDAY,
     #[serde(rename = "TUESDAY")]
@@ -257,15 +257,15 @@ pub enum SmsDeliveryDay {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SmsDeliveryTimeWindow {
+pub struct DeliveryTimeWindow {
     /// Days which are included in the delivery time window. Values are: `MONDAY`, `TUESDAY`, `WEDNESDAY`, `THURSDAY`, `FRIDAY`, `SATURDAY`, `SUNDAY`. At least one day must be stated.
-    pub days: Vec<SmsDeliveryDay>,
+    pub days: Vec<DeliveryDay>,
     /// Exact time of day in which the sending can start. Consists of hour and minute properties, both mandatory. Time is expressed in the UTC time zone.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub from: Option<SmsDeliveryTime>,
+    pub from: Option<DeliveryTime>,
     /// Exact time of day in which the sending will end. Consists of an hour and minute properties, both mandatory. Time is expressed in the UTC time zone.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub to: Option<SmsDeliveryTime>,
+    pub to: Option<DeliveryTime>,
 }
 
 #[derive(Builder, Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
@@ -298,7 +298,7 @@ pub struct RegionalOptions {
 
 #[derive(Builder, Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
 #[builder(setter(strip_option))]
-pub struct SmsMessage {
+pub struct Message {
     /// Additional client's data that will be sent on the notifyUrl. The maximum value is 200 characters.
     #[serde(rename = "callbackData", skip_serializing_if = "Option::is_none")]
     #[builder(default = "None")]
@@ -306,7 +306,7 @@ pub struct SmsMessage {
     /// Scheduling object that allows setting up detailed time windows in which the message can be sent. Consists of `from`, `to` and `days` properties. `Days` property is mandatory. `From` and `to` properties should be either both included, to allow finer time window granulation or both omitted, to include whole days in the delivery time window.
     #[serde(rename = "deliveryTimeWindow", skip_serializing_if = "Option::is_none")]
     #[builder(default = "None")]
-    pub delivery_time_window: Option<SmsDeliveryTimeWindow>,
+    pub delivery_time_window: Option<DeliveryTimeWindow>,
     #[serde(rename = "destinations", skip_serializing_if = "Option::is_none")]
     pub destinations: Option<Vec<Destination>>,
     /// Can be `true` or `false`. If the value is set to `true`, a flash SMS will be sent. Otherwise, a normal SMS will be sent. The default value is `false`.
@@ -356,42 +356,20 @@ pub struct SmsMessage {
 
 #[derive(Builder, Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
 #[builder(setter(strip_option))]
-pub struct SendSmsRequestBody {
+pub struct SendRequestBody {
     /// The ID which uniquely identifies the request. Bulk ID will be received only when you send a message to more than one destination address.
     #[serde(rename = "bulkId", skip_serializing_if = "Option::is_none")]
     #[builder(default = "None")]
     pub bulk_id: Option<String>,
     #[serde(rename = "messages", skip_serializing_if = "Option::is_none")]
-    pub messages: Option<Vec<SmsMessage>>,
+    pub messages: Option<Vec<Message>>,
     /// Limit the sending speed for message bulks. In some use cases, you might want to reduce message sending speed if your message call to action involves visiting a website, calling your contact center or similar recipient activity, in which you can handle a limited amount of load. This setting helps you to spread the delivery of the messages over a longer period, allowing your systems or agents to handle incoming traffic in real-time, resulting in better customer satisfaction.
     #[serde(rename = "sendingSpeedLimit", skip_serializing_if = "Option::is_none")]
     #[builder(default = "None")]
-    pub sending_speed_limit: Option<SmsSpeedLimit>,
+    pub sending_speed_limit: Option<SpeedLimit>,
     #[serde(rename = "tracking", skip_serializing_if = "Option::is_none")]
     #[builder(default = "None")]
-    pub tracking: Option<SmsTracking>,
-}
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct Status {
-    /// Action that should be taken to eliminate the error.
-    #[serde(rename = "action", skip_serializing_if = "Option::is_none")]
-    pub action: Option<String>,
-    /// Human-readable description of the status.
-    #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
-    pub description: Option<String>,
-    /// Status group ID.
-    #[serde(rename = "groupId", skip_serializing_if = "Option::is_none")]
-    pub group_id: Option<i32>,
-    /// Status group name.
-    #[serde(rename = "groupName", skip_serializing_if = "Option::is_none")]
-    pub group_name: Option<String>,
-    /// Status ID.
-    #[serde(rename = "id", skip_serializing_if = "Option::is_none")]
-    pub id: Option<i32>,
-    /// Status name.
-    #[serde(rename = "name", skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
+    pub tracking: Option<Tracking>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -408,7 +386,7 @@ pub struct SentMessageDetails {
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct SendSmsResponseBody {
+pub struct SendResponseBody {
     /// The ID that uniquely identifies the request. Bulk ID will be received only when you send a message to more than one destination address.
     #[serde(rename = "bulkId", skip_serializing_if = "Option::is_none")]
     pub bulk_id: Option<String>,

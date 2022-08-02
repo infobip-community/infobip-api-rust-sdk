@@ -31,7 +31,7 @@ async fn test_preview_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = PreviewSmsRequestBodyBuilder::default()
+    let request_body = PreviewRequestBodyBuilder::default()
         .text("Some text to preview".to_string())
         .build()
         .unwrap();
@@ -47,7 +47,7 @@ async fn test_preview_valid() {
 async fn test_preview_bad_request() {
     let client = SmsClient::with_configuration(get_test_configuration(DUMMY_BASE_URL));
 
-    let request_body = PreviewSmsRequestBodyBuilder::default()
+    let request_body = PreviewRequestBodyBuilder::default()
         .text("Some text to preview".to_string())
         .language_code("XX".to_string())
         .build()
@@ -88,7 +88,7 @@ fn test_blocking_preview_valid() {
     let client =
         BlockingSmsClient::with_configuration(get_test_configuration(&mock_server.base_url()));
 
-    let request_body = PreviewSmsRequestBodyBuilder::default()
+    let request_body = PreviewRequestBodyBuilder::default()
         .text("Some text to preview".to_string())
         .build()
         .unwrap();
@@ -124,7 +124,7 @@ async fn test_preview_server_error() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = PreviewSmsRequestBodyBuilder::default()
+    let request_body = PreviewRequestBodyBuilder::default()
         .text("Some text to preview".to_string())
         .build()
         .unwrap();
