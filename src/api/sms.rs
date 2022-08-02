@@ -3,17 +3,21 @@ use std::collections::HashMap;
 use validator::Validate;
 
 use crate::api::{
-    build_api_error, send_blocking_json_request, send_json_request, send_no_body_request, ApiError,
-    SdkError, SdkResponse,
+    build_api_error, send_blocking_valid_json_request, send_no_body_request,
+    send_valid_json_request, ApiError, SdkError, SdkResponse,
 };
-use crate::model::sms::{GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody};
+use crate::model::sms::{
+    GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody, SendSmsRequestBody,
+    SendSmsResponseBody,
+};
 use crate::{
     configuration::Configuration,
     model::sms::{PreviewSmsRequestBody, PreviewSmsResponseBody},
 };
 
-pub const PATH_PREVIEW: &str = "/sms/1/preview";
 pub const PATH_DELIVERY_REPORTS: &str = "/sms/1/reports";
+pub const PATH_PREVIEW: &str = "/sms/1/preview";
+pub const PATH_SEND: &str = "/sms/2/text/advanced";
 
 /// Main asynchronous client for the Infobip SMS channel.
 #[derive(Clone, Debug)]
@@ -37,9 +41,7 @@ impl SmsClient {
         &self,
         request_body: PreviewSmsRequestBody,
     ) -> Result<SdkResponse<PreviewSmsResponseBody>, SdkError> {
-        request_body.validate()?;
-
-        let response = send_json_request(
+        let response = send_valid_json_request(
             &self.client,
             &self.configuration,
             request_body,
@@ -107,6 +109,39 @@ impl SmsClient {
             Err(build_api_error(status, &text))
         }
     }
+
+    /// Send a single, or multiple SMS messages to one or many destinations.
+    ///
+    /// Everything from sending a simple single message to a single destination, up to batch
+    /// sending of personalized messages to the thousands of recipients with a single API request.
+    /// Language, transliteration, scheduling and every advanced feature you can think of is
+    /// supported.
+    pub async fn send(
+        &self,
+        request_body: SendSmsRequestBody,
+    ) -> Result<SdkResponse<SendSmsResponseBody>, SdkError> {
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            HashMap::new(),
+            reqwest::Method::POST,
+            PATH_SEND,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                response_body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
 }
 
 /// Blocking client for the Infobip SMS channel.
@@ -130,9 +165,7 @@ impl BlockingSmsClient {
         &self,
         request_body: PreviewSmsRequestBody,
     ) -> Result<SdkResponse<PreviewSmsResponseBody>, SdkError> {
-        request_body.validate()?;
-
-        let response = send_blocking_json_request(
+        let response = send_blocking_valid_json_request(
             &self.client,
             &self.configuration,
             request_body,

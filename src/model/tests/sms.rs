@@ -2,7 +2,7 @@ use validator::Validate;
 
 use crate::model::sms::*;
 
-const DUMMY_TEXT: &str = "Some dummy text for tests.";
+const DUMMY_TEXT: &str = "Dummy text for tests. Some special chars: áéíø";
 
 #[test]
 fn test_sms_preview_request_body_valid() {

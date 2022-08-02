@@ -1,26 +1,38 @@
 #![cfg(test)]
 
+use std::env;
+
 use reqwest::StatusCode;
 
 use infobip_sdk::api::sms::{BlockingSmsClient, SmsClient};
 use infobip_sdk::configuration;
-use infobip_sdk::model::sms::{
-    GetDeliveryReportsQueryParametersBuilder, PreviewSmsRequestBodyBuilder,
-};
+use infobip_sdk::model::sms::*;
+
+const DUMMY_TEXT: &str = "Dummy text for tests. Some special chars: áéíø";
+
+fn get_test_sms_client() -> SmsClient {
+    SmsClient::with_configuration(
+        configuration::Configuration::from_env_api_key()
+            .expect("failed to build default test SMS client"),
+    )
+}
+
+fn get_test_blocking_sms_client() -> BlockingSmsClient {
+    BlockingSmsClient::with_configuration(
+        configuration::Configuration::from_env_api_key()
+            .expect("failed to build default test blocking SMS client"),
+    )
+}
 
 #[ignore]
 #[tokio::test]
 async fn preview_sms() {
-    let config = configuration::Configuration::from_env_api_key()
-        .expect("error reading API key or base URL");
-    let sms_client = SmsClient::with_configuration(config);
-
     let request_body = PreviewSmsRequestBodyBuilder::default()
-        .text("Some text to preview.".to_string())
+        .text(DUMMY_TEXT.to_string())
         .build()
         .unwrap();
 
-    let response = sms_client.preview(request_body).await.unwrap();
+    let response = get_test_sms_client().preview(request_body).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     assert!(response.response_body.previews.unwrap().len() > 0usize);
@@ -29,16 +41,14 @@ async fn preview_sms() {
 #[ignore]
 #[test]
 fn preview_sms_blocking() {
-    let config = configuration::Configuration::from_env_api_key()
-        .expect("error reading API key or base URL");
-    let sms_client = BlockingSmsClient::with_configuration(config);
-
     let request_body = PreviewSmsRequestBodyBuilder::default()
-        .text("Some text to preview.".to_string())
+        .text(DUMMY_TEXT.to_string())
         .build()
         .unwrap();
 
-    let response = sms_client.preview(request_body).unwrap();
+    let response = get_test_blocking_sms_client()
+        .preview(request_body)
+        .unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     assert!(response.response_body.previews.unwrap().len() > 0usize);
@@ -47,24 +57,22 @@ fn preview_sms_blocking() {
 #[ignore]
 #[tokio::test]
 async fn preview_sms_multiple() {
-    let config = configuration::Configuration::from_env_api_key()
-        .expect("error reading API key or base URL");
-    let sms_client = SmsClient::with_configuration(config);
+    let sms_client = get_test_sms_client();
 
     let request_body1 = PreviewSmsRequestBodyBuilder::default()
-        .text("Some text to preview 1.".to_string())
+        .text(DUMMY_TEXT.to_string())
         .build()
         .unwrap();
     let request_body2 = PreviewSmsRequestBodyBuilder::default()
-        .text("Some text to preview 2.".to_string())
+        .text(DUMMY_TEXT.to_string())
         .build()
         .unwrap();
     let request_body3 = PreviewSmsRequestBodyBuilder::default()
-        .text("Some text to preview 3.".to_string())
+        .text(DUMMY_TEXT.to_string())
         .build()
         .unwrap();
     let request_body4 = PreviewSmsRequestBodyBuilder::default()
-        .text("Some text to preview 4.".to_string())
+        .text(DUMMY_TEXT.to_string())
         .build()
         .unwrap();
 
@@ -128,24 +136,22 @@ async fn preview_sms_multiple() {
 #[ignore]
 #[test]
 fn preview_sms_multiple_blocking() {
-    let config = configuration::Configuration::from_env_api_key()
-        .expect("error reading API key or base URL");
-    let sms_client = BlockingSmsClient::with_configuration(config);
+    let sms_client = get_test_blocking_sms_client();
 
     let request_body1 = PreviewSmsRequestBodyBuilder::default()
-        .text("Some text to preview.".to_string())
+        .text(DUMMY_TEXT.to_string())
         .build()
         .unwrap();
     let request_body2 = PreviewSmsRequestBodyBuilder::default()
-        .text("Some text to preview 2.".to_string())
+        .text(DUMMY_TEXT.to_string())
         .build()
         .unwrap();
     let request_body3 = PreviewSmsRequestBodyBuilder::default()
-        .text("Some text to preview 3.".to_string())
+        .text(DUMMY_TEXT.to_string())
         .build()
         .unwrap();
     let request_body4 = PreviewSmsRequestBodyBuilder::default()
-        .text("Some text to preview 4.".to_string())
+        .text(DUMMY_TEXT.to_string())
         .build()
         .unwrap();
 
@@ -167,16 +173,40 @@ fn preview_sms_multiple_blocking() {
 #[ignore]
 #[tokio::test]
 async fn get_sms_delivery_reports() {
-    let config = configuration::Configuration::from_env_api_key()
-        .expect("error reading API key or base URL");
-    let sms_client = SmsClient::with_configuration(config);
-
     let parameters = GetDeliveryReportsQueryParametersBuilder::default()
         .limit(10)
         .build()
         .unwrap();
 
-    let response = sms_client.get_delivery_reports(parameters).await.unwrap();
+    let response = get_test_sms_client()
+        .get_delivery_reports(parameters)
+        .await
+        .unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_sms() {
+    let destination = DestinationBuilder::default()
+        .to(env::var("IB_TEST_DESTINATION_NUMBER").unwrap())
+        .build()
+        .unwrap();
+
+    let message = SmsMessageBuilder::default()
+        .destinations(vec![destination])
+        .text(DUMMY_TEXT.to_string())
+        .build()
+        .unwrap();
+
+    let request_body = SendSmsRequestBodyBuilder::default()
+        .messages(vec![message])
+        .build()
+        .unwrap();
+
+    let response = get_test_sms_client().send(request_body).await.unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+    println!("{:?}", response.response_body);
 }

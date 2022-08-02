@@ -37,7 +37,8 @@
 //! The best way to learn how to use the library is to look at the integration tests under the
 //! [tests](./tests) directory, which work as you would use them in a real scenario.
 //!
-//! ## Using specific features
+//! ## Notes
+//! ### Using features
 //! You can speed up compile-times a bit by turning only the needed channels as library features.
 //! For example, to only build SMS, add the depedency like this:
 //! ```toml
@@ -45,6 +46,10 @@
 //! ```
 //! You can see the complete list of features in the Cargo.toml of the project. Feature names
 //! follow channel names.
+//!
+//! ### Building payload models
+//! Structs that represent the models have public fields, so you can either build them with the
+//! provided Builders, or by calling the true constructor.
 
 #[macro_use]
 extern crate derive_builder;

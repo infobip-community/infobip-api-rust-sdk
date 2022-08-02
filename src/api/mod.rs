@@ -155,7 +155,7 @@ async fn send_no_body_request(
     Ok(builder.send().await?)
 }
 
-async fn send_json_request<T: Validate + serde::Serialize>(
+async fn send_valid_json_request<T: Validate + serde::Serialize>(
     client: &reqwest::Client,
     configuration: &Configuration,
     request_body: T,
@@ -163,6 +163,8 @@ async fn send_json_request<T: Validate + serde::Serialize>(
     method: reqwest::Method,
     path: &str,
 ) -> Result<Response, SdkError> {
+    request_body.validate()?;
+
     let url = format!("{}{}", configuration.base_url, path);
     let mut builder = client
         .request(method, url)
@@ -189,7 +191,7 @@ async fn _send_multipart_request(
     Ok(builder.multipart(form).send().await?)
 }
 
-fn send_blocking_json_request<T: Validate + serde::Serialize>(
+fn send_blocking_valid_json_request<T: Validate + serde::Serialize>(
     client: &reqwest::blocking::Client,
     configuration: &Configuration,
     request_body: T,
