@@ -9,6 +9,7 @@ This library enables you to use multiple Infobip communication channels, like SM
 Whatsapp, Email, etc. It abstracts the needed HTTP calls, and models payloads and error
 handling. The modules structure is divided by communication channel, which can be enabled as
 library features.
+
 ---
 
 ## 📡 Supported Channels
