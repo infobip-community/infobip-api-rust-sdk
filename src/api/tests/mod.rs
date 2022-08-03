@@ -7,6 +7,8 @@ use crate::configuration::{ApiKey, Configuration};
 #[cfg(test)]
 mod sms;
 
+const DUMMY_TEXT: &str = "Some text for tests.";
+
 async fn mock_json_endpoint(
     endpoint_method: httpmock::Method,
     endpoint_path: &str,

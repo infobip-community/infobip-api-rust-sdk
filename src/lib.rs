@@ -27,7 +27,7 @@
 //! To use the library, import the client and channel-specific models. Then create a client and
 //! call the associated functions. For example, te send an SMS, you can do this:
 //! ```no_run
-//! use infobip_sdk::model::sms::{DestinationBuilder, MessageBuilder, SendRequestBodyBuilder};
+//! use infobip_sdk::model::sms::{Destination, Message, SendRequestBody};
 //! use infobip_sdk::api::sms::SmsClient;
 //! use infobip_sdk::configuration::Configuration;
 //!
@@ -39,31 +39,21 @@
 //!         Configuration::from_env_api_key().unwrap()
 //!     );
 //!
-//!     // Build a Destination instance.
-//!     let destination = DestinationBuilder::default()
-//!         .to("123456789012".to_string())
-//!         .build()
-//!         .unwrap();
+//!     // Create a message.
+//!     let mut message = Message::new(
+//!         vec![Destination::new("123456789012".to_string())]
+//!     );
+//!     message.text = Some("Your message text".to_string());
 //!
-//!     // Build a Message instance.
-//!     let message = MessageBuilder::default()
-//!         .destinations(vec![destination])
-//!         .text("Your message text".to_string())
-//!         .build()
-//!         .unwrap();
-//!
-//!     // Build the SendRequestBody instance.
-//!     let request_body = SendRequestBodyBuilder::default()
-//!         .messages(vec![message])
-//!         .build()
-//!         .unwrap();
+//!     // Create the SendRequestBody instance.
+//!     let request_body = SendRequestBody::new(vec![message]);
 //!
 //!     // Send the SMS.
 //!     let response = sms_client.send(request_body).await.unwrap();
 //!
 //!     // Do what you want with the response.
 //!     assert_eq!(response.status, reqwest::StatusCode::OK);
-//!     println!("{:?}", response.response_body);
+//!     println!("Response body:\n{}", serde_json::to_string(&response.body).unwrap());
 //! }
 //! ```
 //!
@@ -85,10 +75,56 @@
 //!
 //! ### Building payload models
 //! Structs that represent the models have public fields, so you can either build them with the
-//! provided Builders, or by calling the true constructor.
+//! provided `new()` functions, with `serde_json::from_str()`, or with the true constructor.
+//! For example, to build a `Message` instance, you can do this:
+//! ```rust
+//! # use infobip_sdk::model::sms::{Destination, Message};
+//! let mut message = Message::new(
+//!    vec![Destination::new("123456789012".to_string())]
+//! );
+//! message.text = Some("Your message text".to_string());
+//! ```
+//! or this:
+//! ```rust
+//! # use infobip_sdk::model::sms::{Destination, Message};
+//! let message: Message = serde_json::from_str(r#"
+//! {
+//!   "messages": [
+//!     {
+//!       "destinations": [
+//!         {
+//!           "to": "41793026727"
+//!         }
+//!       ],
+//!       "text": "Your message text"
+//!     }
+//!   ]
+//! }"#).unwrap();
+//! ```
+//! or this:
+//! ```rust
+//! # use infobip_sdk::model::sms::{Destination, Message};
+//! let destination = Destination {
+//!     message_id: None,
+//!     to: "41793026727".to_string()
+//! };
+//! let message = Message {
+//!     callback_data: None,
+//!     delivery_time_window: None,
+//!     destinations: Some(vec![destination]),
+//!     flash: None,
+//!     from: None,
+//!     intermediate_report: None,
+//!     language: None,
+//!     notify_content_type: None,
+//!     notify_url: None,
+//!     regional: None,
+//!     send_at: None,
+//!     text: None,
+//!     transliteration: None,
+//!     validity_period: None
+//! };
 
-#[macro_use]
-extern crate derive_builder;
 #[macro_use]
 extern crate lazy_static;
 

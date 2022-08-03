@@ -56,7 +56,7 @@ impl SmsClient {
 
         if status.is_success() {
             Ok(SdkResponse {
-                response_body: serde_json::from_str(&text)?,
+                body: serde_json::from_str(&text)?,
                 status,
             })
         } else {
@@ -102,7 +102,7 @@ impl SmsClient {
 
         if status.is_success() {
             Ok(SdkResponse {
-                response_body: serde_json::from_str(&text)?,
+                body: serde_json::from_str(&text)?,
                 status,
             })
         } else {
@@ -135,7 +135,7 @@ impl SmsClient {
 
         if status.is_success() {
             Ok(SdkResponse {
-                response_body: serde_json::from_str(&text)?,
+                body: serde_json::from_str(&text)?,
                 status,
             })
         } else {
@@ -178,7 +178,7 @@ impl BlockingSmsClient {
 
         if status.is_success() {
             Ok(SdkResponse {
-                response_body: serde_json::from_str(&text)?,
+                body: serde_json::from_str(&text)?,
                 status,
             })
         } else {

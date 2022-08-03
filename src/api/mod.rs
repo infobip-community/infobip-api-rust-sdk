@@ -84,7 +84,7 @@ impl fmt::Display for ApiErrorDetails {
 /// Holds the status code and the response body of a successful API call.
 #[derive(Clone, Debug, PartialEq)]
 pub struct SdkResponse<T> {
-    pub response_body: T,
+    pub body: T,
     pub status: StatusCode,
 }
 

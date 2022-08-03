@@ -28,31 +28,25 @@ fn get_test_blocking_sms_client() -> BlockingSmsClient {
 #[ignore]
 #[tokio::test]
 async fn preview_sms() {
-    let request_body = PreviewRequestBodyBuilder::default()
-        .text(DUMMY_TEXT.to_string())
-        .build()
-        .unwrap();
+    let request_body = PreviewRequestBody::new(DUMMY_TEXT.to_string());
 
     let response = get_test_sms_client().preview(request_body).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
-    assert!(response.response_body.previews.unwrap().len() > 0usize);
+    assert!(response.body.previews.unwrap().len() > 0usize);
 }
 
 #[ignore]
 #[test]
 fn preview_sms_blocking() {
-    let request_body = PreviewRequestBodyBuilder::default()
-        .text(DUMMY_TEXT.to_string())
-        .build()
-        .unwrap();
+    let request_body = PreviewRequestBody::new(DUMMY_TEXT.to_string());
 
     let response = get_test_blocking_sms_client()
         .preview(request_body)
         .unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
-    assert!(response.response_body.previews.unwrap().len() > 0usize);
+    assert!(response.body.previews.unwrap().len() > 0usize);
 }
 
 #[ignore]
@@ -60,22 +54,10 @@ fn preview_sms_blocking() {
 async fn preview_sms_multiple() {
     let sms_client = get_test_sms_client();
 
-    let request_body1 = PreviewRequestBodyBuilder::default()
-        .text(DUMMY_TEXT.to_string())
-        .build()
-        .unwrap();
-    let request_body2 = PreviewRequestBodyBuilder::default()
-        .text(DUMMY_TEXT.to_string())
-        .build()
-        .unwrap();
-    let request_body3 = PreviewRequestBodyBuilder::default()
-        .text(DUMMY_TEXT.to_string())
-        .build()
-        .unwrap();
-    let request_body4 = PreviewRequestBodyBuilder::default()
-        .text(DUMMY_TEXT.to_string())
-        .build()
-        .unwrap();
+    let request_body1 = PreviewRequestBody::new(DUMMY_TEXT.to_string());
+    let request_body2 = PreviewRequestBody::new(DUMMY_TEXT.to_string());
+    let request_body3 = PreviewRequestBody::new(DUMMY_TEXT.to_string());
+    let request_body4 = PreviewRequestBody::new(DUMMY_TEXT.to_string());
 
     let (resp1, resp2, resp3, resp4) = tokio::join!(
         sms_client.preview(request_body1),
@@ -92,7 +74,7 @@ async fn preview_sms_multiple() {
         resp1
             .as_ref()
             .unwrap()
-            .response_body
+            .body
             .previews
             .as_ref()
             .unwrap()
@@ -103,7 +85,7 @@ async fn preview_sms_multiple() {
         resp2
             .as_ref()
             .unwrap()
-            .response_body
+            .body
             .previews
             .as_ref()
             .unwrap()
@@ -114,7 +96,7 @@ async fn preview_sms_multiple() {
         resp3
             .as_ref()
             .unwrap()
-            .response_body
+            .body
             .previews
             .as_ref()
             .unwrap()
@@ -125,7 +107,7 @@ async fn preview_sms_multiple() {
         resp4
             .as_ref()
             .unwrap()
-            .response_body
+            .body
             .previews
             .as_ref()
             .unwrap()
@@ -139,22 +121,10 @@ async fn preview_sms_multiple() {
 fn preview_sms_multiple_blocking() {
     let sms_client = get_test_blocking_sms_client();
 
-    let request_body1 = PreviewRequestBodyBuilder::default()
-        .text(DUMMY_TEXT.to_string())
-        .build()
-        .unwrap();
-    let request_body2 = PreviewRequestBodyBuilder::default()
-        .text(DUMMY_TEXT.to_string())
-        .build()
-        .unwrap();
-    let request_body3 = PreviewRequestBodyBuilder::default()
-        .text(DUMMY_TEXT.to_string())
-        .build()
-        .unwrap();
-    let request_body4 = PreviewRequestBodyBuilder::default()
-        .text(DUMMY_TEXT.to_string())
-        .build()
-        .unwrap();
+    let request_body1 = PreviewRequestBody::new(DUMMY_TEXT.to_string());
+    let request_body2 = PreviewRequestBody::new(DUMMY_TEXT.to_string());
+    let request_body3 = PreviewRequestBody::new(DUMMY_TEXT.to_string());
+    let request_body4 = PreviewRequestBody::new(DUMMY_TEXT.to_string());
 
     let response1 = sms_client.preview(request_body1).unwrap();
     let response2 = sms_client.preview(request_body2).unwrap();
@@ -165,19 +135,17 @@ fn preview_sms_multiple_blocking() {
     assert_eq!(response2.status, StatusCode::OK);
     assert_eq!(response3.status, StatusCode::OK);
     assert_eq!(response4.status, StatusCode::OK);
-    assert!(response1.response_body.previews.unwrap().len() > 0usize);
-    assert!(response2.response_body.previews.unwrap().len() > 0usize);
-    assert!(response3.response_body.previews.unwrap().len() > 0usize);
-    assert!(response4.response_body.previews.unwrap().len() > 0usize);
+    assert!(response1.body.previews.unwrap().len() > 0usize);
+    assert!(response2.body.previews.unwrap().len() > 0usize);
+    assert!(response3.body.previews.unwrap().len() > 0usize);
+    assert!(response4.body.previews.unwrap().len() > 0usize);
 }
 
 #[ignore]
 #[tokio::test]
 async fn get_sms_delivery_reports() {
-    let parameters = GetDeliveryReportsQueryParametersBuilder::default()
-        .limit(10)
-        .build()
-        .unwrap();
+    let mut parameters = GetDeliveryReportsQueryParameters::new();
+    parameters.limit = Some(10);
 
     let response = get_test_sms_client()
         .get_delivery_reports(parameters)
@@ -190,24 +158,15 @@ async fn get_sms_delivery_reports() {
 #[ignore]
 #[tokio::test]
 async fn send_sms() {
-    let destination = DestinationBuilder::default()
-        .to(env::var("IB_TEST_DESTINATION_NUMBER").unwrap())
-        .build()
-        .unwrap();
+    let mut message = Message::new(vec![Destination::new(
+        env::var("IB_TEST_DESTINATION_NUMBER").unwrap(),
+    )]);
+    message.text = Some(DUMMY_TEXT.to_string());
 
-    let message = MessageBuilder::default()
-        .destinations(vec![destination])
-        .text(DUMMY_TEXT.to_string())
-        .build()
-        .unwrap();
-
-    let request_body = SendRequestBodyBuilder::default()
-        .messages(vec![message])
-        .build()
-        .unwrap();
+    let request_body = SendRequestBody::new(vec![message]);
 
     let response = get_test_sms_client().send(request_body).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
-    assert_eq!(response.response_body.messages.unwrap().len(), 1usize);
+    assert_eq!(response.body.messages.unwrap().len(), 1usize);
 }

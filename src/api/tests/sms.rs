@@ -1,5 +1,7 @@
 use crate::api::sms::*;
-use crate::api::tests::{get_test_configuration, mock_blocking_json_endpoint, mock_json_endpoint};
+use crate::api::tests::{
+    get_test_configuration, mock_blocking_json_endpoint, mock_json_endpoint, DUMMY_TEXT,
+};
 use crate::api::SdkError;
 use crate::model::sms::*;
 
@@ -31,27 +33,21 @@ async fn test_preview_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = PreviewRequestBodyBuilder::default()
-        .text("Some text to preview".to_string())
-        .build()
-        .unwrap();
+    let request_body = PreviewRequestBody::new(DUMMY_TEXT.to_string());
 
     let response = client.preview(request_body).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
-    assert!(!response.response_body.original_text.unwrap().is_empty());
-    assert!(response.response_body.previews.unwrap().len() > 0usize);
+    assert!(!response.body.original_text.unwrap().is_empty());
+    assert!(response.body.previews.unwrap().len() > 0usize);
 }
 
 #[tokio::test]
 async fn test_preview_bad_request() {
     let client = SmsClient::with_configuration(get_test_configuration(DUMMY_BASE_URL));
 
-    let request_body = PreviewRequestBodyBuilder::default()
-        .text("Some text to preview".to_string())
-        .language_code("XX".to_string())
-        .build()
-        .unwrap();
+    let mut request_body = PreviewRequestBody::new(DUMMY_TEXT.to_string());
+    request_body.language_code = Some("XX".to_string());
 
     let error = client.preview(request_body).await.unwrap_err();
 
@@ -88,16 +84,13 @@ fn test_blocking_preview_valid() {
     let client =
         BlockingSmsClient::with_configuration(get_test_configuration(&mock_server.base_url()));
 
-    let request_body = PreviewRequestBodyBuilder::default()
-        .text("Some text to preview".to_string())
-        .build()
-        .unwrap();
+    let request_body = PreviewRequestBody::new(DUMMY_TEXT.to_string());
 
     let response = client.preview(request_body).unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
-    assert!(!response.response_body.original_text.unwrap().is_empty());
-    assert!(response.response_body.previews.unwrap().len() > 0usize);
+    assert!(!response.body.original_text.unwrap().is_empty());
+    assert!(response.body.previews.unwrap().len() > 0usize);
 }
 
 #[tokio::test]
@@ -124,10 +117,7 @@ async fn test_preview_server_error() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = PreviewRequestBodyBuilder::default()
-        .text("Some text to preview".to_string())
-        .build()
-        .unwrap();
+    let request_body = PreviewRequestBody::new(DUMMY_TEXT.to_string());
 
     let error = client.preview(request_body).await.unwrap_err();
     if let SdkError::ApiRequestError(api_error) = error {
@@ -217,16 +207,14 @@ async fn test_get_delivery_reports_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let query_parameters = GetDeliveryReportsQueryParametersBuilder::default()
-        .limit(10)
-        .build()
-        .unwrap();
+    let mut query_parameters = GetDeliveryReportsQueryParameters::new();
+    query_parameters.limit = Some(10);
 
     let response = client.get_delivery_reports(query_parameters).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
-    assert!(response.response_body.results.as_ref().unwrap().len() > 1);
-    assert!(!response.response_body.results.as_ref().unwrap()[0]
+    assert!(response.body.results.as_ref().unwrap().len() > 1);
+    assert!(!response.body.results.as_ref().unwrap()[0]
         .bulk_id
         .as_ref()
         .unwrap()
@@ -237,10 +225,8 @@ async fn test_get_delivery_reports_valid() {
 async fn test_get_delivery_reports_bad_parameters() {
     let client = SmsClient::with_configuration(get_test_configuration(DUMMY_BASE_URL));
 
-    let query_parameters = GetDeliveryReportsQueryParametersBuilder::default()
-        .limit(10000)
-        .build()
-        .unwrap();
+    let mut query_parameters = GetDeliveryReportsQueryParameters::new();
+    query_parameters.limit = Some(10000);
 
     let error = client
         .get_delivery_reports(query_parameters)
