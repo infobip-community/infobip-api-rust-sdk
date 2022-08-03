@@ -54,3 +54,59 @@ fn test_send_request_body_valid() {
 
     assert!(request_body.validate().is_ok())
 }
+
+#[test]
+fn test_send_request_body_no_messages() {
+    let request_body = SendRequestBody::new(vec![]);
+
+    assert!(request_body.validate().is_err())
+}
+
+#[test]
+fn test_send_request_body_no_destination() {
+    let message = Message::new(vec![]);
+    let request_body = SendRequestBody::new(vec![message]);
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn test_send_request_body_no_destination_to() {
+    let message = Message::new(vec![Destination::new("".to_string())]);
+    let request_body = SendRequestBody::new(vec![message]);
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn test_send_request_body_no_principal_entity_id() {
+    let mut regional = RegionalOptions::new();
+    regional.india_dlt = Some(IndiaDlt::new("".to_string()));
+    let mut message = Message::new(vec![Destination::new("123456789012".to_string())]);
+    message.regional = Some(regional);
+    let request_body = SendRequestBody::new(vec![message]);
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn test_send_request_body_no_turkey_recipient_type() {
+    let mut regional = RegionalOptions::new();
+    regional.turkey_iys = Some(TurkeyIys::new("".to_string()));
+    let mut message = Message::new(vec![Destination::new("123456789012".to_string())]);
+    message.regional = Some(regional);
+    let request_body = SendRequestBody::new(vec![message]);
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn test_send_request_body_bad_turkey_recipient_type() {
+    let mut regional = RegionalOptions::new();
+    regional.turkey_iys = Some(TurkeyIys::new("BAD".to_string()));
+    let mut message = Message::new(vec![Destination::new("123456789012".to_string())]);
+    message.regional = Some(regional);
+    let request_body = SendRequestBody::new(vec![message]);
+
+    assert!(request_body.validate().is_err());
+}

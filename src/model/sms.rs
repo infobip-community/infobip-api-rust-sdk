@@ -322,7 +322,7 @@ pub struct Destination {
     /// Message destination address. Addresses must be in international format (Example:
     /// `41793026727`).
     #[serde(rename = "to")]
-    #[validate(length(min = 0, max = 50))]
+    #[validate(length(min = 1, max = 50))]
     pub to: String,
 }
 
@@ -335,15 +335,25 @@ impl Destination {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
-pub struct IndiaDltOptions {
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+pub struct IndiaDlt {
     /// Id of your registered DTL content template that matches this message's text.
     #[serde(rename = "contentTemplateId", skip_serializing_if = "Option::is_none")]
     pub content_template_id: Option<String>,
 
     /// Your assigned DTL principal entity id.
     #[serde(rename = "principalEntityId")]
+    #[validate(length(min = 1))]
     pub principal_entity_id: String,
+}
+
+impl IndiaDlt {
+    pub fn new(principal_entity_id: String) -> IndiaDlt {
+        IndiaDlt {
+            content_template_id: None,
+            principal_entity_id,
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
@@ -359,17 +369,37 @@ pub struct TurkeyIys {
     pub recipient_type: String,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+impl TurkeyIys {
+    pub fn new(recipient_type: String) -> TurkeyIys {
+        TurkeyIys {
+            brand_code: None,
+            recipient_type,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
 pub struct RegionalOptions {
     /// Distributed Ledger Technology (DLT) specific parameters required for sending SMS to phone
     /// numbers registered in India.
     #[serde(rename = "indiaDlt", skip_serializing_if = "Option::is_none")]
-    pub india_dlt: Option<IndiaDltOptions>,
+    #[validate]
+    pub india_dlt: Option<IndiaDlt>,
 
     /// IYS regulations specific parameters required for sending promotional SMS to phone numbers
     /// registered in Turkey.
     #[serde(rename = "turkeyIys", skip_serializing_if = "Option::is_none")]
+    #[validate]
     pub turkey_iys: Option<TurkeyIys>,
+}
+
+impl RegionalOptions {
+    pub fn new() -> RegionalOptions {
+        RegionalOptions {
+            india_dlt: None,
+            turkey_iys: None,
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
@@ -388,6 +418,8 @@ pub struct Message {
     pub delivery_time_window: Option<DeliveryTimeWindow>,
 
     #[serde(rename = "destinations", skip_serializing_if = "Option::is_none")]
+    #[validate(length(min = 1))]
+    #[validate]
     pub destinations: Option<Vec<Destination>>,
 
     /// Can be `true` or `false`. If the value is set to `true`, a flash SMS will be sent.
@@ -423,6 +455,7 @@ pub struct Message {
     /// Region specific parameters, often specified by local laws. Use this if country or region
     /// that you are sending SMS to requires some extra parameters.
     #[serde(rename = "regional", skip_serializing_if = "Option::is_none")]
+    #[validate]
     pub regional: Option<RegionalOptions>,
 
     /// Date and time when the message is to be sent. Used for scheduled SMS (SMS not sent
@@ -477,6 +510,8 @@ pub struct SendRequestBody {
     pub bulk_id: Option<String>,
 
     #[serde(rename = "messages", skip_serializing_if = "Option::is_none")]
+    #[validate(length(min = 1))]
+    #[validate]
     pub messages: Option<Vec<Message>>,
 
     /// Limit the sending speed for message bulks. In some use cases, you might want to reduce

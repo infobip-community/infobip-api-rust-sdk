@@ -127,6 +127,7 @@ let message = Message {
     transliteration: None,
     validity_period: None
 };
+```
 
 ## 🧡 Contributing
 
