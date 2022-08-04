@@ -47,6 +47,14 @@ pub struct Language {
     pub language_code: Option<String>,
 }
 
+impl Language {
+    pub fn new(language_code: String) -> Language {
+        Language {
+            language_code: Some(language_code),
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct PreviewLanguageConfiguration {
     #[serde(rename = "language", skip_serializing_if = "Option::is_none")]
@@ -242,13 +250,21 @@ pub struct Tracking {
     pub tracking_type: Option<String>,
 }
 
+impl Tracking {
+    pub fn new() -> Tracking {
+        Tracking {
+            base_url: None,
+            process_key: None,
+            track: None,
+            tracking_type: None,
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum TimeUnit {
-    #[serde(rename = "MINUTE")]
     MINUTE,
-    #[serde(rename = "HOUR")]
     HOUR,
-    #[serde(rename = "DAY")]
     DAY,
 }
 
@@ -265,6 +281,12 @@ pub struct DeliveryTime {
     pub minute: i32,
 }
 
+impl DeliveryTime {
+    pub fn new(hour: i32, minute: i32) -> DeliveryTime {
+        DeliveryTime { hour, minute }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SpeedLimit {
     /// The number of messages to send per time unit. By default, Infobip sends your messages as
@@ -278,39 +300,54 @@ pub struct SpeedLimit {
     pub time_unit: Option<TimeUnit>,
 }
 
+impl SpeedLimit {
+    pub fn new(amount: i32) -> SpeedLimit {
+        SpeedLimit {
+            amount,
+            time_unit: None,
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum DeliveryDay {
-    #[serde(rename = "MONDAY")]
     MONDAY,
-    #[serde(rename = "TUESDAY")]
     TUESDAY,
-    #[serde(rename = "WEDNESDAY")]
     WEDNESDAY,
-    #[serde(rename = "THURSDAY")]
     THURSDAY,
-    #[serde(rename = "FRIDAY")]
     FRIDAY,
-    #[serde(rename = "SATURDAY")]
     SATURDAY,
-    #[serde(rename = "SUNDAY")]
     SUNDAY,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
 pub struct DeliveryTimeWindow {
     /// Days which are included in the delivery time window. Values are: `MONDAY`, `TUESDAY`,
     /// `WEDNESDAY`, `THURSDAY`, `FRIDAY`, `SATURDAY`, `SUNDAY`. At least one day must be stated.
+    #[validate(length(min = 1, max = 7))]
     pub days: Vec<DeliveryDay>,
 
     /// Exact time of day in which the sending can start. Consists of hour and minute properties,
     /// both mandatory. Time is expressed in the UTC time zone.
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate]
     pub from: Option<DeliveryTime>,
 
     /// Exact time of day in which the sending will end. Consists of an hour and minute properties,
     /// both mandatory. Time is expressed in the UTC time zone.
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate]
     pub to: Option<DeliveryTime>,
+}
+
+impl DeliveryTimeWindow {
+    pub fn new(days: Vec<DeliveryDay>) -> DeliveryTimeWindow {
+        DeliveryTimeWindow {
+            days,
+            from: None,
+            to: None,
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
@@ -415,6 +452,7 @@ pub struct Message {
     /// and `to` properties should be either both included, to allow finer time window granulation
     /// or both omitted, to include whole days in the delivery time window.
     #[serde(rename = "deliveryTimeWindow", skip_serializing_if = "Option::is_none")]
+    #[validate]
     pub delivery_time_window: Option<DeliveryTimeWindow>,
 
     #[serde(rename = "destinations", skip_serializing_if = "Option::is_none")]
