@@ -87,19 +87,19 @@
 //! or this:
 //! ```rust
 //! # use infobip_sdk::model::sms::{Destination, Message};
-//! let message: Message = serde_json::from_str(r#"
-//! {
-//!   "messages": [
-//!     {
-//!       "destinations": [
+//! let message: Message = serde_json::from_str(
+//!     r#"
 //!         {
-//!           "to": "41793026727"
+//!           "destinations": [
+//!             {
+//!               "to": "123456789012"
+//!             }
+//!           ],
+//!           "text": "Your message text"
 //!         }
-//!       ],
-//!       "text": "Your message text"
-//!     }
-//!   ]
-//! }"#).unwrap();
+//!     "#,
+//! )
+//! .unwrap();
 //! ```
 //! or this:
 //! ```rust
@@ -124,6 +124,7 @@
 //!     transliteration: None,
 //!     validity_period: None
 //! };
+//! ```
 
 #[macro_use]
 extern crate lazy_static;

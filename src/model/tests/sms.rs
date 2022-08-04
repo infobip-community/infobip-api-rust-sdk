@@ -110,3 +110,23 @@ fn test_send_request_body_bad_turkey_recipient_type() {
 
     assert!(request_body.validate().is_err());
 }
+
+#[test]
+fn test_message_from_str() {
+    let message: Message = serde_json::from_str(
+        r#"
+        {
+          "destinations": [
+            {
+              "to": "41793026727"
+            }
+          ],
+          "from": "InfoSMS",
+          "text": "This is a sample message"
+        }
+    "#,
+    )
+    .unwrap();
+
+    assert_eq!(message.text.unwrap(), "This is a sample message");
+}
