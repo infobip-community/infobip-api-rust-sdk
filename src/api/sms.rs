@@ -7,8 +7,8 @@ use crate::api::{
     send_valid_json_request, ApiError, SdkError, SdkResponse,
 };
 use crate::model::sms::{
-    GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody, SendRequestBody,
-    SendResponseBody,
+    GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody, SendBinaryRequestBody,
+    SendBinaryResponseBody, SendRequestBody, SendResponseBody,
 };
 use crate::{
     configuration::Configuration,
@@ -18,6 +18,7 @@ use crate::{
 pub const PATH_DELIVERY_REPORTS: &str = "/sms/1/reports";
 pub const PATH_PREVIEW: &str = "/sms/1/preview";
 pub const PATH_SEND: &str = "/sms/2/text/advanced";
+pub const PATH_SEND_BINARY: &str = "/sms/2/binary/advanced";
 
 /// Main asynchronous client for the Infobip SMS channel.
 #[derive(Clone, Debug)]
@@ -127,6 +128,34 @@ impl SmsClient {
             HashMap::new(),
             reqwest::Method::POST,
             PATH_SEND,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Send single or multiple binary messages to one or more destination addresses.
+    pub async fn send_binary(
+        &self,
+        request_body: SendBinaryRequestBody,
+    ) -> Result<SdkResponse<SendBinaryResponseBody>, SdkError> {
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            HashMap::new(),
+            reqwest::Method::POST,
+            PATH_SEND_BINARY,
         )
         .await?;
 

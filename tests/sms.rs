@@ -170,3 +170,23 @@ async fn send_sms() {
     assert_eq!(response.status, StatusCode::OK);
     assert_eq!(response.body.messages.unwrap().len(), 1usize);
 }
+
+#[ignore]
+#[tokio::test]
+async fn send_binary_sms() {
+    let mut message = BinaryMessage::new(vec![Destination::new(
+        env::var("IB_TEST_DESTINATION_NUMBER").unwrap(),
+    )]);
+    message.binary = Some(BinaryData::new("0f c2 4a bf 34 13 ba".to_string()));
+
+    let mut request_body = SendBinaryRequestBody::new(vec![message]);
+    request_body.bulk_id = Some("test-bulk-id-5319".to_string());
+
+    let response = get_test_sms_client()
+        .send_binary(request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+    assert_eq!(response.body.messages.unwrap().len(), 1usize);
+}

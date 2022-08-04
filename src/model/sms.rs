@@ -540,6 +540,125 @@ impl Message {
     }
 }
 
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct BinaryData {
+    #[serde(rename = "dataCoding", skip_serializing_if = "Option::is_none")]
+    /// Binary content data coding. The default value is (0) for GSM7. Example: (8) for Unicode
+    /// data.
+    pub data_coding: Option<i32>,
+
+    #[serde(rename = "esmClass", skip_serializing_if = "Option::is_none")]
+    /// Indicate special message attributes associated with the SMS. Default value is (0).
+    pub esm_class: Option<i32>,
+
+    /// Hexadecimal string. This is the representation of your binary data. Two hex digits
+    /// represent one byte. They should be separated by the space character (Example: `0f c2 4a bf
+    /// 34 13 ba`).
+    pub hex: String,
+}
+
+impl BinaryData {
+    pub fn new(hex: String) -> BinaryData {
+        BinaryData {
+            data_coding: None,
+            esm_class: None,
+            hex,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+pub struct BinaryMessage {
+    pub binary: Option<BinaryData>,
+
+    /// Additional client's data that will be sent on the notifyUrl. The maximum value is 200
+    /// characters.
+    #[serde(rename = "callbackData", skip_serializing_if = "Option::is_none")]
+    #[validate(length(min = 0, max = 4000))]
+    pub callback_data: Option<String>,
+
+    /// Scheduling object that allows setting up detailed time windows in which the message can be
+    /// sent. Consists of `from`, `to` and `days` properties. `Days` property is mandatory. `From`
+    /// and `to` properties should be either both included, to allow finer time window granulation
+    /// or both omitted, to include whole days in the delivery time window.
+    #[serde(rename = "deliveryTimeWindow", skip_serializing_if = "Option::is_none")]
+    #[validate]
+    pub delivery_time_window: Option<DeliveryTimeWindow>,
+
+    #[serde(rename = "destinations", skip_serializing_if = "Option::is_none")]
+    #[validate(length(min = 1))]
+    #[validate]
+    pub destinations: Option<Vec<Destination>>,
+
+    /// Can be `true` or `false`. If the value is set to `true`, a flash SMS will be sent.
+    /// Otherwise, a normal SMS will be sent. The default value is `false`.
+    #[serde(rename = "flash", skip_serializing_if = "Option::is_none")]
+    pub flash: Option<bool>,
+
+    /// Represents a sender ID which can be alphanumeric or numeric. Alphanumeric sender ID length
+    /// should be between 3 and 11 characters (Example: `CompanyName`). Numeric sender ID length
+    /// should be between 3 and 14 characters.
+    #[serde(rename = "from", skip_serializing_if = "Option::is_none")]
+    #[validate(length(min = 3, max = 14))]
+    pub from: Option<String>,
+
+    /// The real-time Intermediate delivery report that will be sent on your callback server.
+    /// Can be `true` or `false`.
+    #[serde(rename = "intermediateReport", skip_serializing_if = "Option::is_none")]
+    pub intermediate_report: Option<bool>,
+
+    #[serde(rename = "language", skip_serializing_if = "Option::is_none")]
+    pub language: Option<Language>,
+
+    /// Preferred Delivery report content type. Can be `application/json` or `application/xml`.
+    #[serde(rename = "notifyContentType", skip_serializing_if = "Option::is_none")]
+    #[validate(regex = "CONTENT_TYPES")]
+    pub notify_content_type: Option<String>,
+
+    /// The URL on your call back server on which the Delivery report will be sent.
+    #[serde(rename = "notifyUrl", skip_serializing_if = "Option::is_none")]
+    #[validate(url)]
+    pub notify_url: Option<String>,
+
+    /// Region specific parameters, often specified by local laws. Use this if country or region
+    /// that you are sending SMS to requires some extra parameters.
+    #[serde(rename = "regional", skip_serializing_if = "Option::is_none")]
+    #[validate]
+    pub regional: Option<RegionalOptions>,
+
+    /// Date and time when the message is to be sent. Used for scheduled SMS (SMS not sent
+    /// immediately, but at the scheduled time). Has the following format:
+    /// `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
+    #[serde(rename = "sendAt", skip_serializing_if = "Option::is_none")]
+    pub send_at: Option<String>,
+
+    /// The message validity period in minutes. When the period expires, it will not be allowed
+    /// for the message to be sent. Validity period longer than 48h is not supported (in this case,
+    /// it will be automatically set to 48h).
+    #[serde(rename = "validityPeriod", skip_serializing_if = "Option::is_none")]
+    pub validity_period: Option<i64>,
+}
+
+impl BinaryMessage {
+    pub fn new(destinations: Vec<Destination>) -> BinaryMessage {
+        BinaryMessage {
+            binary: None,
+            callback_data: None,
+            delivery_time_window: None,
+            destinations: Some(destinations),
+            flash: None,
+            from: None,
+            intermediate_report: None,
+            language: None,
+            notify_content_type: None,
+            notify_url: None,
+            regional: None,
+            send_at: None,
+            validity_period: None,
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
 pub struct SendRequestBody {
     /// The ID which uniquely identifies the request. Bulk ID will be received only when you send a
@@ -560,6 +679,7 @@ pub struct SendRequestBody {
     /// resulting in better customer satisfaction.
     #[serde(rename = "sendingSpeedLimit", skip_serializing_if = "Option::is_none")]
     pub sending_speed_limit: Option<SpeedLimit>,
+
     #[serde(rename = "tracking", skip_serializing_if = "Option::is_none")]
     pub tracking: Option<Tracking>,
 }
@@ -575,15 +695,49 @@ impl SendRequestBody {
     }
 }
 
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+pub struct SendBinaryRequestBody {
+    /// The ID which uniquely identifies the request. Bulk ID will be received only when you send a
+    /// message to more than one destination address.
+    #[serde(rename = "bulkId", skip_serializing_if = "Option::is_none")]
+    pub bulk_id: Option<String>,
+
+    #[serde(rename = "messages", skip_serializing_if = "Option::is_none")]
+    #[validate(length(min = 1))]
+    #[validate]
+    pub messages: Option<Vec<BinaryMessage>>,
+
+    /// Limit the sending speed for message bulks. In some use cases, you might want to reduce
+    /// message sending speed if your message call to action involves visiting a website, calling
+    /// your contact center or similar recipient activity, in which you can handle a limited amount
+    /// of load. This setting helps you to spread the delivery of the messages over a longer
+    /// period, allowing your systems or agents to handle incoming traffic in real-time,
+    /// resulting in better customer satisfaction.
+    #[serde(rename = "sendingSpeedLimit", skip_serializing_if = "Option::is_none")]
+    pub sending_speed_limit: Option<SpeedLimit>,
+}
+
+impl SendBinaryRequestBody {
+    pub fn new(messages: Vec<BinaryMessage>) -> SendBinaryRequestBody {
+        SendBinaryRequestBody {
+            messages: Some(messages),
+            sending_speed_limit: None,
+            bulk_id: None,
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct SentMessageDetails {
     /// The ID that uniquely identifies the message sent.
     #[serde(rename = "messageId", skip_serializing_if = "Option::is_none")]
     pub message_id: Option<String>,
+
     /// Indicates whether the message is successfully sent, not sent, delivered, not delivered,
     /// waiting for delivery or any other possible status.
     #[serde(rename = "status", skip_serializing_if = "Option::is_none")]
     pub status: Option<Status>,
+
     /// The message destination address.
     #[serde(rename = "to", skip_serializing_if = "Option::is_none")]
     pub to: Option<String>,
@@ -595,7 +749,10 @@ pub struct SendResponseBody {
     /// message to more than one destination address.
     #[serde(rename = "bulkId", skip_serializing_if = "Option::is_none")]
     pub bulk_id: Option<String>,
+
     /// Array of sent message objects, one object per every message.
     #[serde(rename = "messages", skip_serializing_if = "Option::is_none")]
     pub messages: Option<Vec<SentMessageDetails>>,
 }
+
+pub type SendBinaryResponseBody = SendResponseBody;
