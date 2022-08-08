@@ -6,15 +6,14 @@ use crate::api::{
     build_api_error, send_blocking_valid_json_request, send_no_body_request,
     send_valid_json_request, ApiError, SdkError, SdkResponse,
 };
-use crate::model::sms::{
-    GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody, SendBinaryRequestBody,
-    SendBinaryResponseBody, SendRequestBody, SendResponseBody,
-};
+use crate::model::sms::{GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody, GetLogsQueryParameters, GetLogsResponseBody, GetScheduledMessagesQueryParameters, GetScheduledMessagesResponseBody, SendBinaryRequestBody, SendBinaryResponseBody, SendRequestBody, SendResponseBody};
 use crate::{
     configuration::Configuration,
     model::sms::{PreviewRequestBody, PreviewResponseBody},
 };
 
+pub const PATH_GET_LOGS: &str = "/sms/1/logs";
+pub const PATH_GET_SCHEDULED: &str = "/sms/1/bulks";
 pub const PATH_DELIVERY_REPORTS: &str = "/sms/1/reports";
 pub const PATH_PREVIEW: &str = "/sms/1/preview";
 pub const PATH_SEND: &str = "/sms/2/text/advanced";
@@ -158,6 +157,77 @@ impl SmsClient {
             PATH_SEND_BINARY,
         )
         .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// See the status and the scheduled time of your SMS messages.
+    pub async fn get_scheduled(
+        &self,
+        query_parameters: GetScheduledMessagesQueryParameters,
+    ) -> Result<SdkResponse<GetScheduledMessagesResponseBody>, SdkError> {
+        query_parameters.validate()?;
+
+        let parameters_map =
+            HashMap::<String, String>::from([("bulkId".to_string(), query_parameters.bulk_id)]);
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            parameters_map,
+            reqwest::Method::GET,
+            PATH_GET_SCHEDULED,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    pub async fn get_logs(
+        &self,
+        query_parameters: GetLogsQueryParameters,
+    ) -> Result<SdkResponse<GetLogsResponseBody>, SdkError> {
+        query_parameters.validate()?;
+
+        let mut parameters_map = HashMap::<String, String>::new();
+        if let Some(bulk_id) = query_parameters.bulk_id {
+            parameters_map.insert("bulkId".to_string(), bulk_id);
+        }
+        if let Some(message_id) = query_parameters.message_id {
+            parameters_map.insert("messageId".to_string(), message_id);
+        }
+        if let Some(limit) = query_parameters.limit {
+            parameters_map.insert("limit".to_string(), limit.to_string());
+        }
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            parameters_map,
+            reqwest::Method::GET,
+            PATH_GET_LOGS,
+        )
+            .await?;
 
         let status = response.status();
         let text = response.text().await?;

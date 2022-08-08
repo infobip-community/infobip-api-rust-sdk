@@ -258,3 +258,33 @@ fn test_send_request_body_delivery_time_window_bad_from_minute() {
 
     assert!(request_body.validate().is_err());
 }
+
+#[test]
+fn test_send_request_body_long_callback_data() {
+    let mut message = Message::new(vec![Destination::new("123456789012".to_string())]);
+    message.callback_data = Some("longstring ".repeat(1000));
+
+    let request_body = SendRequestBody::new(vec![message]);
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn test_send_binary_request_body_long_to() {
+    let message = BinaryMessage::new(vec![Destination::new("123456789012".repeat(10))]);
+
+    let request_body = SendBinaryRequestBody::new(vec![message]);
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn test_send_binary_request_body_empty_hex() {
+    let binary_data = BinaryData::new("".to_string());
+    let mut message = BinaryMessage::new(vec![Destination::new("123456789012".to_string())]);
+    message.binary = Some(binary_data);
+
+    let request_body = SendBinaryRequestBody::new(vec![message]);
+
+    assert!(request_body.validate().is_err());
+}
