@@ -199,7 +199,7 @@ async fn test_get_delivery_reports_valid() {
 
     let server = mock_json_endpoint(
         httpmock::Method::GET,
-        PATH_DELIVERY_REPORTS,
+        PATH_GET_DELIVERY_REPORTS,
         expected_response,
         expected_status,
     )

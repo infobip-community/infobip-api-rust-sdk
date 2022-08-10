@@ -4,7 +4,8 @@ use std::fmt;
 
 use reqwest;
 use reqwest::{RequestBuilder, Response, StatusCode};
-use serde_derive::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde_derive::Serialize;
 use thiserror::Error;
 use validator::Validate;
 

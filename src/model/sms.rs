@@ -115,7 +115,7 @@ pub struct GetDeliveryReportsQueryParameters {
     /// returned.
     #[validate(range(max = 1000))]
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub limit: Option<u32>,
+    pub limit: Option<i32>,
 }
 
 impl GetDeliveryReportsQueryParameters {
@@ -800,14 +800,14 @@ pub struct SendResponseBody {
 pub type SendBinaryResponseBody = SendResponseBody;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
-pub struct GetScheduledMessagesQueryParameters {
+pub struct GetScheduledQueryParameters {
     #[validate(length(min = 1))]
     pub bulk_id: String,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GetScheduledMessagesResponseBody {
+pub struct GetScheduledResponseBody {
     pub bulk_id: String,
 
     pub send_at: String,
@@ -841,8 +841,8 @@ pub struct GetLogsQueryParameters {
     pub sent_since: Option<String>,
     pub sent_until: Option<String>,
     pub limit: Option<i32>,
-    pub mcc:    Option<String>,
-    pub mnc:   Option<String>,
+    pub mcc: Option<String>,
+    pub mnc: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -903,5 +903,189 @@ pub struct Log {
 pub struct GetLogsResponseBody {
     /// Collection of logs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub results: Option<Log>
+    pub results: Option<Log>,
 }
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+pub struct GetInboundReportsQueryParameters {
+    pub limit: Option<i32>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GetInboundReportsResponseBody {
+    /// The number of messages returned in the `results` array.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_count: Option<i32>,
+
+    /// The number of messages that have not been pulled in.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pending_message_count: Option<i32>,
+
+    /// An array of result objects.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub results: Option<Vec<InboundSmsReport>>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct InboundSmsReport {
+    /// Custom callback data sent over the notifyUrl.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub callback_data: Option<String>,
+
+    /// Content of the message without a keyword (if a keyword was sent).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub clean_text: Option<String>,
+
+    /// Sender ID that can be alphanumeric or numeric.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub from: Option<String>,
+
+    /// Keyword extracted from the message content.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub keyword: Option<String>,
+
+    /// Unique message ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_id: Option<String>,
+
+    /// A price object showing currency and a price per each message.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<Price>,
+
+    /// Indicates when the Infobip platform received the message. Has the following format:
+    /// `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub received_at: Option<String>,
+
+    /// The number of characters within a message
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sms_count: Option<i32>,
+
+    /// Full content of the message.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<String>,
+
+    /// The destination address of the message.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub to: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+pub struct SendOverQueryParametersQueryParameters {
+    /// Username for authentication.
+    pub username: String,
+
+    /// Password for authentication.
+    pub password: String,
+
+    /// Unique ID assigned to the request if messaging multiple recipients or sending multiple
+    /// messages via a single API request.
+    pub bulk_id: Option<String>,
+
+    /// The sender ID which can be alphanumeric or numeric (e.g., `CompanyName`).
+    pub from: Option<String>,
+
+    /// List of message recipients.
+    pub to: Vec<String>,
+
+    /// Content of the message being sent.
+    pub text: Option<String>,
+
+    /// Sends a flash SMS if set to true.
+    pub flash: Option<bool>,
+
+    /// Conversion of a message text from one script to another.
+    pub transliteration: Option<String>,
+
+    /// Code for language character set of a message content.
+    pub language_code: Option<String>,
+
+    /// Use a real-time intermediate delivery report that will be sent on your callback server.
+    pub intermediate_report: Option<bool>,
+
+    /// The URL on your call back server on to which a delivery report will be sent.
+    #[validate(url)]
+    pub notify_url: Option<String>,
+
+    /// Preferred delivery report content type, `application/json` or `application/xml`.
+    #[validate(regex = "CONTENT_TYPES")]
+    pub notify_content_type: Option<String>,
+
+    /// Additional client data to be sent over the notifyUrl.
+    pub callback_data: Option<String>,
+
+    /// The message validity period in minutes. When the period expires, it will not be allowed for
+    /// the message to be sent. Validity period longer than 48h is not supported. Any bigger value
+    /// will automatically default back to 2880.
+    pub validity_period: Option<i32>,
+
+    /// Date and time when the message is to be sent. Used for scheduled SMS. Has the following
+    /// format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`. Must be sooner than 180 days from now.
+    pub send_at: Option<String>,
+
+    /// Sets the conversion element to be tracked.
+    pub track: Option<String>,
+
+    /// The process key which uniquely identifies conversion tracking.
+    pub process_key: Option<String>,
+
+    /// Sets a custom conversion type naming convention, e.g. ONE_TIME_PIN, SOCIAL_INVITES, etc.
+    pub tracking_type: Option<String>,
+
+    /// The ID of your registered DLT (Distributed Ledger Technology) content template.
+    pub india_dlt_content_template_id: Option<String>,
+
+    /// Your DLT (Distributed Ledger Technology) entity id.
+    pub india_dlt_principal_entity_id: Option<String>,
+}
+
+pub type SendOverQueryParametersResponseBody = SendResponseBody;
+
+pub type RescheduleQueryParameters = GetScheduledQueryParameters;
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct RescheduleRequestBody {
+    /// Date and time when the message is to be sent. Used for scheduled SMS (see Scheduled SMS
+    /// endpoints for more details). Has the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`, and
+    /// can only be scheduled for no later than 180 days in advance.
+    #[validate(length(min = 1))]
+    pub send_at: String,
+}
+
+pub type RescheduleResponseBody = GetScheduledResponseBody;
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum ScheduledStatus {
+    PENDING,
+    PAUSED,
+    PROCESSING,
+    CANCELED,
+    FINISHED,
+    FAILED,
+}
+
+pub type GetScheduledStatusQueryParameters = GetScheduledQueryParameters;
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GetScheduledStatusResponseBody {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bulk_id: Option<String>,
+
+    // TODO: check if we can strip Options everywhere.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<ScheduledStatus>,
+}
+
+pub type UpdateScheduledStatusQueryParameters = RescheduleQueryParameters;
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateScheduledStatusRequestBody {
+    pub status: ScheduledStatus,
+}
+
+pub type UpdateScheduledStatusResponseBody = GetScheduledStatusResponseBody;

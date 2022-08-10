@@ -25,6 +25,10 @@ fn get_test_blocking_sms_client() -> BlockingSmsClient {
     )
 }
 
+fn get_test_destination_number() -> String {
+    env::var("IB_TEST_DESTINATION_NUMBER").expect("failed to load test destination number")
+}
+
 #[ignore]
 #[tokio::test]
 async fn preview_sms() {
@@ -158,9 +162,7 @@ async fn get_sms_delivery_reports() {
 #[ignore]
 #[tokio::test]
 async fn send_sms() {
-    let mut message = Message::new(vec![Destination::new(
-        env::var("IB_TEST_DESTINATION_NUMBER").unwrap(),
-    )]);
+    let mut message = Message::new(vec![Destination::new(get_test_destination_number())]);
     message.text = Some(DUMMY_TEXT.to_string());
 
     let request_body = SendRequestBody::new(vec![message]);
@@ -174,9 +176,7 @@ async fn send_sms() {
 #[ignore]
 #[tokio::test]
 async fn send_binary_sms() {
-    let mut message = BinaryMessage::new(vec![Destination::new(
-        env::var("IB_TEST_DESTINATION_NUMBER").unwrap(),
-    )]);
+    let mut message = BinaryMessage::new(vec![Destination::new(get_test_destination_number())]);
     message.binary = Some(BinaryData::new("0f c2 4a bf 34 13 ba".to_string()));
 
     let mut request_body = SendBinaryRequestBody::new(vec![message]);
