@@ -805,6 +805,12 @@ pub struct GetScheduledQueryParameters {
     pub bulk_id: String,
 }
 
+impl GetScheduledQueryParameters {
+    pub fn new(bulk_id: String) -> GetScheduledQueryParameters {
+        GetScheduledQueryParameters { bulk_id }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetScheduledResponseBody {
@@ -838,11 +844,33 @@ pub struct GetLogsQueryParameters {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub general_status: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sent_since: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub sent_until: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<i32>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub mcc: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub mnc: Option<String>,
+}
+
+impl GetLogsQueryParameters {
+    pub fn new() -> GetLogsQueryParameters {
+        GetLogsQueryParameters {
+            from: None,
+            to: None,
+            bulk_id: None,
+            message_id: None,
+            general_status: None,
+            sent_since: None,
+            sent_until: None,
+            limit: None,
+            mcc: None,
+            mnc: None,
+        }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

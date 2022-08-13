@@ -51,6 +51,28 @@ impl SmsClient {
 
     /// Check how different message configurations will affect your message text, number of
     /// characters and message parts.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::model::sms::PreviewRequestBody;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let mut request_body = PreviewRequestBody::new("Some text to preview".to_string());
+    /// request_body.transliteration = Some("GREEK".to_string());
+    ///
+    /// let response = sms_client.preview(request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn preview(
         &self,
         request_body: PreviewRequestBody,
@@ -85,6 +107,25 @@ impl SmsClient {
     /// to the recipient. Each request will return a batch of delivery reports - only once.
     /// This API request will return only new reports that arrived since the last API
     /// request in the last 48 hours.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::GetDeliveryReportsQueryParameters;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let query_parameters = GetDeliveryReportsQueryParameters::new();
+    ///
+    /// let response = sms_client.get_delivery_reports(query_parameters).await?;
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_delivery_reports(
         &self,
         query_parameters: GetDeliveryReportsQueryParameters,
@@ -130,6 +171,30 @@ impl SmsClient {
     /// sending of personalized messages to the thousands of recipients with a single API request.
     /// Language, transliteration, scheduling and every advanced feature you can think of is
     /// supported.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::{Destination, Message, SendRequestBody};
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let mut message = Message::new(vec![Destination::new("523311800428".to_string())]);
+    /// message.text = Some("Hello Rustacean!".to_string());
+    /// message.from = Some("Infobip".to_string());
+    ///
+    /// let request_body = SendRequestBody::new(vec![message]);
+    ///
+    /// let response = sms_client.send(request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn send(
         &self,
         request_body: SendRequestBody,
@@ -158,6 +223,29 @@ impl SmsClient {
     }
 
     /// Send single or multiple binary messages to one or more destination addresses.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::{Destination, BinaryData, BinaryMessage, SendBinaryRequestBody};
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let mut message = BinaryMessage::new(vec![Destination::new("523311800428".to_string())]);
+    /// message.binary = Some(BinaryData::new("0f c2 4a bf 34 13 ba".to_string()));
+    ///
+    /// let request_body = SendBinaryRequestBody::new(vec![message]);
+    ///
+    /// let response = sms_client.send_binary(request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn send_binary(
         &self,
         request_body: SendBinaryRequestBody,
@@ -186,6 +274,26 @@ impl SmsClient {
     }
 
     /// See the status and the scheduled time of your SMS messages.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::GetScheduledQueryParameters;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let query_parameters = GetScheduledQueryParameters::new("some-bulk-id".to_string());
+    ///
+    /// let response = sms_client.get_scheduled(query_parameters).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// }
+    /// ```
     pub async fn get_scheduled(
         &self,
         query_parameters: GetScheduledQueryParameters,
@@ -220,6 +328,26 @@ impl SmsClient {
     /// Use this method for displaying logs for example in the user interface. Available are the
     /// logs for the last 48 hours and you can only retrieve maximum of 1000 logs per call.
     /// See `get_delivery_reports` if your use case is to verify message delivery.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::GetLogsQueryParameters;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let query_parameters = GetLogsQueryParameters::new();
+    ///
+    /// let response = sms_client.get_logs(query_parameters).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_logs(
         &self,
         query_parameters: GetLogsQueryParameters,
