@@ -58,20 +58,12 @@
 //! ```
 //!
 //! ## Examples
-//! The best way to learn how to use the library is to look at the official docs.rs documentation.
-//! You can also look at integration tests under the [tests](./tests) directory, which work as you
-//! would use them in a real scenario.
+//! The best way to learn how to use the library is to look at the official docs.rs documentation,
+//! which has simple examples on how to use every endpoint. You can also look at integration tests
+//! under the [tests](./tests) directory, which work similarly to how you would use them in a real
+//! scenario.
 //!
 //! ## Notes
-//!
-//! ### Using features
-//! You can speed up compile-times a bit by turning only the needed channels as library features.
-//! For example, to only build SMS, add the dependency like this:
-//! ```toml
-//! infobip-sdk = { version = "0.1", features = ["sms"] }
-//! ```
-//! You can see the complete list of features in the Cargo.toml of the project. Feature names
-//! follow channel names.
 //!
 //! ### Building payload models
 //! Structs that represent the models have public fields, so you can either build them with the
@@ -125,6 +117,21 @@
 //!     validity_period: None
 //! };
 //! ```
+//!
+//! ### Model validation
+//! Some models have mandatory fields. Optional fields are wrapped in `Option` pointers. Models also
+//! have additional checks to make sure that fields have valid values, when possible. Validation
+//! is done automatically when calling an endpoint, or you can call the `.validate()` method of the
+//! model.
+//!
+//! ### Using features
+//! You can speed up compile-times a bit by turning only the needed channels as library features.
+//! For example, to only build SMS, add the dependency like this:
+//! ```toml
+//! infobip-sdk = { version = "0.1", features = ["sms"] }
+//! ```
+//! You can see the complete list of features in the Cargo.toml of the project. Feature names
+//! follow channel names.
 
 #[macro_use]
 extern crate lazy_static;

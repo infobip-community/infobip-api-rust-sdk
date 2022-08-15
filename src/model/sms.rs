@@ -1,3 +1,5 @@
+//! Models for calling SMS endpoints.
+
 use regex::Regex;
 use serde_derive::{Deserialize, Serialize};
 use validator::Validate;

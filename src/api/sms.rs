@@ -54,7 +54,7 @@ impl SmsClient {
     ///
     /// # Example
     ///
-    /// ```rust
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::model::sms::PreviewRequestBody;
     /// # use infobip_sdk::configuration::Configuration;
@@ -109,7 +109,7 @@ impl SmsClient {
     /// request in the last 48 hours.
     ///
     /// # Example
-    /// ```rust
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::GetDeliveryReportsQueryParameters;
@@ -173,7 +173,7 @@ impl SmsClient {
     /// supported.
     ///
     /// # Example
-    /// ```rust
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::{Destination, Message, SendRequestBody};
@@ -225,7 +225,7 @@ impl SmsClient {
     /// Send single or multiple binary messages to one or more destination addresses.
     ///
     /// # Example
-    /// ```rust
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::{Destination, BinaryData, BinaryMessage, SendBinaryRequestBody};
@@ -276,7 +276,7 @@ impl SmsClient {
     /// See the status and the scheduled time of your SMS messages.
     ///
     /// # Example
-    /// ```rust
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::GetScheduledQueryParameters;
@@ -330,7 +330,7 @@ impl SmsClient {
     /// See `get_delivery_reports` if your use case is to verify message delivery.
     ///
     /// # Example
-    /// ```rust
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::GetLogsQueryParameters;
@@ -393,7 +393,7 @@ impl SmsClient {
     /// that arrived since the last API request.
     ///
     /// # Example
-    /// ```rust
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::GetInboundReportsQueryParameters;
@@ -448,7 +448,7 @@ impl SmsClient {
     /// only if Send SMS message is not an option for your use case!
     ///
     /// # Example
-    /// ```rust
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::SendOverQueryParametersQueryParameters;
@@ -573,7 +573,7 @@ impl SmsClient {
     /// Change the date and time for sending scheduled messages.
     ///
     /// # Example
-    /// ```rust
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::{RescheduleQueryParameters, RescheduleRequestBody};
@@ -628,7 +628,7 @@ impl SmsClient {
     /// Get the status of scheduled messages.
     ///
     /// # Example
-    /// ```rust
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::GetScheduledStatusQueryParameters;
@@ -680,7 +680,7 @@ impl SmsClient {
     /// Change status or completely cancel sending of scheduled messages.
     ///
     /// # Example
-    /// ```rust
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::{UpdateScheduledStatusQueryParameters, UpdateScheduledStatusRequestBody, ScheduledStatus};
