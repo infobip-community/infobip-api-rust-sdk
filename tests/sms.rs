@@ -208,12 +208,14 @@ async fn send_binary_sms() {
     assert_eq!(response.body.messages.unwrap().len(), 1usize);
 }
 
-
 #[ignore]
 #[tokio::test]
 async fn get_logs() {
     let query_parameters = GetLogsQueryParameters::new();
-    let response = get_test_sms_client().get_logs(query_parameters).await.unwrap();
+    let response = get_test_sms_client()
+        .get_logs(query_parameters)
+        .await
+        .unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
 }

@@ -1092,7 +1092,11 @@ pub struct SendOverQueryParametersQueryParameters {
 }
 
 impl SendOverQueryParametersQueryParameters {
-    pub fn new(username: String, password: String, to: Vec<String>) -> SendOverQueryParametersQueryParameters {
+    pub fn new(
+        username: String,
+        password: String,
+        to: Vec<String>,
+    ) -> SendOverQueryParametersQueryParameters {
         SendOverQueryParametersQueryParameters {
             username,
             password,
