@@ -218,4 +218,91 @@ async fn get_logs() {
         .unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
+    println!(
+        "{}",
+        serde_json::to_string_pretty(&response.body.results.unwrap()).unwrap()
+    );
+}
+
+#[ignore]
+#[tokio::test]
+async fn get_inbound_reports() {
+    let query_parameters = GetInboundReportsQueryParameters::new();
+    let response = get_test_sms_client()
+        .get_inbound_reports(query_parameters)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_over_query_parameters() {
+    let destinations = vec!["31612345678".to_string(), "31698765432".to_string()];
+    let query_parameters = SendOverQueryParametersQueryParameters::new(
+        "username".to_string(),
+        "password".to_string(),
+        destinations,
+    );
+
+    let response = get_test_sms_client()
+        .send_over_query_parameters(query_parameters)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn get_scheduled() {
+    let query_parameters = GetScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+
+    let response = get_test_sms_client()
+        .get_scheduled_status(query_parameters)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn get_scheduled_status() {
+    let query_parameters = GetScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+
+    let response = get_test_sms_client()
+        .get_scheduled_status(query_parameters)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn reschedule() {
+    let query_parameters = RescheduleQueryParameters::new("some-bulk-id".to_string());
+    let request_body = RescheduleRequestBody::new("2022-10-01T00:00:00".to_string());
+
+    let response = get_test_sms_client()
+        .reschedule(query_parameters, request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn update_scheduled_status() {
+    let query_parameters = UpdateScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+    let request_body = UpdateScheduledStatusRequestBody::new(ScheduledStatus::CANCELED);
+
+    let response = get_test_sms_client()
+        .update_scheduled_status(query_parameters, request_body)
+        .await
+        .unwrap();
+    assert_eq!(response.status, StatusCode::OK);
 }

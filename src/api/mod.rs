@@ -101,14 +101,14 @@ fn get_api_key_authorization_value(api_key: &ApiKey) -> String {
 
 // Async version of add_auth, uses async request builder.
 fn add_auth(mut builder: RequestBuilder, configuration: &Configuration) -> RequestBuilder {
-    if let Some(api_key) = &configuration.api_key {
+    if let Some(api_key) = &configuration.api_key() {
         builder = builder.header("Authorization", get_api_key_authorization_value(api_key));
-    } else if let Some(basic_auth) = &configuration.basic_auth {
+    } else if let Some(basic_auth) = &configuration.basic_auth() {
         builder = builder.basic_auth(
             basic_auth.username.to_owned(),
             basic_auth.password.to_owned(),
         );
-    } else if let Some(token) = &configuration.bearer_access_token {
+    } else if let Some(token) = &configuration.bearer_access_token() {
         builder = builder.bearer_auth(token);
     };
 
@@ -120,14 +120,14 @@ fn add_auth_blocking(
     mut builder: reqwest::blocking::RequestBuilder,
     configuration: &Configuration,
 ) -> reqwest::blocking::RequestBuilder {
-    if let Some(api_key) = &configuration.api_key {
+    if let Some(api_key) = &configuration.api_key() {
         builder = builder.header("Authorization", get_api_key_authorization_value(api_key));
-    } else if let Some(basic_auth) = &configuration.basic_auth {
+    } else if let Some(basic_auth) = &configuration.basic_auth() {
         builder = builder.basic_auth(
             basic_auth.username.to_owned(),
             basic_auth.password.to_owned(),
         );
-    } else if let Some(token) = &configuration.bearer_access_token {
+    } else if let Some(token) = &configuration.bearer_access_token() {
         builder = builder.bearer_auth(token);
     };
 
@@ -148,7 +148,7 @@ async fn send_no_body_request(
     method: reqwest::Method,
     path: &str,
 ) -> Result<Response, SdkError> {
-    let url = format!("{}{}", configuration.base_url, path);
+    let url = format!("{}{}", configuration.base_url(), path);
     let mut builder = client.request(method, url).query(&query_parameters);
 
     builder = add_auth(builder, configuration);
@@ -166,7 +166,7 @@ async fn send_valid_json_request<T: Validate + serde::Serialize>(
 ) -> Result<Response, SdkError> {
     request_body.validate()?;
 
-    let url = format!("{}{}", configuration.base_url, path);
+    let url = format!("{}{}", configuration.base_url(), path);
     let mut builder = client
         .request(method, url)
         .json(&request_body)
@@ -184,7 +184,7 @@ async fn _send_multipart_request(
     method: reqwest::Method,
     path: &str,
 ) -> Result<Response, SdkError> {
-    let url = format!("{}{}", configuration.base_url, path);
+    let url = format!("{}{}", configuration.base_url(), path);
     let mut builder = client.request(method, url);
 
     builder = add_auth(builder, configuration);
@@ -201,7 +201,7 @@ fn send_blocking_valid_json_request<T: Validate + serde::Serialize>(
 ) -> Result<reqwest::blocking::Response, SdkError> {
     request_body.validate()?;
 
-    let url = format!("{}{}", configuration.base_url, path);
+    let url = format!("{}{}", configuration.base_url(), path);
     let mut builder = client.request(method, url);
 
     builder = add_auth_blocking(builder, configuration);

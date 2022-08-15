@@ -25,7 +25,7 @@
 //!
 //! ## Usage
 //! To use the library, import the client and channel-specific models. Then create a client and
-//! call the associated functions. For example, te send an SMS, you can do this:
+//! call the associated functions. For example, to send an SMS, you can do this:
 //! ```no_run
 //! use infobip_sdk::model::sms::{Destination, Message, SendRequestBody};
 //! use infobip_sdk::api::sms::SmsClient;

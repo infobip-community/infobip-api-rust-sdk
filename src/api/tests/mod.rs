@@ -48,11 +48,11 @@ fn mock_blocking_json_endpoint(
 }
 
 fn get_test_configuration(server_url: &str) -> Configuration {
-    let mut config = Configuration::with_api_key(ApiKey {
-        key: "some-api-key".to_string(),
-        prefix: None,
-    });
-    config.base_url = server_url.to_string();
-
-    config
+    Configuration::with_api_key(
+        server_url.to_string(),
+        ApiKey {
+            key: "some-api-key".to_string(),
+            prefix: None,
+        },
+    )
 }
