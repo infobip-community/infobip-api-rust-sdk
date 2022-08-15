@@ -10,6 +10,7 @@ use infobip_sdk::configuration;
 use infobip_sdk::model::sms::*;
 
 const DUMMY_TEXT: &str = "Dummy text for tests. Some special chars: áéíø";
+const DUMMY_BULK_ID: &str = "dummy-rust-sdk-bulk-id";
 
 fn get_test_sms_client() -> SmsClient {
     SmsClient::with_configuration(
@@ -166,6 +167,22 @@ async fn send_sms() {
     message.text = Some(DUMMY_TEXT.to_string());
 
     let request_body = SendRequestBody::new(vec![message]);
+
+    let response = get_test_sms_client().send(request_body).await.unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+    assert_eq!(response.body.messages.unwrap().len(), 1usize);
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_bulk_sms() {
+    let mut message = Message::new(vec![Destination::new(get_test_destination_number())]);
+    message.text = Some(DUMMY_TEXT.to_string());
+    message.send_at = Some("2022-10-10T00:00:00Z".to_string());
+
+    let mut request_body = SendRequestBody::new(vec![message]);
+    request_body.bulk_id = Some(DUMMY_BULK_ID.to_string());
 
     let response = get_test_sms_client().send(request_body).await.unwrap();
 

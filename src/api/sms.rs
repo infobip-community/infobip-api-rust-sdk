@@ -286,7 +286,7 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = GetScheduledQueryParameters::new("some-bulk-id".to_string());
+    /// let query_parameters = GetScheduledQueryParameters::new("dummy-rust-sdk-bulk-id".to_string());
     ///
     /// let response = sms_client.get_scheduled(query_parameters).await?;
     ///
@@ -391,6 +391,26 @@ impl SmsClient {
     /// in real time, you can use this API call to fetch messages. Each request will return a
     /// batch of received messages - only once. The API request will only return new messages
     /// that arrived since the last API request.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::GetInboundReportsQueryParameters;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let query_parameters = GetInboundReportsQueryParameters::new();
+    ///
+    /// let response = sms_client.get_inbound_reports(query_parameters).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_inbound_reports(
         &self,
         query_parameters: GetInboundReportsQueryParameters,
@@ -426,7 +446,32 @@ impl SmsClient {
 
     /// All message parameters of the message can be defined in the query string. Use this method
     /// only if Send SMS message is not an option for your use case!
-    pub async fn send_over_query_params(
+    ///
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::SendOverQueryParametersQueryParameters;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let destinations = vec!["31612345678".to_string(), "31698765432".to_string()];
+    /// let query_parameters = SendOverQueryParametersQueryParameters::new(
+    ///     "username".to_string(),
+    ///     "password".to_string(),
+    ///     destinations
+    /// );
+    ///
+    /// let response = sms_client.send_over_query_parameters(query_parameters).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn send_over_query_parameters(
         &self,
         query_parameters: SendOverQueryParametersQueryParameters,
     ) -> Result<SdkResponse<SendOverQueryParametersResponseBody>, SdkError> {
@@ -526,6 +571,27 @@ impl SmsClient {
     }
 
     /// Change the date and time for sending scheduled messages.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::{RescheduleQueryParameters, RescheduleRequestBody};
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let query_parameters = RescheduleQueryParameters::new("some-bulk-id".to_string());
+    /// let request_body = RescheduleRequestBody::new("2020-01-01T00:00:00".to_string());
+    ///
+    /// let response = sms_client.reschedule(query_parameters, request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn reschedule(
         &self,
         query_parameters: RescheduleQueryParameters,
@@ -560,6 +626,26 @@ impl SmsClient {
     }
 
     /// Get the status of scheduled messages.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::GetScheduledStatusQueryParameters;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let query_parameters = GetScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+    ///
+    /// let response = sms_client.get_scheduled_status(query_parameters).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_scheduled_status(
         &self,
         query_parameters: GetScheduledStatusQueryParameters,
@@ -592,6 +678,26 @@ impl SmsClient {
     }
 
     /// Change status or completely cancel sending of scheduled messages.
+    ///
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::{UpdateScheduledStatusQueryParameters, UpdateScheduledStatusRequestBody, ScheduledStatus};
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let query_parameters = UpdateScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+    /// let request_body = UpdateScheduledStatusRequestBody::new(ScheduledStatus::CANCELED);
+    ///
+    /// let response = sms_client.update_scheduled_status(query_parameters, request_body).await?;
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn update_scheduled_status(
         &self,
         query_parameters: UpdateScheduledStatusQueryParameters,

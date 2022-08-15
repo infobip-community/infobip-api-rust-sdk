@@ -844,14 +844,30 @@ pub struct GetLogsQueryParameters {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub general_status: Option<String>,
 
+    /// The logs will only include messages sent after this date. Use it together with sentUntil
+    /// to return a time range or if you want to fetch more than 1000 logs allowed per call. Has
+    /// the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sent_since: Option<String>,
+
+    /// The logs will only include messages sent before this date. Use it together with sentBefore
+    /// to return a time range or if you want to fetch more than 1000 logs allowed per call. Has
+    /// the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sent_until: Option<String>,
+
+    /// Maximum number of messages to include in logs. If not set, the latest 50 records are
+    /// returned. Maximum limit value is 1000 and you can only access logs for the last 48h. If
+    /// you want to fetch more than 1000 logs allowed per call, use `sentBefore` and `sentUntil` to
+    /// retrieve them in pages.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub limit: Option<i32>,
+
+    /// Mobile Country Code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mcc: Option<String>,
+
+    /// Mobile Network Code.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mnc: Option<String>,
 }
@@ -931,12 +947,18 @@ pub struct Log {
 pub struct GetLogsResponseBody {
     /// Collection of logs.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub results: Option<Log>,
+    pub results: Option<Vec<Log>>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
 pub struct GetInboundReportsQueryParameters {
     pub limit: Option<i32>,
+}
+
+impl GetInboundReportsQueryParameters {
+    pub fn new() -> GetInboundReportsQueryParameters {
+        GetInboundReportsQueryParameters { limit: None }
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -1069,6 +1091,33 @@ pub struct SendOverQueryParametersQueryParameters {
     pub india_dlt_principal_entity_id: Option<String>,
 }
 
+impl SendOverQueryParametersQueryParameters {
+    pub fn new(username: String, password: String, to: Vec<String>) -> SendOverQueryParametersQueryParameters {
+        SendOverQueryParametersQueryParameters {
+            username,
+            password,
+            bulk_id: None,
+            from: None,
+            to,
+            text: None,
+            flash: None,
+            transliteration: None,
+            language_code: None,
+            intermediate_report: None,
+            notify_url: None,
+            notify_content_type: None,
+            callback_data: None,
+            validity_period: None,
+            send_at: None,
+            track: None,
+            process_key: None,
+            tracking_type: None,
+            india_dlt_content_template_id: None,
+            india_dlt_principal_entity_id: None,
+        }
+    }
+}
+
 pub type SendOverQueryParametersResponseBody = SendResponseBody;
 
 pub type RescheduleQueryParameters = GetScheduledQueryParameters;
@@ -1081,6 +1130,12 @@ pub struct RescheduleRequestBody {
     /// can only be scheduled for no later than 180 days in advance.
     #[validate(length(min = 1))]
     pub send_at: String,
+}
+
+impl RescheduleRequestBody {
+    pub fn new(send_at: String) -> RescheduleRequestBody {
+        RescheduleRequestBody { send_at }
+    }
 }
 
 pub type RescheduleResponseBody = GetScheduledResponseBody;
@@ -1114,6 +1169,12 @@ pub type UpdateScheduledStatusQueryParameters = RescheduleQueryParameters;
 #[serde(rename_all = "camelCase")]
 pub struct UpdateScheduledStatusRequestBody {
     pub status: ScheduledStatus,
+}
+
+impl UpdateScheduledStatusRequestBody {
+    pub fn new(status: ScheduledStatus) -> UpdateScheduledStatusRequestBody {
+        UpdateScheduledStatusRequestBody { status }
+    }
 }
 
 pub type UpdateScheduledStatusResponseBody = GetScheduledStatusResponseBody;
