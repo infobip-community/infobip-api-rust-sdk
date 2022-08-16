@@ -288,3 +288,47 @@ fn test_send_binary_request_body_empty_hex() {
 
     assert!(request_body.validate().is_err());
 }
+
+#[test]
+fn test_reschedule_request_body_valid() {
+    let request_body = RescheduleRequestBody::new("2021-08-25T16:00:00.000+0000".to_string());
+
+    assert!(request_body.validate().is_ok());
+}
+
+#[test]
+fn test_reschedule_request_body_empty_send_at() {
+    let request_body = RescheduleRequestBody::new("".to_string());
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn test_get_scheduled_query_parameters_valid() {
+    let query_parameters = GetScheduledQueryParameters::new("some_bulk_id".to_string());
+
+    assert!(query_parameters.validate().is_ok());
+}
+
+#[test]
+fn test_get_scheduled_query_parameters_empty_bulk_id() {
+    let query_parameters = GetScheduledQueryParameters::new("".to_string());
+
+    assert!(query_parameters.validate().is_err());
+}
+
+#[test]
+fn test_get_inbound_reports_query_parameters_valid() {
+    let mut query_parameters = GetInboundReportsQueryParameters::new();
+    query_parameters.limit = Some(10);
+
+    assert!(query_parameters.validate().is_ok());
+}
+
+#[test]
+fn test_get_inbound_reports_query_parameters_big_limit() {
+    let mut query_parameters = GetInboundReportsQueryParameters::new();
+    query_parameters.limit = Some(10001);
+
+    assert!(query_parameters.validate().is_err());
+}

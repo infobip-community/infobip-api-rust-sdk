@@ -954,6 +954,7 @@ pub struct GetLogsResponseBody {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
 pub struct GetInboundReportsQueryParameters {
+    #[validate(range(max = 1000))]
     pub limit: Option<i32>,
 }
 
