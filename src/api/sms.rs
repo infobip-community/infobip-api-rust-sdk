@@ -510,10 +510,7 @@ impl SmsClient {
             parameters_map.insert("notifyUrl".to_string(), notify_url);
         }
         if let Some(notify_content_type) = query_parameters.notify_content_type {
-            parameters_map.insert(
-                "notifyContentType".to_string(),
-                notify_content_type,
-            );
+            parameters_map.insert("notifyContentType".to_string(), notify_content_type);
         }
         if let Some(callback_data) = query_parameters.callback_data {
             parameters_map.insert("callbackData".to_string(), callback_data);
