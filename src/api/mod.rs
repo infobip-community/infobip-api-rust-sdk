@@ -4,7 +4,8 @@ use std::fmt;
 
 use reqwest;
 use reqwest::{RequestBuilder, Response, StatusCode};
-use serde_derive::{Deserialize, Serialize};
+use serde::Deserialize;
+use serde_derive::Serialize;
 use thiserror::Error;
 use validator::Validate;
 
@@ -84,7 +85,7 @@ impl fmt::Display for ApiErrorDetails {
 /// Holds the status code and the response body of a successful API call.
 #[derive(Clone, Debug, PartialEq)]
 pub struct SdkResponse<T> {
-    pub response_body: T,
+    pub body: T,
     pub status: StatusCode,
 }
 
@@ -100,14 +101,14 @@ fn get_api_key_authorization_value(api_key: &ApiKey) -> String {
 
 // Async version of add_auth, uses async request builder.
 fn add_auth(mut builder: RequestBuilder, configuration: &Configuration) -> RequestBuilder {
-    if let Some(api_key) = &configuration.api_key {
+    if let Some(api_key) = &configuration.api_key() {
         builder = builder.header("Authorization", get_api_key_authorization_value(api_key));
-    } else if let Some(basic_auth) = &configuration.basic_auth {
+    } else if let Some(basic_auth) = &configuration.basic_auth() {
         builder = builder.basic_auth(
             basic_auth.username.to_owned(),
             basic_auth.password.to_owned(),
         );
-    } else if let Some(token) = &configuration.bearer_access_token {
+    } else if let Some(token) = &configuration.bearer_access_token() {
         builder = builder.bearer_auth(token);
     };
 
@@ -119,14 +120,14 @@ fn add_auth_blocking(
     mut builder: reqwest::blocking::RequestBuilder,
     configuration: &Configuration,
 ) -> reqwest::blocking::RequestBuilder {
-    if let Some(api_key) = &configuration.api_key {
+    if let Some(api_key) = &configuration.api_key() {
         builder = builder.header("Authorization", get_api_key_authorization_value(api_key));
-    } else if let Some(basic_auth) = &configuration.basic_auth {
+    } else if let Some(basic_auth) = &configuration.basic_auth() {
         builder = builder.basic_auth(
             basic_auth.username.to_owned(),
             basic_auth.password.to_owned(),
         );
-    } else if let Some(token) = &configuration.bearer_access_token {
+    } else if let Some(token) = &configuration.bearer_access_token() {
         builder = builder.bearer_auth(token);
     };
 
@@ -147,7 +148,7 @@ async fn send_no_body_request(
     method: reqwest::Method,
     path: &str,
 ) -> Result<Response, SdkError> {
-    let url = format!("{}{}", configuration.base_url, path);
+    let url = format!("{}{}", configuration.base_url(), path);
     let mut builder = client.request(method, url).query(&query_parameters);
 
     builder = add_auth(builder, configuration);
@@ -155,7 +156,7 @@ async fn send_no_body_request(
     Ok(builder.send().await?)
 }
 
-async fn send_json_request<T: Validate + serde::Serialize>(
+async fn send_valid_json_request<T: Validate + serde::Serialize>(
     client: &reqwest::Client,
     configuration: &Configuration,
     request_body: T,
@@ -163,7 +164,9 @@ async fn send_json_request<T: Validate + serde::Serialize>(
     method: reqwest::Method,
     path: &str,
 ) -> Result<Response, SdkError> {
-    let url = format!("{}{}", configuration.base_url, path);
+    request_body.validate()?;
+
+    let url = format!("{}{}", configuration.base_url(), path);
     let mut builder = client
         .request(method, url)
         .json(&request_body)
@@ -181,7 +184,7 @@ async fn _send_multipart_request(
     method: reqwest::Method,
     path: &str,
 ) -> Result<Response, SdkError> {
-    let url = format!("{}{}", configuration.base_url, path);
+    let url = format!("{}{}", configuration.base_url(), path);
     let mut builder = client.request(method, url);
 
     builder = add_auth(builder, configuration);
@@ -189,7 +192,7 @@ async fn _send_multipart_request(
     Ok(builder.multipart(form).send().await?)
 }
 
-fn send_blocking_json_request<T: Validate + serde::Serialize>(
+fn send_blocking_valid_json_request<T: Validate + serde::Serialize>(
     client: &reqwest::blocking::Client,
     configuration: &Configuration,
     request_body: T,
@@ -198,7 +201,7 @@ fn send_blocking_json_request<T: Validate + serde::Serialize>(
 ) -> Result<reqwest::blocking::Response, SdkError> {
     request_body.validate()?;
 
-    let url = format!("{}{}", configuration.base_url, path);
+    let url = format!("{}{}", configuration.base_url(), path);
     let mut builder = client.request(method, url);
 
     builder = add_auth_blocking(builder, configuration);

@@ -7,18 +7,17 @@ Client SDK to use the Infobip API with pure Rust.
 
 This library enables you to use multiple Infobip communication channels, like SMS, MMS,
 Whatsapp, Email, etc. It abstracts the needed HTTP calls, and models payloads and error
-handling. The modules structure is divided by communication channel, which can be enabled as
-library features.
+handling. The module structure is divided by communication channel.
 
 ---
 
 ## 📡 Supported Channels
 - [SMS](https://www.infobip.com/docs/api/channels/sms) (in progress)
 
-More Channels to be added in the future.
+More Channels to be added in the near future!
 
 ## 🔐 Authentication
-To use the library, you'll need to setup an Infobip account. Then you can use your API Key and
+To use the library, you'll need to set up an Infobip account. Then you can use your API Key and
 custom URL to call the endpoints. You can use the `Configuration::from_env_api_key()` method to
 load the configuration from the environment. To do that, export the variables `IB_API_KEY` and
 `IB_BASE_URL`.
@@ -31,26 +30,123 @@ infobip-sdk = "0.1"
 ```
 
 ## 🚀 Usage
-To use the library, import the client and channel-specific models. For SMS, you can do it
-like this:
+To use the library, import the client and channel-specific models. Then create a client and
+call the associated functions. For example, to send an SMS, you can do this:
 ```rust
+use infobip_sdk::model::sms::{Destination, Message, SendRequestBody};
+use infobip_sdk::api::sms::SmsClient;
+use infobip_sdk::configuration::Configuration;
+
+#[tokio::main]
+async fn main() {
+    // Build SMS client with configuration from the environment.
+    let sms_client = SmsClient::with_configuration(
+        // Load IB_API_KEY and IB_BASE_URL environment variables.
+        Configuration::from_env_api_key().unwrap()
+    );
+
+    // Create a message.
+    let mut message = Message::new(
+        vec![Destination::new("123456789012".to_string())]
+    );
+    message.text = Some("Your message text".to_string());
+
+    // Create the SendRequestBody instance.
+    let request_body = SendRequestBody::new(vec![message]);
+
+    // Send the SMS.
+    let response = sms_client.send(request_body).await.unwrap();
+
+    // Do what you want with the response.
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    println!("Response body:\n{}", serde_json::to_string(&response.body).unwrap());
+}
 ```
 
-For more examples on how to use the library, you can check the tests/ directory and the
-included CLI examples.
-
 ## 👀 Examples
-The best way to learn how to use the library is to look at the integration tests under the
-[tests](./tests) directory, which work as you would use them in a real scenario.
+The best way to learn how to use the library is to look at the official docs.rs documentation,
+which has simple examples on how to use every endpoint. You can also look at integration tests
+under the [tests](./tests) directory, which work similarly to how you would use them in a real
+scenario.
 
-## Using specific features
+## 🗒 Notes
+
+### Building payload models
+Structs that represent the models have public fields, so you can either build them with the
+provided `new()` functions, with `serde_json::from_str()`, or with the true constructor.
+For example, to build a `Message` instance, you can do this:
+```rust
+let mut message = Message::new(
+   vec![Destination::new("123456789012".to_string())]
+);
+message.text = Some("Your message text".to_string());
+```
+or this:
+```rust
+let message: Message = serde_json::from_str(
+    r#"
+        {
+          "destinations": [
+            {
+              "to": "123456789012"
+            }
+          ],
+          "text": "Your message text"
+        }
+    "#,
+)
+.unwrap();
+```
+or this:
+```rust
+let destination = Destination {
+    message_id: None,
+    to: "41793026727".to_string()
+};
+let message = Message {
+    callback_data: None,
+    delivery_time_window: None,
+    destinations: Some(vec![destination]),
+    flash: None,
+    from: None,
+    intermediate_report: None,
+    language: None,
+    notify_content_type: None,
+    notify_url: None,
+    regional: None,
+    send_at: None,
+    text: None,
+    transliteration: None,
+    validity_period: None
+};
+```
+
+### Model validation
+Some models have mandatory fields. Optional fields are wrapped in `Option` pointers. Models also
+have additional checks to make sure that fields have valid values, when possible. Validation
+is done automatically when calling an endpoint, or you can call the `.validate()` method of the
+model.
+
+### Using features
 You can speed up compile-times a bit by turning only the needed channels as library features.
-For example, to only build SMS, add the depedency like this:
+For example, to only build SMS, add the dependency like this:
 ```toml
 infobip-sdk = { version = "0.1", features = ["sms"] }
 ```
 You can see the complete list of features in the Cargo.toml of the project. Feature names
 follow channel names.
 
+## 🧡 Contributing
+
+If you would like to help this project improve, please check our [contributing guide](CONTRIBUTING.md) and [code of conduct](CODE_OF_CONDUCT.md).
+
 ## ⚖️ License
-This library is distributed under the MIT license, found in the [LICENSE-MIT](LICENSE-MIT) file.
+
+This project is licensed under either of
+
+ * Apache License, Version 2.0
+   ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+ * MIT license
+   ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+at your option.
