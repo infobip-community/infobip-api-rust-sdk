@@ -1165,7 +1165,6 @@ pub struct GetScheduledStatusResponseBody {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bulk_id: Option<String>,
 
-    // TODO: check if we can strip Options everywhere.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<ScheduledStatus>,
 }

@@ -1,3 +1,6 @@
+// These tests need to be run manually, due to server state dependencies. The environment variables
+// IB_API_KEY, IB_BASE_URL, and IB_TEST_DESTINATION_NUMBER must be set.
+
 #![cfg(feature = "sms")]
 #![cfg(test)]
 
@@ -10,7 +13,7 @@ use infobip_sdk::configuration;
 use infobip_sdk::model::sms::*;
 
 const DUMMY_TEXT: &str = "Dummy text for tests. Some special chars: áéíø";
-const DUMMY_BULK_ID: &str = "dummy-rust-sdk-bulk-id";
+const DUMMY_BULK_ID: &str = "dummy-rust-sdk-bulk-id-3";
 
 fn get_test_sms_client() -> SmsClient {
     SmsClient::with_configuration(
@@ -218,10 +221,6 @@ async fn get_logs() {
         .unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
-    println!(
-        "{}",
-        serde_json::to_string_pretty(&response.body.results.unwrap()).unwrap()
-    );
 }
 
 #[ignore]
@@ -257,7 +256,7 @@ async fn send_over_query_parameters() {
 #[ignore]
 #[tokio::test]
 async fn get_scheduled() {
-    let query_parameters = GetScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+    let query_parameters = GetScheduledStatusQueryParameters::new(DUMMY_BULK_ID.to_string());
 
     let response = get_test_sms_client()
         .get_scheduled_status(query_parameters)
@@ -270,7 +269,7 @@ async fn get_scheduled() {
 #[ignore]
 #[tokio::test]
 async fn get_scheduled_status() {
-    let query_parameters = GetScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+    let query_parameters = GetScheduledStatusQueryParameters::new(DUMMY_BULK_ID.to_string());
 
     let response = get_test_sms_client()
         .get_scheduled_status(query_parameters)
@@ -283,8 +282,8 @@ async fn get_scheduled_status() {
 #[ignore]
 #[tokio::test]
 async fn reschedule() {
-    let query_parameters = RescheduleQueryParameters::new("some-bulk-id".to_string());
-    let request_body = RescheduleRequestBody::new("2022-10-01T00:00:00".to_string());
+    let query_parameters = RescheduleQueryParameters::new(DUMMY_BULK_ID.to_string());
+    let request_body = RescheduleRequestBody::new("2022-10-02T00:00:00".to_string());
 
     let response = get_test_sms_client()
         .reschedule(query_parameters, request_body)
@@ -297,7 +296,7 @@ async fn reschedule() {
 #[ignore]
 #[tokio::test]
 async fn update_scheduled_status() {
-    let query_parameters = UpdateScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+    let query_parameters = UpdateScheduledStatusQueryParameters::new(DUMMY_BULK_ID.to_string());
     let request_body = UpdateScheduledStatusRequestBody::new(ScheduledStatus::CANCELED);
 
     let response = get_test_sms_client()
