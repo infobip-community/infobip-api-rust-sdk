@@ -130,6 +130,12 @@ impl GetDeliveryReportsQueryParameters {
     }
 }
 
+impl Default for GetDeliveryReportsQueryParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Status {
@@ -287,6 +293,12 @@ impl Tracking {
             track: None,
             tracking_type: None,
         }
+    }
+}
+
+impl Default for Tracking {
+    fn default() -> Self {
+        Tracking::new()
     }
 }
 
@@ -467,6 +479,12 @@ impl RegionalOptions {
             india_dlt: None,
             turkey_iys: None,
         }
+    }
+}
+
+impl Default for RegionalOptions {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -891,6 +909,12 @@ impl GetLogsQueryParameters {
     }
 }
 
+impl Default for GetLogsQueryParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Log {
@@ -961,6 +985,12 @@ pub struct GetInboundReportsQueryParameters {
 impl GetInboundReportsQueryParameters {
     pub fn new() -> GetInboundReportsQueryParameters {
         GetInboundReportsQueryParameters { limit: None }
+    }
+}
+
+impl Default for GetInboundReportsQueryParameters {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

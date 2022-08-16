@@ -495,10 +495,10 @@ impl SmsClient {
             parameters_map.insert("flash".to_string(), flash.to_string());
         }
         if let Some(transliteration) = query_parameters.transliteration {
-            parameters_map.insert("transliteration".to_string(), transliteration.to_string());
+            parameters_map.insert("transliteration".to_string(), transliteration);
         }
         if let Some(language_code) = query_parameters.language_code {
-            parameters_map.insert("languageCode".to_string(), language_code.to_string());
+            parameters_map.insert("languageCode".to_string(), language_code);
         }
         if let Some(intermediate_report) = query_parameters.intermediate_report {
             parameters_map.insert(
@@ -512,7 +512,7 @@ impl SmsClient {
         if let Some(notify_content_type) = query_parameters.notify_content_type {
             parameters_map.insert(
                 "notifyContentType".to_string(),
-                notify_content_type.to_string(),
+                notify_content_type,
             );
         }
         if let Some(callback_data) = query_parameters.callback_data {
@@ -522,16 +522,16 @@ impl SmsClient {
             parameters_map.insert("validityPeriod".to_string(), validity_period.to_string());
         }
         if let Some(send_at) = query_parameters.send_at {
-            parameters_map.insert("sendAt".to_string(), send_at.to_string());
+            parameters_map.insert("sendAt".to_string(), send_at);
         }
         if let Some(track) = query_parameters.track {
-            parameters_map.insert("track".to_string(), track.to_string());
+            parameters_map.insert("track".to_string(), track);
         }
         if let Some(process_key) = query_parameters.process_key {
             parameters_map.insert("processKey".to_string(), process_key);
         }
         if let Some(tracking_type) = query_parameters.tracking_type {
-            parameters_map.insert("trackingType".to_string(), tracking_type.to_string());
+            parameters_map.insert("trackingType".to_string(), tracking_type);
         }
         if let Some(india_dlt_content_template_id) = query_parameters.india_dlt_content_template_id
         {
