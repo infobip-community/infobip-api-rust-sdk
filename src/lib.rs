@@ -6,7 +6,8 @@
 //! handling. The module structure is divided by communication channel.
 //!
 //! ## Supported Channels
-//! - [SMS](https://www.infobip.com/docs/api/channels/sms) (in progress)
+//! - [SMS](https://www.infobip.com/docs/api/channels/sms)
+//! - [WhatsApp](https://www.infobip.com/docs/api/channels/whatsapp) (partially, in progress)
 //!
 //! More Channels to be added in the near future!
 //!
@@ -20,7 +21,7 @@
 //! To use the library, add the dependency to your projects `Cargo.toml`
 //! ```toml
 //! [dependencies]
-//! infobip-sdk = "0.1"
+//! infobip_sdk = "0.1"
 //! ```
 //!
 //! ## Usage
@@ -128,7 +129,7 @@
 //! You can speed up compile-times a bit by turning only the needed channels as library features.
 //! For example, to only build SMS, add the dependency like this:
 //! ```toml
-//! infobip-sdk = { version = "0.1", features = ["sms"] }
+//! infobip_sdk = { version = "0.1", features = ["sms"] }
 //! ```
 //! You can see the complete list of features in the Cargo.toml of the project. Feature names
 //! follow channel names.

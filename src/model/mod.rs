@@ -5,5 +5,8 @@
 #[cfg(feature = "sms")]
 pub mod sms;
 
+#[cfg(feature = "whatsapp")]
+pub mod whatsapp;
+
 #[cfg(test)]
 mod tests;

@@ -26,5 +26,6 @@ validator = { version = "0.16", features = ["derive"] }
 httpmock = "0.6"
 
 [features]
-default = ["sms"]
+default = ["sms", "whatsapp"]
 sms = []
+whatsapp = []

@@ -14,6 +14,9 @@ use crate::configuration::{ApiKey, Configuration};
 #[cfg(feature = "sms")]
 pub mod sms;
 
+#[cfg(feature = "whatsapp")]
+pub mod whatsapp;
+
 /// Holds the possible errors that can happen when calling the Infobip API.
 #[derive(Error, Debug)]
 pub enum SdkError {
