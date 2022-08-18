@@ -42,7 +42,7 @@ pub struct SmsClient {
 
 impl SmsClient {
     /// Builds and returns a new asynchronous `SmsClient` with specified configuration.
-    pub fn with_configuration(configuration: Configuration) -> SmsClient {
+    pub fn with_configuration(configuration: Configuration) -> Self {
         SmsClient {
             configuration,
             client: reqwest::Client::new(),

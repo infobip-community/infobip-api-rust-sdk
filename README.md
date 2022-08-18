@@ -2,6 +2,8 @@
 
 ![Workflow](https://github.com/infobip-community/infobip-api-rust-sdk/actions/workflows/rust.yml/badge.svg)
 [![Licence](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-MIT)
+![Crates.io](https://img.shields.io/crates/v/infobip_sdk)
+![Crate downlads](https://img.shields.io/crates/d/rust_sdk)
 
 Client SDK to use the Infobip API with pure Rust.
 
@@ -12,7 +14,8 @@ handling. The module structure is divided by communication channel.
 ---
 
 ## 📡 Supported Channels
-- [SMS](https://www.infobip.com/docs/api/channels/sms) (in progress)
+- [SMS](https://www.infobip.com/docs/api/channels/sms)
+- [WhatsApp](https://www.infobip.com/docs/api/channels/whatsapp) (partially, in progress)
 
 More Channels to be added in the near future!
 
@@ -26,7 +29,7 @@ load the configuration from the environment. To do that, export the variables `I
 To use the library, add the dependency to your projects `Cargo.toml`
 ```toml
 [dependencies]
-infobip-sdk = "0.1"
+infobip_sdk = "0.1"
 ```
 
 ## 🚀 Usage
@@ -131,7 +134,7 @@ model.
 You can speed up compile-times a bit by turning only the needed channels as library features.
 For example, to only build SMS, add the dependency like this:
 ```toml
-infobip-sdk = { version = "0.1", features = ["sms"] }
+infobip_sdk = { version = "0.1", features = ["sms"] }
 ```
 You can see the complete list of features in the Cargo.toml of the project. Feature names
 follow channel names.
