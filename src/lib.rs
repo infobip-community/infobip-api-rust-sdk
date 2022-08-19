@@ -2,7 +2,7 @@
 //! Client SDK to use the Infobip API with pure Rust.
 //!
 //! This library enables you to use multiple Infobip communication channels, like SMS, MMS,
-//! Whatsapp, Email, etc. It abstracts the needed HTTP calls, and models payloads and error
+//! WhatsApp, Email, etc. It abstracts the needed HTTP calls, models payloads and error
 //! handling. The module structure is divided by communication channel.
 //!
 //! ## Supported Channels
@@ -12,10 +12,10 @@
 //! More Channels to be added in the near future!
 //!
 //! ## Authentication
-//! To use the library, you'll need to set up an Infobip account. Then you can use your API Key and
-//! custom URL to call the endpoints. You can use the `Configuration::from_env_api_key()` method to
-//! load the configuration from the environment. To do that, export the variables `IB_API_KEY` and
-//! `IB_BASE_URL`.
+//! To use the library, you'll need to set up an [Infobip account](https://www.infobip.com/signup).
+//! Then you can use your API Key and custom base URL to call the endpoints. You can use the
+//! `Configuration::from_env_api_key()` method to load the configuration from the environment. To
+//! do that, export the variables `IB_API_KEY` and `IB_BASE_URL`.
 //!
 //! ## Installation
 //! To use the library, add the dependency to your projects `Cargo.toml`
@@ -126,7 +126,7 @@
 //! model.
 //!
 //! ### Using features
-//! You can speed up compile-times a bit by turning only the needed channels as library features.
+//! You can speed up compile time by turning only the needed channels as library features.
 //! For example, to only build SMS, add the dependency like this:
 //! ```toml
 //! infobip_sdk = { version = "0.1", features = ["sms"] }
