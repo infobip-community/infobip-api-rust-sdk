@@ -32,7 +32,7 @@ fn get_test_sender_number() -> String {
 #[ignore]
 #[tokio::test]
 async fn send_text_whatsapp() {
-    let content = TextMessageContent::new(DUMMY_TEXT.to_string());
+    let content = TextContent::new(DUMMY_TEXT.to_string());
 
     let request_body = SendTextRequestBody::new(
         get_test_sender_number(),
@@ -41,6 +41,28 @@ async fn send_text_whatsapp() {
     );
 
     let response = get_test_wa_client().send_text(request_body).await.unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+    assert!(!response.body.message_id.unwrap().is_empty());
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_document_whatsapp() {
+    let content = DocumentContent::new(
+        "https://perso.limsi.fr/pointal/_media/python:cours:mementopython3-english.pdf".to_string(),
+    );
+
+    let request_body = SendDocumentRequestBody::new(
+        get_test_sender_number(),
+        get_test_destination_number(),
+        content,
+    );
+
+    let response = get_test_wa_client()
+        .send_document(request_body)
+        .await
+        .unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     assert!(!response.body.message_id.unwrap().is_empty());

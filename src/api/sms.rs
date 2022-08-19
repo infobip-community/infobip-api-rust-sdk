@@ -694,6 +694,7 @@ impl SmsClient {
     /// let request_body = UpdateScheduledStatusRequestBody::new(ScheduledStatus::CANCELED);
     ///
     /// let response = sms_client.update_scheduled_status(query_parameters, request_body).await?;
+    ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }

@@ -5,7 +5,7 @@ use validator::Validate;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-pub struct TextMessageContent {
+pub struct TextContent {
     /// Content of the message being sent.
     #[validate(length(min = 1, max = 4096))]
     pub text: String,
@@ -16,9 +16,9 @@ pub struct TextMessageContent {
     pub preview_url: Option<bool>,
 }
 
-impl TextMessageContent {
+impl TextContent {
     pub fn new(text: String) -> Self {
-        TextMessageContent {
+        TextContent {
             text,
             preview_url: None,
         }
@@ -27,7 +27,36 @@ impl TextMessageContent {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-pub struct SendTextRequestBody {
+pub struct DocumentContent {
+    /// URL of a document sent in a WhatsApp message. Must be a valid URL starting with https://
+    /// or http://. Maximum document size is 100MB.
+    #[validate(url)]
+    pub media_url: String,
+
+    /// Caption of the document.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate(length(min = 0, max = 3000))]
+    pub caption: Option<String>,
+
+    /// File name of the document.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate(length(min = 0, max = 240))]
+    pub filename: Option<String>,
+}
+
+impl DocumentContent {
+    pub fn new(media_url: String) -> Self {
+        DocumentContent {
+            media_url,
+            caption: None,
+            filename: None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct SendContentRequestBody<T: serde::Serialize + Validate> {
     /// Registered WhatsApp sender number. Must be in international format and comply with
     /// WhatsApp's requirements.
     #[validate(length(min = 1, max = 24))]
@@ -44,7 +73,7 @@ pub struct SendTextRequestBody {
 
     /// The content object to build a message that will be sent.
     #[validate]
-    pub content: TextMessageContent,
+    pub content: T,
 
     /// Custom client data that will be included in a Delivery Report.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -56,9 +85,26 @@ pub struct SendTextRequestBody {
     pub notify_url: Option<String>,
 }
 
+pub type SendTextRequestBody = SendContentRequestBody<TextContent>;
+
 impl SendTextRequestBody {
-    pub fn new(from: String, to: String, content: TextMessageContent) -> Self {
+    pub fn new(from: String, to: String, content: TextContent) -> Self {
         SendTextRequestBody {
+            from,
+            to,
+            message_id: None,
+            content,
+            callback_data: None,
+            notify_url: None,
+        }
+    }
+}
+
+pub type SendDocumentRequestBody = SendContentRequestBody<DocumentContent>;
+
+impl SendDocumentRequestBody {
+    pub fn new(from: String, to: String, content: DocumentContent) -> Self {
+        SendDocumentRequestBody {
             from,
             to,
             message_id: None,
@@ -99,7 +145,7 @@ pub struct Status {
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct SendTextResponseBody {
+pub struct SendContentResponseBody {
     /// The destination address of the message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub to: Option<String>,
@@ -117,3 +163,7 @@ pub struct SendTextResponseBody {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub status: Option<Status>,
 }
+
+pub type SendTextResponseBody = SendContentResponseBody;
+
+pub type SendDocumentResponseBody = SendContentResponseBody;
