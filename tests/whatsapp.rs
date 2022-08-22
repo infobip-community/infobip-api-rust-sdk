@@ -32,12 +32,10 @@ fn get_test_sender_number() -> String {
 #[ignore]
 #[tokio::test]
 async fn send_text_whatsapp() {
-    let content = TextContent::new(DUMMY_TEXT.to_string());
-
     let request_body = SendTextRequestBody::new(
         get_test_sender_number(),
         get_test_destination_number(),
-        content,
+        TextContent::new(DUMMY_TEXT.to_string()),
     );
 
     let response = get_test_wa_client().send_text(request_body).await.unwrap();
@@ -49,14 +47,13 @@ async fn send_text_whatsapp() {
 #[ignore]
 #[tokio::test]
 async fn send_document_whatsapp() {
-    let content = DocumentContent::new(
-        "https://perso.limsi.fr/pointal/_media/python:cours:mementopython3-english.pdf".to_string(),
-    );
-
     let request_body = SendDocumentRequestBody::new(
         get_test_sender_number(),
         get_test_destination_number(),
-        content,
+        DocumentContent::new(
+            "https://perso.limsi.fr/pointal/_media/python:cours:mementopython3-english.pdf"
+                .to_string(),
+        ),
     );
 
     let response = get_test_wa_client()
@@ -64,6 +61,103 @@ async fn send_document_whatsapp() {
         .await
         .unwrap();
 
+    assert_eq!(response.status, StatusCode::OK);
+    assert!(!response.body.message_id.unwrap().is_empty());
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_image_whatsapp() {
+    let request_body = SendImageRequestBody::new(
+        get_test_sender_number(),
+        get_test_destination_number(),
+        ImageContent::new("https://rustacean.net/assets/rustacean-flat-happy.png".to_string()),
+    );
+
+    let response = get_test_wa_client().send_image(request_body).await.unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+    assert!(!response.body.message_id.unwrap().is_empty());
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_audio_whatsapp() {
+    let request_body = SendAudioRequestBody::new(
+        get_test_sender_number(),
+        get_test_destination_number(),
+        AudioContent::new("https://download.samplelib.com/mp3/sample-3s.mp3".to_string()),
+    );
+
+    let response = get_test_wa_client().send_audio(request_body).await.unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+    assert!(!response.body.message_id.unwrap().is_empty());
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_video_whatsapp() {
+    let request_body = SendVideoRequestBody::new(
+        get_test_sender_number(),
+        get_test_destination_number(),
+        VideoContent::new("https://download.samplelib.com/mp4/sample-5s.mp4".to_string()),
+    );
+
+    let response = get_test_wa_client().send_video(request_body).await.unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+    assert!(!response.body.message_id.unwrap().is_empty());
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_sticker_whatsapp() {
+    let request_body = SendStickerRequestBody::new(
+        get_test_sender_number(),
+        get_test_destination_number(),
+        StickerContent::new("https://www.gstatic.com/webp/gallery/1.webp".to_string()),
+    );
+
+    let response = get_test_wa_client()
+        .send_sticker(request_body)
+        .await
+        .unwrap();
+    assert_eq!(response.status, StatusCode::OK);
+    assert!(!response.body.message_id.unwrap().is_empty());
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_location_whatsapp() {
+    let request_body = SendLocationRequestBody::new(
+        get_test_sender_number(),
+        get_test_destination_number(),
+        LocationContent::new(0.0, 0.0),
+    );
+
+    let response = get_test_wa_client()
+        .send_location(request_body)
+        .await
+        .unwrap();
+    assert_eq!(response.status, StatusCode::OK);
+    assert!(!response.body.message_id.unwrap().is_empty());
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_contact_whatsapp() {
+    let contact = Contact::new(ContactName::new("John".to_string(), "John Doe".to_string()));
+    let request_body = SendContactRequestBody::new(
+        get_test_sender_number(),
+        get_test_destination_number(),
+        ContactContent::new(vec![contact]),
+    );
+
+    let response = get_test_wa_client()
+        .send_contact(request_body)
+        .await
+        .unwrap();
     assert_eq!(response.status, StatusCode::OK);
     assert!(!response.body.message_id.unwrap().is_empty());
 }
