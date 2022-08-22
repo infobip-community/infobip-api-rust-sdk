@@ -3,14 +3,14 @@
 ![Workflow](https://github.com/infobip-community/infobip-api-rust-sdk/actions/workflows/rust.yml/badge.svg)
 [![Licence](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-MIT)
 [![Licence](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-APACHE)
-![Crates.io](https://img.shields.io/crates/v/infobip_sdk)
+[![Crates.io](https://img.shields.io/crates/v/infobip_sdk)](https://crates.io/crates/infobip_sdk)
 ![Crate downlads](https://img.shields.io/crates/d/rust_sdk)
 
 Client SDK to use the Infobip API with pure Rust.
 
-This library enables you to use multiple Infobip communication channels, like SMS, MMS,
-WhatsApp, Email, etc. It abstracts the needed HTTP calls, models payloads and error
-handling. The module structure is divided by communication channel.
+This crate enables you to use multiple Infobip communication channels, like SMS, MMS,
+WhatsApp, Email, etc. It abstracts the needed HTTP calls, models and validates payloads and
+models errors. The module structure is divided by communication channel.
 
 ---
 
@@ -24,7 +24,7 @@ More Channels to be added in the near future!
 To use the library, you'll need to set up an [Infobip account](https://www.infobip.com/signup).
 Then you can use your API Key and custom base URL to call the endpoints. You can use the
 `Configuration::from_env_api_key()` method to load the configuration from the environment. To
-do that, export the variables `IB_API_KEY` and `IB_BASE_URL`.
+do that, set the `IB_API_KEY` and `IB_BASE_URL` variables.
 
 ## 📦 Installation
 To use the library, add the dependency to your projects `Cargo.toml`
