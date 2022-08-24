@@ -161,3 +161,50 @@ async fn send_contact_whatsapp() {
     assert_eq!(response.status, StatusCode::OK);
     assert!(!response.body.message_id.unwrap().is_empty());
 }
+
+#[ignore]
+#[tokio::test]
+async fn send_interactive_buttons_whatsapp() {
+    let button = InteractiveButton::new_reply_button("1".to_string(), "Button Title".to_string());
+    let request_body = SendInteractiveButtonsRequestBody::new(
+        get_test_sender_number(),
+        get_test_destination_number(),
+        InteractiveButtonsContent::new(
+            InteractiveBody::new("Hello".to_string()),
+            InteractiveButtonsAction::new(vec![button]),
+        ),
+    );
+
+    let response = get_test_wa_client()
+        .send_interactive_buttons(request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+    assert!(!response.body.message_id.unwrap().is_empty());
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_interactive_list_whatsapp() {
+    let row = InteractiveRow::new("1".to_string(), "Row Title".to_string());
+
+    let section = InteractiveListSection::new(vec![row]);
+
+    let request_body = SendInteractiveListRequestBody::new(
+        get_test_sender_number(),
+        get_test_destination_number(),
+        InteractiveListContent::new(
+            InteractiveBody::new("Hello".to_string()),
+            InteractiveListAction::new("Section Title".to_string(), vec![section]),
+        ),
+    );
+
+    let response = get_test_wa_client()
+        .send_interactive_list(request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+    assert!(!response.body.message_id.unwrap().is_empty());
+}

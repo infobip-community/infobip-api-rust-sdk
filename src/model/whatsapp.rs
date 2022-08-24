@@ -548,6 +548,306 @@ impl SendContactRequestBody {
     }
 }
 
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct InteractiveBody {
+    /// Content of the message body.
+    #[validate(length(min = 1, max = 1024))]
+    pub text: String,
+}
+
+impl InteractiveBody {
+    pub fn new(text: String) -> Self {
+        InteractiveBody { text }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum InteractiveButton {
+    #[serde(rename = "REPLY")]
+    ReplyButton {
+        /// Unique identifier of the button containing no leading nor trailing whitespaces.
+        #[serde(rename = "id")]
+        id: String,
+
+        /// Unique title of the button. Doesn't allow emojis or markdown.
+        #[serde(rename = "title")]
+        title: String,
+    },
+}
+
+impl InteractiveButton {
+    pub fn new_reply_button(id: String, title: String) -> Self {
+        InteractiveButton::ReplyButton { id, title }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct InteractiveButtonsAction {
+    /// An array of buttons sent in a message. It can have up to three buttons.
+    #[validate(length(min = 1, max = 3))]
+    pub buttons: Vec<InteractiveButton>,
+}
+
+impl InteractiveButtonsAction {
+    pub fn new(buttons: Vec<InteractiveButton>) -> Self {
+        InteractiveButtonsAction { buttons }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum InteractiveButtonsHeader {
+    #[serde(rename = "DOCUMENT")]
+    DocumentHeader {
+        /// URL of a document sent in the header of a message containing one or more interactive
+        /// buttons. Must be a valid URL starting with `https://` or `http://`. Supported document
+        /// type is `PDF`. Maximum document size is 100MB.
+        #[serde(rename = "mediaUrl")]
+        media_url: String,
+
+        /// Filename of the document.
+        #[serde(rename = "filename", skip_serializing_if = "Option::is_none")]
+        filename: Option<String>,
+    },
+
+    #[serde(rename = "IMAGE")]
+    ImageHeader {
+        /// URL of an image sent in the header of a message containing one or more interactive
+        /// buttons. Must be a valid URL starting with `https://` or `http://`. Supported image
+        /// types are `JPG`, `JPEG`, `PNG`. Maximum image size is 5MB.
+        #[serde(rename = "mediaUrl")]
+        media_url: String,
+    },
+
+    #[serde(rename = "TEXT")]
+    TextHeader {
+        /// Content of the header used when creating interactive buttons.
+        #[serde(rename = "text")]
+        text: String,
+    },
+
+    #[serde(rename = "VIDEO")]
+    VideoHeader {
+        /// URL of a video sent in the header of a message containing one or more interactive
+        /// buttons. Must be a valid URL starting with `https://` or `http://`. Supported video
+        /// types are `MP4`, `3GPP`. Maximum video size is 16MB.
+        #[serde(rename = "mediaUrl")]
+        media_url: String,
+    },
+}
+
+impl InteractiveButtonsHeader {
+    pub fn new_document_header(media_url: String, filename: Option<String>) -> Self {
+        InteractiveButtonsHeader::DocumentHeader {
+            media_url,
+            filename,
+        }
+    }
+
+    pub fn new_image_header(media_url: String) -> Self {
+        InteractiveButtonsHeader::ImageHeader { media_url }
+    }
+
+    pub fn new_text_header(text: String) -> Self {
+        InteractiveButtonsHeader::TextHeader { text }
+    }
+
+    pub fn new_video_header(media_url: String) -> Self {
+        InteractiveButtonsHeader::VideoHeader { media_url }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct InteractiveFooter {
+    /// Content of the message footer.
+    #[validate(length(min = 1, max = 60))]
+    pub text: String,
+}
+
+impl InteractiveFooter {
+    pub fn new(text: String) -> Self {
+        InteractiveFooter { text }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct InteractiveButtonsContent {
+    /// Body of a message containing one or more interactive elements.
+    #[validate]
+    pub body: InteractiveBody,
+
+    /// Allows you to specify buttons sent in the message.
+    #[validate]
+    pub action: InteractiveButtonsAction,
+
+    /// Header of a message containing one or more interactive elements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub header: Option<InteractiveButtonsHeader>,
+
+    /// Footer of a message containing one or more interactive elements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate]
+    pub footer: Option<InteractiveFooter>,
+}
+
+impl InteractiveButtonsContent {
+    pub fn new(body: InteractiveBody, action: InteractiveButtonsAction) -> Self {
+        InteractiveButtonsContent {
+            body,
+            action,
+            header: None,
+            footer: None,
+        }
+    }
+}
+
+pub type SendInteractiveButtonsRequestBody = SendContentRequestBody<InteractiveButtonsContent>;
+
+impl SendInteractiveButtonsRequestBody {
+    pub fn new(from: String, to: String, content: InteractiveButtonsContent) -> Self {
+        SendInteractiveButtonsRequestBody {
+            from,
+            to,
+            message_id: None,
+            content,
+            callback_data: None,
+            notify_url: None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct InteractiveRow {
+    /// Identifier of the row. It must be unique across all sections.
+    #[validate(length(min = 1, max = 200))]
+    pub id: String,
+
+    /// Title of the row.
+    #[serde(rename = "title")]
+    #[validate(length(min = 1, max = 24))]
+    pub title: String,
+
+    /// Description of the row.
+    #[serde(rename = "description", skip_serializing_if = "Option::is_none")]
+    #[validate(length(max = 72))]
+    pub description: Option<String>,
+}
+
+impl InteractiveRow {
+    pub fn new(id: String, title: String) -> Self {
+        InteractiveRow {
+            id,
+            title,
+            description: None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct InteractiveListSection {
+    /// Title of the section. Required, if the message has more than one section.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate(length(max = 24))]
+    pub title: Option<String>,
+
+    /// An array of rows sent within a section. Section must contain at least one row. Message can have up to ten rows.
+    pub rows: Vec<InteractiveRow>,
+}
+
+impl InteractiveListSection {
+    pub fn new(rows: Vec<InteractiveRow>) -> Self {
+        InteractiveListSection { title: None, rows }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct InteractiveListAction {
+    /// Title of the list. Does not allow emojis or markdown.
+    #[validate(length(min = 1, max = 20))]
+    pub title: String,
+
+    /// Array of sections in the list.
+    #[validate(length(min = 1, max = 10))]
+    pub sections: Vec<InteractiveListSection>,
+}
+
+impl InteractiveListAction {
+    pub fn new(title: String, sections: Vec<InteractiveListSection>) -> Self {
+        InteractiveListAction { title, sections }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum InteractiveListHeader {
+    #[serde(rename = "TEXT")]
+    TextHeader {
+        /// Content of the header used when creating an [interactive list](https://www.infobip.com/docs/whatsapp/message-types#interactive-lists-free-form-messages).
+        text: String,
+    },
+}
+
+impl InteractiveListHeader {
+    pub fn new_text_header(text: String) -> Self {
+        InteractiveListHeader::TextHeader { text }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct InteractiveListContent {
+    /// Body of a message containing one or more interactive elements.
+    #[validate]
+    pub body: InteractiveBody,
+
+    /// Allows you to specify the title of the list and its sections. Each section can have a title
+    /// and multiple rows to select.
+    #[validate]
+    pub action: InteractiveListAction,
+
+    /// Header of a message containing one or more interactive elements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub header: Option<InteractiveListHeader>,
+
+    /// Footer of a message containing one or more interactive elements.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub footer: Option<InteractiveFooter>,
+}
+
+impl InteractiveListContent {
+    pub fn new(body: InteractiveBody, action: InteractiveListAction) -> Self {
+        InteractiveListContent {
+            body,
+            action,
+            header: None,
+            footer: None,
+        }
+    }
+}
+
+pub type SendInteractiveListRequestBody = SendContentRequestBody<InteractiveListContent>;
+
+impl SendInteractiveListRequestBody {
+    pub fn new(from: String, to: String, content: InteractiveListContent) -> Self {
+        SendInteractiveListRequestBody {
+            from,
+            to,
+            message_id: None,
+            content,
+            callback_data: None,
+            notify_url: None,
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Status {
@@ -612,3 +912,7 @@ pub type SendStickerResponseBody = SendContentResponseBody;
 pub type SendLocationResponseBody = SendContentResponseBody;
 
 pub type SendContactResponseBody = SendContentResponseBody;
+
+pub type SendInteractiveButtonsResponseBody = SendContentResponseBody;
+
+pub type SendInteractiveListResponseBody = SendContentResponseBody;

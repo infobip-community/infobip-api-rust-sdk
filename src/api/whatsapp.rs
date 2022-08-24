@@ -9,9 +9,10 @@ use crate::configuration::Configuration;
 use crate::model::whatsapp::{
     SendAudioRequestBody, SendAudioResponseBody, SendContactRequestBody, SendContactResponseBody,
     SendDocumentRequestBody, SendDocumentResponseBody, SendImageRequestBody, SendImageResponseBody,
-    SendLocationRequestBody, SendLocationResponseBody, SendStickerRequestBody,
-    SendStickerResponseBody, SendTextRequestBody, SendTextResponseBody, SendVideoRequestBody,
-    SendVideoResponseBody,
+    SendInteractiveButtonsRequestBody, SendInteractiveButtonsResponseBody,
+    SendInteractiveListRequestBody, SendInteractiveListResponseBody, SendLocationRequestBody,
+    SendLocationResponseBody, SendStickerRequestBody, SendStickerResponseBody, SendTextRequestBody,
+    SendTextResponseBody, SendVideoRequestBody, SendVideoResponseBody,
 };
 
 pub const PATH_SEND_TEXT: &str = "/whatsapp/1/message/text";
@@ -22,6 +23,8 @@ pub const PATH_SEND_VIDEO: &str = "/whatsapp/1/message/video";
 pub const PATH_SEND_STICKER: &str = "/whatsapp/1/message/sticker";
 pub const PATH_SEND_LOCATION: &str = "/whatsapp/1/message/location";
 pub const PATH_SEND_CONTACT: &str = "/whatsapp/1/message/contact";
+pub const PATH_SEND_INTERACTIVE_BUTTONS: &str = "/whatsapp/1/message/interactive/buttons";
+pub const PATH_SEND_INTERACTIVE_LIST: &str = "/whatsapp/1/message/interactive/list";
 
 /// Main asynchronous client for the Infobip WhatsApp channel.
 #[derive(Clone, Debug)]
@@ -419,6 +422,62 @@ impl WhatsappClient {
             )
             .await?;
 
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Send an interactive buttons message to a single recipient. Interactive buttons messages
+    /// can only be successfully delivered if the recipient has contacted the business within the
+    /// last 24 hours, otherwise template message should be used.
+    pub async fn send_interactive_buttons(
+        &self,
+        request_body: SendInteractiveButtonsRequestBody,
+    ) -> Result<SdkResponse<SendInteractiveButtonsResponseBody>, SdkError> {
+        let response = self
+            .send_request(
+                request_body,
+                HashMap::new(),
+                reqwest::Method::POST,
+                PATH_SEND_INTERACTIVE_BUTTONS,
+            )
+            .await?;
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Send an interactive list message to a single recipient. Interactive list messages can only
+    /// be successfully delivered if the recipient has contacted the business within the last 24
+    /// hours, otherwise template message should be used.
+    pub async fn send_interactive_list(
+        &self,
+        request_body: SendInteractiveListRequestBody,
+    ) -> Result<SdkResponse<SendInteractiveListResponseBody>, SdkError> {
+        let response = self
+            .send_request(
+                request_body,
+                HashMap::new(),
+                reqwest::Method::POST,
+                PATH_SEND_INTERACTIVE_LIST,
+            )
+            .await?;
         let status = response.status();
         let text = response.text().await?;
 
