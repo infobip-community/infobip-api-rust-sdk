@@ -208,3 +208,47 @@ async fn send_interactive_list_whatsapp() {
     assert_eq!(response.status, StatusCode::OK);
     assert!(!response.body.message_id.unwrap().is_empty());
 }
+
+#[ignore]
+#[tokio::test]
+async fn send_interactive_product_whatsapp() {
+    let request_body = SendInteractiveProductRequestBody::new(
+        get_test_sender_number(),
+        get_test_destination_number(),
+        InteractiveProductContent::new(InteractiveProductAction::new(
+            "1".to_string(),
+            "2".to_string(),
+        )),
+    );
+
+    let response = get_test_wa_client()
+        .send_interactive_product(request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+    assert!(!response.body.message_id.unwrap().is_empty());
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_interactive_multiproduct_whatsapp() {
+    let section = InteractiveMultiproductSection::new(vec!["1".to_string(), "2".to_string()]);
+    let request_body = SendInteractiveMultiproductRequestBody::new(
+        get_test_sender_number(),
+        get_test_destination_number(),
+        InteractiveMultiproductContent::new(
+            InteractiveMultiproductHeader::new_text_header("Header text".to_string()),
+            InteractiveBody::new("Body text".to_string()),
+            InteractiveMultiproductAction::new("1".to_string(), vec![section]),
+        ),
+    );
+
+    let response = get_test_wa_client()
+        .send_interactive_multiproduct(request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+    assert!(!response.body.message_id.unwrap().is_empty());
+}

@@ -209,6 +209,12 @@ impl ContactAddress {
     }
 }
 
+impl Default for ContactAddress {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub type EmailType = AddressType;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
@@ -275,6 +281,12 @@ impl ContactOrganization {
     }
 }
 
+impl Default for ContactOrganization {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum PhoneType {
     CELL,
@@ -307,6 +319,12 @@ impl ContactPhone {
             phone_type: None,
             wa_id: None,
         }
+    }
+}
+
+impl Default for ContactPhone {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -848,6 +866,179 @@ impl SendInteractiveListRequestBody {
     }
 }
 
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct InteractiveProductAction {
+    /// The ID that uniquely identifies the catalog registered with Meta and connected to the
+    /// WhatsApp Business Account the sender belongs to.
+    #[validate(length(min = 1))]
+    pub catalog_id: String,
+
+    /// Product-unique identifier, as defined in catalog.
+    #[validate(length(min = 1))]
+    pub product_retailer_id: String,
+}
+
+impl InteractiveProductAction {
+    pub fn new(catalog_id: String, product_retailer_id: String) -> Self {
+        InteractiveProductAction {
+            catalog_id,
+            product_retailer_id,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct InteractiveProductContent {
+    /// Allows you to specify catalog and product details sent in the product message.
+    #[validate]
+    pub action: InteractiveProductAction,
+
+    /// Body of a message containing one or more interactive elements.
+    #[validate]
+    pub body: Option<InteractiveBody>,
+
+    /// Footer of a message containing one or more interactive elements.
+    #[validate]
+    pub footer: Option<InteractiveFooter>,
+}
+
+impl InteractiveProductContent {
+    pub fn new(action: InteractiveProductAction) -> Self {
+        InteractiveProductContent {
+            action,
+            body: None,
+            footer: None,
+        }
+    }
+}
+
+pub type SendInteractiveProductRequestBody = SendContentRequestBody<InteractiveProductContent>;
+
+impl SendInteractiveProductRequestBody {
+    pub fn new(from: String, to: String, content: InteractiveProductContent) -> Self {
+        SendInteractiveProductRequestBody {
+            from,
+            to,
+            message_id: None,
+            content,
+            callback_data: None,
+            notify_url: None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum InteractiveMultiproductHeader {
+    #[serde(rename = "TEXT")]
+    TextHeader {
+        /// Content of the multi-product message header.
+        text: String,
+    },
+}
+
+impl InteractiveMultiproductHeader {
+    pub fn new_text_header(text: String) -> Self {
+        InteractiveMultiproductHeader::TextHeader { text }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct InteractiveMultiproductSection {
+    /// Title of the section. Required, if the message has more than one section.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate(length(max = 24))]
+    pub title: Option<String>,
+
+    /// An array of product-unique identifiers as defined in the catalog. If product retailer ID
+    /// doesn't exist in your catalog, the product won't be displayed.
+    pub product_retailer_ids: Vec<String>,
+}
+
+impl InteractiveMultiproductSection {
+    pub fn new(product_retailer_ids: Vec<String>) -> Self {
+        InteractiveMultiproductSection {
+            title: None,
+            product_retailer_ids,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct InteractiveMultiproductAction {
+    /// The ID that uniquely identifies the catalog registered with Meta and connected to the
+    /// WhatsApp Business Account the sender belongs to.
+    pub catalog_id: String,
+
+    /// An array of multi-product sections.
+    #[validate(length(min = 1, max = 10))]
+    #[validate]
+    pub sections: Vec<InteractiveMultiproductSection>,
+}
+
+impl InteractiveMultiproductAction {
+    pub fn new(catalog_id: String, sections: Vec<InteractiveMultiproductSection>) -> Self {
+        InteractiveMultiproductAction {
+            catalog_id,
+            sections,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct InteractiveMultiproductContent {
+    /// Header of a message containing one or more interactive elements.
+    pub header: InteractiveMultiproductHeader,
+
+    /// Body of a message containing one or more interactive elements.
+    #[validate]
+    pub body: InteractiveBody,
+
+    /// Allows you to specify catalog and product details sent in the multi-product message.
+    #[validate]
+    pub action: InteractiveMultiproductAction,
+
+    /// Footer of a message containing one or more interactive elements.
+    #[validate]
+    pub footer: Option<InteractiveFooter>,
+}
+
+impl InteractiveMultiproductContent {
+    pub fn new(
+        header: InteractiveMultiproductHeader,
+        body: InteractiveBody,
+        action: InteractiveMultiproductAction,
+    ) -> Self {
+        InteractiveMultiproductContent {
+            header,
+            body,
+            action,
+            footer: None,
+        }
+    }
+}
+
+pub type SendInteractiveMultiproductRequestBody =
+    SendContentRequestBody<InteractiveMultiproductContent>;
+
+impl SendInteractiveMultiproductRequestBody {
+    pub fn new(from: String, to: String, content: InteractiveMultiproductContent) -> Self {
+        SendInteractiveMultiproductRequestBody {
+            from,
+            to,
+            message_id: None,
+            content,
+            callback_data: None,
+            notify_url: None,
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Status {
@@ -916,3 +1107,7 @@ pub type SendContactResponseBody = SendContentResponseBody;
 pub type SendInteractiveButtonsResponseBody = SendContentResponseBody;
 
 pub type SendInteractiveListResponseBody = SendContentResponseBody;
+
+pub type SendInteractiveProductResponseBody = SendContentResponseBody;
+
+pub type SendInteractiveMultiproductResponseBody = SendContentResponseBody;

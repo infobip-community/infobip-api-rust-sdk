@@ -10,7 +10,9 @@ use crate::model::whatsapp::{
     SendAudioRequestBody, SendAudioResponseBody, SendContactRequestBody, SendContactResponseBody,
     SendDocumentRequestBody, SendDocumentResponseBody, SendImageRequestBody, SendImageResponseBody,
     SendInteractiveButtonsRequestBody, SendInteractiveButtonsResponseBody,
-    SendInteractiveListRequestBody, SendInteractiveListResponseBody, SendLocationRequestBody,
+    SendInteractiveListRequestBody, SendInteractiveListResponseBody,
+    SendInteractiveMultiproductRequestBody, SendInteractiveMultiproductResponseBody,
+    SendInteractiveProductRequestBody, SendInteractiveProductResponseBody, SendLocationRequestBody,
     SendLocationResponseBody, SendStickerRequestBody, SendStickerResponseBody, SendTextRequestBody,
     SendTextResponseBody, SendVideoRequestBody, SendVideoResponseBody,
 };
@@ -25,6 +27,9 @@ pub const PATH_SEND_LOCATION: &str = "/whatsapp/1/message/location";
 pub const PATH_SEND_CONTACT: &str = "/whatsapp/1/message/contact";
 pub const PATH_SEND_INTERACTIVE_BUTTONS: &str = "/whatsapp/1/message/interactive/buttons";
 pub const PATH_SEND_INTERACTIVE_LIST: &str = "/whatsapp/1/message/interactive/list";
+pub const PATH_SEND_INTERACTIVE_PRODUCT: &str = "/whatsapp/1/message/interactive/product";
+pub const PATH_SEND_INTERACTIVE_MULTIPRODUCT: &str =
+    "/whatsapp/1/message/interactive/multi-product";
 
 /// Main asynchronous client for the Infobip WhatsApp channel.
 #[derive(Clone, Debug)]
@@ -476,6 +481,62 @@ impl WhatsappClient {
                 HashMap::new(),
                 reqwest::Method::POST,
                 PATH_SEND_INTERACTIVE_LIST,
+            )
+            .await?;
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Send an interactive product message to a single recipient. Interactive product messages
+    /// can only be successfully delivered if the recipient has contacted the business within the
+    /// last 24 hours, otherwise template message should be used.
+    pub async fn send_interactive_product(
+        &self,
+        request_body: SendInteractiveProductRequestBody,
+    ) -> Result<SdkResponse<SendInteractiveProductResponseBody>, SdkError> {
+        let response = self
+            .send_request(
+                request_body,
+                HashMap::new(),
+                reqwest::Method::POST,
+                PATH_SEND_INTERACTIVE_PRODUCT,
+            )
+            .await?;
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Send an interactive multi-product message to a single recipient. Interactive multi-product
+    /// messages can only be successfully delivered if the recipient has contacted the business
+    /// within the last 24 hours, otherwise template message should be used.
+    pub async fn send_interactive_multiproduct(
+        &self,
+        request_body: SendInteractiveMultiproductRequestBody,
+    ) -> Result<SdkResponse<SendInteractiveMultiproductResponseBody>, SdkError> {
+        let response = self
+            .send_request(
+                request_body,
+                HashMap::new(),
+                Method::POST,
+                PATH_SEND_INTERACTIVE_MULTIPRODUCT,
             )
             .await?;
         let status = response.status();
