@@ -68,10 +68,10 @@ async fn main() {
 ```
 
 ## 👀 Examples
-The best way to learn how to use the library is to look at the official docs.rs documentation,
-which has simple examples on how to use every endpoint. You can also look at integration tests
-under the [tests](./tests) directory, which work similarly to how you would use them in a real
-scenario.
+The best way to learn how to use the library is to look at the official
+[docs.rs documentation](https://docs.rs/infobip_sdk/), which has simple examples on how to use
+every endpoint. You can also look at integration tests under the [tests](./tests) directory,
+which work similarly to how you would use them in a real scenario.
 
 ## 🗒 Notes
 
