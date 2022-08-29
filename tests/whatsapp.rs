@@ -252,3 +252,74 @@ async fn send_interactive_multiproduct_whatsapp() {
     assert_eq!(response.status, StatusCode::OK);
     assert!(!response.body.message_id.unwrap().is_empty());
 }
+
+#[ignore]
+#[tokio::test]
+async fn create_template_whatsapp() {
+    let structure = TemplateStructure::new(TemplateBody::new("hello".to_string()));
+    let request_body = CreateTemplateRequestBody::new(
+        "rust_sdk_test_template".to_string(),
+        TemplateLanguage::EnUs,
+        TemplateCategory::Marketing,
+        structure,
+    );
+
+    let response = get_test_wa_client()
+        .create_template(get_test_sender_number(), request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, StatusCode::CREATED);
+    assert!(!response.body.id.unwrap().is_empty());
+}
+
+#[ignore]
+#[tokio::test]
+async fn get_templates_whatsapp() {
+    let response = get_test_wa_client()
+        .get_templates(get_test_sender_number())
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+    assert!(!response.body.templates.unwrap().is_empty());
+}
+
+#[ignore]
+#[tokio::test]
+async fn delete_template_whatsapp() {
+    let status = get_test_wa_client()
+        .delete_template(
+            get_test_sender_number(),
+            "rust_sdk_test_template".to_string(),
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(status, StatusCode::NO_CONTENT);
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_template_whatsapp() {
+    let template_content = TemplateContent::new(
+        "rust_sdk_test_template".to_string(),
+        TemplateData::new(TemplateBodyContent::new(vec!["hello".to_string()])),
+        TemplateLanguage::EnUs.to_string(),
+    );
+    let message = FailoverMessage::new(
+        get_test_sender_number(),
+        get_test_destination_number(),
+        template_content,
+    );
+
+    let request_body = SendTemplateRequestBody::new(vec![message]);
+
+    let response = get_test_wa_client()
+        .send_template(request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, StatusCode::OK);
+    assert!(!response.body.messages.unwrap().is_empty());
+}

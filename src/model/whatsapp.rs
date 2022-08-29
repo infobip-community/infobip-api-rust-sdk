@@ -1039,6 +1039,772 @@ impl SendInteractiveMultiproductRequestBody {
     }
 }
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum TemplateCategory {
+    #[serde(rename = "ACCOUNT_UPDATE")]
+    AccountUpdate,
+    #[serde(rename = "PAYMENT_UPDATE")]
+    PaymentUpdate,
+    #[serde(rename = "PERSONAL_FINANCE_UPDATE")]
+    PersonalFinanceUpdate,
+    #[serde(rename = "SHIPPING_UPDATE")]
+    ShippingUpdate,
+    #[serde(rename = "RESERVATION_UPDATE")]
+    ReservationUpdate,
+    #[serde(rename = "ISSUE_RESOLUTION")]
+    IssueResolution,
+    #[serde(rename = "APPOINTMENT_UPDATE")]
+    AppointmentUpdate,
+    #[serde(rename = "TRANSPORTATION_UPDATE")]
+    TransportationUpdate,
+    #[serde(rename = "TICKET_UPDATE")]
+    TicketUpdate,
+    #[serde(rename = "ALERT_UPDATE")]
+    AlertUpdate,
+    #[serde(rename = "AUTO_REPLY")]
+    AutoReply,
+    #[serde(rename = "MARKETING")]
+    Marketing,
+    #[serde(rename = "TRANSACTIONAL")]
+    Transactional,
+    #[serde(rename = "OTP")]
+    Otp,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum TemplateLanguage {
+    #[serde(rename = "af")]
+    Af,
+    #[serde(rename = "sq")]
+    Sq,
+    #[serde(rename = "ar")]
+    Ar,
+    #[serde(rename = "az")]
+    Az,
+    #[serde(rename = "bn")]
+    Bn,
+    #[serde(rename = "bg")]
+    Bg,
+    #[serde(rename = "ca")]
+    Ca,
+    #[serde(rename = "zh_CN")]
+    ZhCn,
+    #[serde(rename = "zh_HK")]
+    ZhHk,
+    #[serde(rename = "zh_TW")]
+    ZhTw,
+    #[serde(rename = "hr")]
+    Hr,
+    #[serde(rename = "cs")]
+    Cs,
+    #[serde(rename = "da")]
+    Da,
+    #[serde(rename = "nl")]
+    Nl,
+    #[serde(rename = "en")]
+    En,
+    #[serde(rename = "en_GB")]
+    EnGb,
+    #[serde(rename = "en_US")]
+    EnUs,
+    #[serde(rename = "et")]
+    Et,
+    #[serde(rename = "fil")]
+    Fil,
+    #[serde(rename = "fi")]
+    Fi,
+    #[serde(rename = "fr")]
+    Fr,
+    #[serde(rename = "ka")]
+    Ka,
+    #[serde(rename = "de")]
+    De,
+    #[serde(rename = "el")]
+    El,
+    #[serde(rename = "gu")]
+    Gu,
+    #[serde(rename = "ha")]
+    Ha,
+    #[serde(rename = "he")]
+    He,
+    #[serde(rename = "hi")]
+    Hi,
+    #[serde(rename = "hu")]
+    Hu,
+    #[serde(rename = "id")]
+    Id,
+    #[serde(rename = "ga")]
+    Ga,
+    #[serde(rename = "it")]
+    It,
+    #[serde(rename = "ja")]
+    Ja,
+    #[serde(rename = "kn")]
+    Kn,
+    #[serde(rename = "kk")]
+    Kk,
+    #[serde(rename = "rw_RW")]
+    RwRw,
+    #[serde(rename = "ko")]
+    Ko,
+    #[serde(rename = "ky_KG")]
+    KyKg,
+    #[serde(rename = "lo")]
+    Lo,
+    #[serde(rename = "lv")]
+    Lv,
+    #[serde(rename = "lt")]
+    Lt,
+    #[serde(rename = "mk")]
+    Mk,
+    #[serde(rename = "ms")]
+    Ms,
+    #[serde(rename = "ml")]
+    Ml,
+    #[serde(rename = "mr")]
+    Mr,
+    #[serde(rename = "nb")]
+    Nb,
+    #[serde(rename = "fa")]
+    Fa,
+    #[serde(rename = "pl")]
+    Pl,
+    #[serde(rename = "pt_BR")]
+    PtBr,
+    #[serde(rename = "pt_PT")]
+    PtPt,
+    #[serde(rename = "pa")]
+    Pa,
+    #[serde(rename = "ro")]
+    Ro,
+    #[serde(rename = "ru")]
+    Ru,
+    #[serde(rename = "sr")]
+    Sr,
+    #[serde(rename = "sk")]
+    Sk,
+    #[serde(rename = "sl")]
+    Sl,
+    #[serde(rename = "es")]
+    Es,
+    #[serde(rename = "es_AR")]
+    EsAr,
+    #[serde(rename = "es_ES")]
+    EsEs,
+    #[serde(rename = "es_MX")]
+    EsMx,
+    #[serde(rename = "sw")]
+    Sw,
+    #[serde(rename = "sv")]
+    Sv,
+    #[serde(rename = "ta")]
+    Ta,
+    #[serde(rename = "te")]
+    Te,
+    #[serde(rename = "th")]
+    Th,
+    #[serde(rename = "tr")]
+    Tr,
+    #[serde(rename = "uk")]
+    Uk,
+    #[serde(rename = "ur")]
+    Ur,
+    #[serde(rename = "uz")]
+    Uz,
+    #[serde(rename = "vi")]
+    Vi,
+    #[serde(rename = "zu")]
+    Zu,
+    #[serde(rename = "unknown")]
+    Unknown,
+}
+
+impl ToString for TemplateLanguage {
+    fn to_string(&self) -> String {
+        match self {
+            Self::Af => String::from("af"),
+            Self::Sq => String::from("sq"),
+            Self::Ar => String::from("ar"),
+            Self::Az => String::from("az"),
+            Self::Bn => String::from("bn"),
+            Self::Bg => String::from("bg"),
+            Self::Ca => String::from("ca"),
+            Self::ZhCn => String::from("zh_CN"),
+            Self::ZhHk => String::from("zh_HK"),
+            Self::ZhTw => String::from("zh_TW"),
+            Self::Hr => String::from("hr"),
+            Self::Cs => String::from("cs"),
+            Self::Da => String::from("da"),
+            Self::Nl => String::from("nl"),
+            Self::En => String::from("en"),
+            Self::EnGb => String::from("en_GB"),
+            Self::EnUs => String::from("en_US"),
+            Self::Et => String::from("et"),
+            Self::Fil => String::from("fil"),
+            Self::Fi => String::from("fi"),
+            Self::Fr => String::from("fr"),
+            Self::Ka => String::from("ka"),
+            Self::De => String::from("de"),
+            Self::El => String::from("el"),
+            Self::Gu => String::from("gu"),
+            Self::Ha => String::from("ha"),
+            Self::He => String::from("he"),
+            Self::Hi => String::from("hi"),
+            Self::Hu => String::from("hu"),
+            Self::Id => String::from("id"),
+            Self::Ga => String::from("ga"),
+            Self::It => String::from("it"),
+            Self::Ja => String::from("ja"),
+            Self::Kn => String::from("kn"),
+            Self::Kk => String::from("kk"),
+            Self::RwRw => String::from("rw_RW"),
+            Self::Ko => String::from("ko"),
+            Self::KyKg => String::from("ky_KG"),
+            Self::Lo => String::from("lo"),
+            Self::Lv => String::from("lv"),
+            Self::Lt => String::from("lt"),
+            Self::Mk => String::from("mk"),
+            Self::Ms => String::from("ms"),
+            Self::Ml => String::from("ml"),
+            Self::Mr => String::from("mr"),
+            Self::Nb => String::from("nb"),
+            Self::Fa => String::from("fa"),
+            Self::Pl => String::from("pl"),
+            Self::PtBr => String::from("pt_BR"),
+            Self::PtPt => String::from("pt_PT"),
+            Self::Pa => String::from("pa"),
+            Self::Ro => String::from("ro"),
+            Self::Ru => String::from("ru"),
+            Self::Sr => String::from("sr"),
+            Self::Sk => String::from("sk"),
+            Self::Sl => String::from("sl"),
+            Self::Es => String::from("es"),
+            Self::EsAr => String::from("es_AR"),
+            Self::EsEs => String::from("es_ES"),
+            Self::EsMx => String::from("es_MX"),
+            Self::Sw => String::from("sw"),
+            Self::Sv => String::from("sv"),
+            Self::Ta => String::from("ta"),
+            Self::Te => String::from("te"),
+            Self::Th => String::from("th"),
+            Self::Tr => String::from("tr"),
+            Self::Uk => String::from("uk"),
+            Self::Ur => String::from("ur"),
+            Self::Uz => String::from("uz"),
+            Self::Vi => String::from("vi"),
+            Self::Zu => String::from("zu"),
+            Self::Unknown => String::from("unknown"),
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "format")]
+pub enum TemplateHeader {
+    #[serde(rename = "DOCUMENT")]
+    Document {
+        /// An example of a template header document a user could create. Should be a valid URL
+        /// that starts with `http` or `https`. Supported document type is `PDF`. Maximum document
+        /// size is 16MB. Cannot contain placeholders.
+        #[serde(skip_serializing_if = "Option::is_none")]
+        example: Option<String>,
+    },
+    #[serde(rename = "IMAGE")]
+    Image {
+        /// An example of a template header image a user could create. Should be a valid URL that
+        /// starts with `http` or `https`. Supported image types are `JPG`, `JPEG`, `PNG`. Maximum
+        /// image size is 16MB. Cannot contain placeholders.
+        #[serde(skip_serializing_if = "Option::is_none")]
+        example: Option<String>,
+    },
+    #[serde(rename = "LOCATION")]
+    Location {},
+    #[serde(rename = "TEXT")]
+    Text {
+        /// Template header text. Can contain up to 60 characters, with one placeholder {{1}}.
+        text: String,
+        /// An example of the content for the template header a user could use. Cannot contain
+        /// placeholders.
+        #[serde(skip_serializing_if = "Option::is_none")]
+        example: Option<String>,
+    },
+    #[serde(rename = "VIDEO")]
+    Video {
+        /// An example of a template header video a user could use. Should be a valid URL that
+        /// starts with `http` or `https`. Supported video type is `MP4`. Maximum video size is
+        /// 16MB. Cannot contain placeholders.
+        #[serde(skip_serializing_if = "Option::is_none")]
+        example: Option<String>,
+    },
+}
+
+impl TemplateHeader {
+    pub fn new_text(text: String) -> Self {
+        Self::Text {
+            text,
+            example: None,
+        }
+    }
+
+    pub fn new_image(example: String) -> Self {
+        Self::Image {
+            example: Some(example),
+        }
+    }
+
+    pub fn new_video(example: String) -> Self {
+        Self::Video {
+            example: Some(example),
+        }
+    }
+
+    pub fn new_document(example: String) -> Self {
+        Self::Document {
+            example: Some(example),
+        }
+    }
+
+    pub fn new_location() -> Self {
+        Self::Location {}
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct TemplateFooter {
+    /// Plain text, up to 60 characters.
+    #[validate(length(max = 60))]
+    pub text: String,
+}
+
+impl TemplateFooter {
+    pub fn new(text: String) -> Self {
+        TemplateFooter { text }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum TemplateButton {
+    #[serde(rename = "PHONE_NUMBER")]
+    Number {
+        /// Button text.
+        text: String,
+        /// Phone number to which a phone call would be placed by end-user when hitting the button.
+        #[serde(rename = "phoneNumber")]
+        phone_number: String,
+    },
+    #[serde(rename = "QUICK_REPLY")]
+    QuickReply {
+        /// Button text.
+        text: String,
+    },
+    #[serde(rename = "URL")]
+    Url {
+        /// Button text.
+        text: String,
+        /// URL to which the end-user will be directed when hitting the button. URL is expected to
+        /// start with `https://` or `http://`. Can be static or dynamic. For dynamic URL
+        /// registration, add a placeholder {{1}} at the end of the link. Example:
+        /// `https://www.infobip.com/{{1}}`.
+        url: String,
+        /// An example of a URL a user could use. Should be a valid URL that starts with
+        /// `https://` or `http://`. Cannot contain placeholders.
+        #[serde(skip_serializing_if = "Option::is_none")]
+        example: Option<String>,
+    },
+}
+
+impl TemplateButton {
+    pub fn new_number(text: String, phone_number: String) -> Self {
+        Self::Number { text, phone_number }
+    }
+
+    pub fn new_quick_reply(text: String) -> Self {
+        Self::QuickReply { text }
+    }
+
+    pub fn new_url(text: String, url: String) -> Self {
+        Self::Url {
+            text,
+            url,
+            example: None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct TemplateBody {
+    /// Plain text or text with placeholders. Placeholders have to be correctly formatted and in
+    /// the correct order, regardless of other sections. Example: {{1}}, {{2}}, {{3}}...
+    #[validate(length(min = 1))]
+    pub text: String,
+
+    /// Placeholders examples. The number of examples has to be the same as the number of
+    /// placeholders. Examples cannot contain placeholders.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub examples: Option<Vec<String>>,
+}
+
+impl TemplateBody {
+    pub fn new(text: String) -> Self {
+        TemplateBody {
+            text,
+            examples: None,
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum TemplateType {
+    TEXT,
+    MEDIA,
+    UNSUPPORTED,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct TemplateStructure {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    /// Template header. Can be `image`, `document`, `video`, `location` or `text`.
+    pub header: Option<TemplateHeader>,
+
+    #[validate]
+    /// Template body.
+    pub body: TemplateBody,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate]
+    /// Template footer.
+    pub footer: Option<TemplateFooter>,
+
+    /// Template buttons. Can be either up to 3 `quick reply` buttons or up to 2 `call to action`
+    /// buttons. Call to action buttons must be unique in type.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate(length(max = 3))]
+    pub buttons: Option<Vec<TemplateButton>>,
+
+    #[serde(rename = "type", skip_serializing_if = "Option::is_none")]
+    pub template_type: Option<TemplateType>,
+}
+
+impl TemplateStructure {
+    pub fn new(body: TemplateBody) -> Self {
+        TemplateStructure {
+            header: None,
+            body,
+            footer: None,
+            buttons: None,
+            template_type: None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct CreateTemplateRequestBody {
+    /// Template name. Must only contain lowercase alphanumeric characters and underscores.
+    #[validate(length(min = 1))]
+    pub name: String,
+
+    /// Template language, one template with same name can have multiple transliterations.
+    pub language: TemplateLanguage,
+
+    /// Category of the template.
+    pub category: TemplateCategory,
+
+    /// Template structure.
+    #[validate]
+    pub structure: TemplateStructure,
+}
+
+impl CreateTemplateRequestBody {
+    pub fn new(
+        name: String,
+        language: TemplateLanguage,
+        category: TemplateCategory,
+        structure: TemplateStructure,
+    ) -> Self {
+        CreateTemplateRequestBody {
+            name,
+            language,
+            category,
+            structure,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum TemplateHeaderContent {
+    #[serde(rename = "DOCUMENT")]
+    Document {
+        /// URL of a document sent in the header. It is expected to be a valid URL starting with
+        /// `https://` or `http://`. Supported document type is `PDF`. Maximum document size
+        /// is 100MB.
+        #[serde(rename = "mediaUrl")]
+        media_url: String,
+
+        /// Filename of the document.
+        #[serde(rename = "filename")]
+        filename: String,
+    },
+    #[serde(rename = "IMAGE")]
+    Image {
+        /// URL of an image sent in the header. It is expected to be a valid URL starting with
+        /// `https://` or `http://`. Supported image types are `JPG`, `JPEG`, `PNG`. Maximum image
+        /// size is 5MB.
+        #[serde(rename = "mediaUrl")]
+        media_url: String,
+    },
+    #[serde(rename = "LOCATION")]
+    Location {
+        /// Latitude of a location sent in the header.
+        #[serde(rename = "latitude")]
+        latitude: f64,
+
+        /// Longitude of a location sent in the header.
+        #[serde(rename = "longitude")]
+        longitude: f64,
+    },
+    #[serde(rename = "TEXT")]
+    Text {
+        /// Value of a placeholder in the text header.
+        #[serde(rename = "placeholder")]
+        placeholder: String,
+    },
+    #[serde(rename = "VIDEO")]
+    Video {
+        /// URL of a video sent in the header. It is expected to be a valid URL starting with
+        /// `https://` or `http://`. Supported video types are `MP4`, `3GPP`. Maximum video size
+        /// is 16MB.
+        #[serde(rename = "mediaUrl")]
+        media_url: String,
+    },
+}
+
+impl TemplateHeaderContent {
+    pub fn new_document(media_url: String, filename: String) -> Self {
+        TemplateHeaderContent::Document {
+            media_url,
+            filename,
+        }
+    }
+
+    pub fn new_image(media_url: String) -> Self {
+        TemplateHeaderContent::Image { media_url }
+    }
+
+    pub fn new_location(latitude: f64, longitude: f64) -> Self {
+        TemplateHeaderContent::Location {
+            latitude,
+            longitude,
+        }
+    }
+
+    pub fn new_text(placeholder: String) -> Self {
+        TemplateHeaderContent::Text { placeholder }
+    }
+
+    pub fn new_video(media_url: String) -> Self {
+        TemplateHeaderContent::Video { media_url }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct TemplateBodyContent {
+    /// Template's parameter values submitted in the same order as in the registered template.
+    /// The value must not be null, but it can be an empty array, if the template was registered
+    /// without placeholders. Values within the array must not be null or empty.
+    #[validate(length(min = 1))]
+    pub placeholders: Vec<String>,
+}
+
+impl TemplateBodyContent {
+    pub fn new(placeholders: Vec<String>) -> Self {
+        TemplateBodyContent { placeholders }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(tag = "type")]
+pub enum TemplateButtonContent {
+    #[serde(rename = "QUICK_REPLY")]
+    QuickReply {
+        /// Payload of a `quick reply` button.
+        #[serde(rename = "parameter")]
+        parameter: String,
+    },
+    #[serde(rename = "URL")]
+    Url {
+        /// URL extension of a `dynamic URL` defined in the registered template.
+        #[serde(rename = "parameter")]
+        parameter: String,
+    },
+}
+
+impl TemplateButtonContent {
+    pub fn new_quick_reply(parameter: String) -> Self {
+        TemplateButtonContent::QuickReply { parameter }
+    }
+
+    pub fn new_url(parameter: String) -> Self {
+        TemplateButtonContent::Url { parameter }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct TemplateData {
+    /// Template body.
+    #[validate]
+    pub body: TemplateBodyContent,
+
+    /// Template header. Should be defined, only if placeholders or media have been registered in
+    /// the template's header.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub header: Option<TemplateHeaderContent>,
+
+    /// Template buttons. Should be defined in correct order, only if `quick reply` or
+    /// `dynamic URL` buttons have been registered. It can have up to three `quick reply` buttons
+    /// or only one `dynamic URL` button.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub buttons: Option<Vec<TemplateButtonContent>>,
+}
+
+impl TemplateData {
+    pub fn new(body: TemplateBodyContent) -> Self {
+        TemplateData {
+            body,
+            header: None,
+            buttons: None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct TemplateContent {
+    /// Template name. Should only contain lowercase alphanumeric characters and underscores.
+    #[serde(rename = "templateName")]
+    #[validate(length(min = 1, max = 512))]
+    pub template_name: String,
+
+    /// Template data. Values have to be set as registered in the template.
+    #[serde(rename = "templateData")]
+    #[validate]
+    pub template_data: TemplateData,
+
+    /// The code of language or locale to use. Must be the same code used when registering the template.
+    #[serde(rename = "language")]
+    pub language: String,
+}
+
+impl TemplateContent {
+    pub fn new(template_name: String, template_data: TemplateData, language: String) -> Self {
+        TemplateContent {
+            template_name,
+            template_data,
+            language,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct SmsFailover {
+    /// SMS sender number. Must be in international format.
+    #[validate(length(min = 1, max = 24))]
+    pub from: String,
+
+    /// Content of the SMS that will be sent.
+    #[validate(length(min = 1, max = 4096))]
+    pub text: String,
+}
+
+impl SmsFailover {
+    pub fn new(from: String, text: String) -> Self {
+        SmsFailover { from, text }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct FailoverMessage {
+    /// Registered WhatsApp sender number. Must be in international format and comply with
+    /// WhatsApp's requirements.
+    #[serde(rename = "from")]
+    #[validate(length(min = 1, max = 24))]
+    pub from: String,
+
+    /// Message recipient number. Must be in international format.
+    #[serde(rename = "to")]
+    #[validate(length(min = 1, max = 24))]
+    pub to: String,
+
+    /// The ID that uniquely identifies the message sent.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate(length(max = 50))]
+    pub message_id: Option<String>,
+
+    /// The content object to build a message that will be sent.
+    #[validate]
+    pub content: TemplateContent,
+
+    /// Custom client data that will be included in a Delivery Report.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate(length(max = 4000))]
+    pub callback_data: Option<String>,
+
+    /// The URL on your callback server to which delivery and seen reports will be sent. Delivery
+    /// report format, Seen report format.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate(url)]
+    pub notify_url: Option<String>,
+
+    /// SMS message to be sent if the WhatsApp template message could not be delivered.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate]
+    pub sms_failover: Option<SmsFailover>,
+}
+
+impl FailoverMessage {
+    pub fn new(from: String, to: String, content: TemplateContent) -> Self {
+        Self {
+            from,
+            to,
+            content,
+            message_id: None,
+            callback_data: None,
+            notify_url: None,
+            sms_failover: None,
+        }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct SendTemplateRequestBody {
+    /// An array of messages being sent.
+    pub messages: Vec<FailoverMessage>,
+
+    /// The ID that uniquely identifies the request. Bulk ID will be received only when you send a
+    /// message to more than one destination address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bulk_id: Option<String>,
+}
+
+impl SendTemplateRequestBody {
+    pub fn new(messages: Vec<FailoverMessage>) -> Self {
+        Self {
+            messages,
+            bulk_id: None,
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Status {
@@ -1111,3 +1877,105 @@ pub type SendInteractiveListResponseBody = SendContentResponseBody;
 pub type SendInteractiveProductResponseBody = SendContentResponseBody;
 
 pub type SendInteractiveMultiproductResponseBody = SendContentResponseBody;
+
+/// Status of the template.
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum TemplateStatus {
+    #[serde(rename = "APPROVED")]
+    Approved,
+    #[serde(rename = "IN_APPEAL")]
+    InAppeal,
+    #[serde(rename = "PENDING")]
+    Pending,
+    #[serde(rename = "REJECTED")]
+    Rejected,
+    #[serde(rename = "PENDING_DELETION")]
+    PendingDeletion,
+    #[serde(rename = "DELETED")]
+    Deleted,
+    #[serde(rename = "DISABLED")]
+    Disabled,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CreateTemplateResponseBody {
+    /// Template ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+
+    /// Business account ID to which template belongs.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub business_account_id: Option<i64>,
+
+    /// Name of the template.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language: Option<TemplateLanguage>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<TemplateStatus>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub category: Option<TemplateCategory>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub structure: Option<TemplateStructure>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Template {
+    /// Template ID.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+
+    /// Business account ID to which template belongs.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub business_account_id: Option<i64>,
+
+    /// Name of the template.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    /// Template language, one template with same name can have multiple transliterations.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language: Option<TemplateLanguage>,
+
+    /// Status of the template.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<TemplateStatus>,
+
+    /// Category of the template.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub category: Option<TemplateCategory>,
+
+    /// Template structure.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub structure: Option<TemplateStructure>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GetTemplatesResponseBody {
+    /// List of all templates for given sender.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub templates: Option<Vec<Template>>,
+}
+
+pub type SentMessageInfo = SendContentResponseBody;
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SendTemplateResponseBody {
+    /// Array of sent message objects, one object per every message.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub messages: Option<Vec<SentMessageInfo>>,
+
+    /// The ID that uniquely identifies the request. Bulk ID will be received only when you send a
+    /// message to more than one destination address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bulk_id: Option<String>,
+}

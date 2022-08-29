@@ -4,32 +4,40 @@ use reqwest::{Method, Response};
 use serde::Serialize;
 use validator::Validate;
 
-use crate::api::{build_api_error, send_valid_json_request, SdkError, SdkResponse};
+use crate::api::{
+    build_api_error, send_no_body_request, send_valid_json_request, SdkError, SdkResponse,
+};
 use crate::configuration::Configuration;
 use crate::model::whatsapp::{
+    CreateTemplateRequestBody, CreateTemplateResponseBody, GetTemplatesResponseBody,
     SendAudioRequestBody, SendAudioResponseBody, SendContactRequestBody, SendContactResponseBody,
     SendDocumentRequestBody, SendDocumentResponseBody, SendImageRequestBody, SendImageResponseBody,
     SendInteractiveButtonsRequestBody, SendInteractiveButtonsResponseBody,
     SendInteractiveListRequestBody, SendInteractiveListResponseBody,
     SendInteractiveMultiproductRequestBody, SendInteractiveMultiproductResponseBody,
     SendInteractiveProductRequestBody, SendInteractiveProductResponseBody, SendLocationRequestBody,
-    SendLocationResponseBody, SendStickerRequestBody, SendStickerResponseBody, SendTextRequestBody,
-    SendTextResponseBody, SendVideoRequestBody, SendVideoResponseBody,
+    SendLocationResponseBody, SendStickerRequestBody, SendStickerResponseBody,
+    SendTemplateRequestBody, SendTemplateResponseBody, SendTextRequestBody, SendTextResponseBody,
+    SendVideoRequestBody, SendVideoResponseBody,
 };
 
-pub const PATH_SEND_TEXT: &str = "/whatsapp/1/message/text";
+pub const PATH_CREATE_TEMPLATE: &str = "/whatsapp/2/senders/{sender}/templates";
+pub const PATH_DELETE_TEMPLATE: &str = "/whatsapp/2/senders/{sender}/templates/{templateName}";
+pub const PATH_GET_TEMPLATES: &str = "/whatsapp/2/senders/{sender}/templates";
+pub const PATH_SEND_AUDIO: &str = "/whatsapp/1/message/audio";
+pub const PATH_SEND_CONTACT: &str = "/whatsapp/1/message/contact";
 pub const PATH_SEND_DOCUMENT: &str = "/whatsapp/1/message/document";
 pub const PATH_SEND_IMAGE: &str = "/whatsapp/1/message/image";
-pub const PATH_SEND_AUDIO: &str = "/whatsapp/1/message/audio";
-pub const PATH_SEND_VIDEO: &str = "/whatsapp/1/message/video";
-pub const PATH_SEND_STICKER: &str = "/whatsapp/1/message/sticker";
-pub const PATH_SEND_LOCATION: &str = "/whatsapp/1/message/location";
-pub const PATH_SEND_CONTACT: &str = "/whatsapp/1/message/contact";
 pub const PATH_SEND_INTERACTIVE_BUTTONS: &str = "/whatsapp/1/message/interactive/buttons";
 pub const PATH_SEND_INTERACTIVE_LIST: &str = "/whatsapp/1/message/interactive/list";
-pub const PATH_SEND_INTERACTIVE_PRODUCT: &str = "/whatsapp/1/message/interactive/product";
 pub const PATH_SEND_INTERACTIVE_MULTIPRODUCT: &str =
     "/whatsapp/1/message/interactive/multi-product";
+pub const PATH_SEND_INTERACTIVE_PRODUCT: &str = "/whatsapp/1/message/interactive/product";
+pub const PATH_SEND_LOCATION: &str = "/whatsapp/1/message/location";
+pub const PATH_SEND_STICKER: &str = "/whatsapp/1/message/sticker";
+pub const PATH_SEND_TEMPLATE: &str = "/whatsapp/1/message/template";
+pub const PATH_SEND_TEXT: &str = "/whatsapp/1/message/text";
+pub const PATH_SEND_VIDEO: &str = "/whatsapp/1/message/video";
 
 /// Main asynchronous client for the Infobip WhatsApp channel.
 #[derive(Clone, Debug)]
@@ -97,12 +105,7 @@ impl WhatsappClient {
         request_body: SendTextRequestBody,
     ) -> Result<SdkResponse<SendTextResponseBody>, SdkError> {
         let response = self
-            .send_request(
-                request_body,
-                HashMap::new(),
-                reqwest::Method::POST,
-                PATH_SEND_TEXT,
-            )
+            .send_request(request_body, HashMap::new(), Method::POST, PATH_SEND_TEXT)
             .await?;
 
         let status = response.status();
@@ -153,7 +156,7 @@ impl WhatsappClient {
             .send_request(
                 request_body,
                 HashMap::new(),
-                reqwest::Method::POST,
+                Method::POST,
                 PATH_SEND_DOCUMENT,
             )
             .await?;
@@ -202,12 +205,7 @@ impl WhatsappClient {
         request_body: SendImageRequestBody,
     ) -> Result<SdkResponse<SendImageResponseBody>, SdkError> {
         let response = self
-            .send_request(
-                request_body,
-                HashMap::new(),
-                reqwest::Method::POST,
-                PATH_SEND_IMAGE,
-            )
+            .send_request(request_body, HashMap::new(), Method::POST, PATH_SEND_IMAGE)
             .await?;
 
         let status = response.status();
@@ -231,12 +229,7 @@ impl WhatsappClient {
         request_body: SendAudioRequestBody,
     ) -> Result<SdkResponse<SendAudioResponseBody>, SdkError> {
         let response = self
-            .send_request(
-                request_body,
-                HashMap::new(),
-                reqwest::Method::POST,
-                PATH_SEND_AUDIO,
-            )
+            .send_request(request_body, HashMap::new(), Method::POST, PATH_SEND_AUDIO)
             .await?;
 
         let status = response.status();
@@ -284,12 +277,7 @@ impl WhatsappClient {
         request_body: SendVideoRequestBody,
     ) -> Result<SdkResponse<SendVideoResponseBody>, SdkError> {
         let response = self
-            .send_request(
-                request_body,
-                HashMap::new(),
-                reqwest::Method::POST,
-                PATH_SEND_VIDEO,
-            )
+            .send_request(request_body, HashMap::new(), Method::POST, PATH_SEND_VIDEO)
             .await?;
 
         let status = response.status();
@@ -340,7 +328,7 @@ impl WhatsappClient {
             .send_request(
                 request_body,
                 HashMap::new(),
-                reqwest::Method::POST,
+                Method::POST,
                 PATH_SEND_STICKER,
             )
             .await?;
@@ -393,7 +381,7 @@ impl WhatsappClient {
             .send_request(
                 request_body,
                 HashMap::new(),
-                reqwest::Method::POST,
+                Method::POST,
                 PATH_SEND_LOCATION,
             )
             .await?;
@@ -422,7 +410,7 @@ impl WhatsappClient {
             .send_request(
                 request_body,
                 HashMap::new(),
-                reqwest::Method::POST,
+                Method::POST,
                 PATH_SEND_CONTACT,
             )
             .await?;
@@ -451,7 +439,7 @@ impl WhatsappClient {
             .send_request(
                 request_body,
                 HashMap::new(),
-                reqwest::Method::POST,
+                Method::POST,
                 PATH_SEND_INTERACTIVE_BUTTONS,
             )
             .await?;
@@ -479,7 +467,7 @@ impl WhatsappClient {
             .send_request(
                 request_body,
                 HashMap::new(),
-                reqwest::Method::POST,
+                Method::POST,
                 PATH_SEND_INTERACTIVE_LIST,
             )
             .await?;
@@ -507,7 +495,7 @@ impl WhatsappClient {
             .send_request(
                 request_body,
                 HashMap::new(),
-                reqwest::Method::POST,
+                Method::POST,
                 PATH_SEND_INTERACTIVE_PRODUCT,
             )
             .await?;
@@ -539,6 +527,127 @@ impl WhatsappClient {
                 PATH_SEND_INTERACTIVE_MULTIPRODUCT,
             )
             .await?;
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Create a WhatsApp template. Created template will be submitted for WhatsApp's review and
+    /// approval. Once approved, template can be sent to end-users. Refer to template guidelines
+    /// for additional info.
+    pub async fn create_template(
+        &self,
+        sender: String,
+        request_body: CreateTemplateRequestBody,
+    ) -> Result<SdkResponse<CreateTemplateResponseBody>, SdkError> {
+        let path = PATH_CREATE_TEMPLATE.replace("{sender}", &sender);
+
+        let response = self
+            .send_request(request_body, HashMap::new(), Method::POST, path.as_str())
+            .await?;
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Get all the templates and their statuses for a given sender.
+    pub async fn get_templates(
+        &self,
+        sender: String,
+    ) -> Result<SdkResponse<GetTemplatesResponseBody>, SdkError> {
+        let path = PATH_GET_TEMPLATES.replace("{sender}", &sender);
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            HashMap::new(),
+            Method::GET,
+            path.as_str(),
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Delete a WhatsApp template.
+    //
+    // If registered in multiple languages, deleting the message template will also delete all its
+    // languages.
+    // The template will be deleted for all senders registered under the same WhatsApp Business
+    // Account (WABA).
+    // The system will attempt to deliver sent messages for 30 days, regardless of the template
+    // deletion.
+    // Once deleted, the name of the approved template cannot be reused for 30 days.
+    pub async fn delete_template(
+        &self,
+        sender: String,
+        template_id: String,
+    ) -> Result<reqwest::StatusCode, SdkError> {
+        let path = PATH_DELETE_TEMPLATE
+            .replace("{sender}", &sender)
+            .replace("{templateName}", &template_id);
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            HashMap::new(),
+            Method::DELETE,
+            path.as_str(),
+        )
+        .await?;
+
+        let status = response.status();
+
+        if status.is_success() {
+            Ok(status)
+        } else {
+            let text = response.text().await?;
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Send a single or multiple template messages to one or more recipients. Template messages
+    /// can be sent and delivered at anytime. Each template needs to be registered and pre-approved
+    /// by WhatsApp.
+    pub async fn send_template(
+        &self,
+        request_body: SendTemplateRequestBody,
+    ) -> Result<SdkResponse<SendTemplateResponseBody>, SdkError> {
+        let response = self
+            .send_request(
+                request_body,
+                HashMap::new(),
+                Method::POST,
+                PATH_SEND_TEMPLATE,
+            )
+            .await?;
+
         let status = response.status();
         let text = response.text().await?;
 
