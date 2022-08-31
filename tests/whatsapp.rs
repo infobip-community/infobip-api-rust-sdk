@@ -31,7 +31,7 @@ fn get_test_sender_number() -> String {
 
 #[ignore]
 #[tokio::test]
-async fn send_text_whatsapp() {
+async fn send_text() {
     let request_body = SendTextRequestBody::new(
         get_test_sender_number(),
         get_test_destination_number(),
@@ -46,7 +46,7 @@ async fn send_text_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn send_document_whatsapp() {
+async fn send_document() {
     let request_body = SendDocumentRequestBody::new(
         get_test_sender_number(),
         get_test_destination_number(),
@@ -67,7 +67,7 @@ async fn send_document_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn send_image_whatsapp() {
+async fn send_image() {
     let request_body = SendImageRequestBody::new(
         get_test_sender_number(),
         get_test_destination_number(),
@@ -82,7 +82,7 @@ async fn send_image_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn send_audio_whatsapp() {
+async fn send_audio() {
     let request_body = SendAudioRequestBody::new(
         get_test_sender_number(),
         get_test_destination_number(),
@@ -97,7 +97,7 @@ async fn send_audio_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn send_video_whatsapp() {
+async fn send_video() {
     let request_body = SendVideoRequestBody::new(
         get_test_sender_number(),
         get_test_destination_number(),
@@ -112,7 +112,7 @@ async fn send_video_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn send_sticker_whatsapp() {
+async fn send_sticker() {
     let request_body = SendStickerRequestBody::new(
         get_test_sender_number(),
         get_test_destination_number(),
@@ -129,7 +129,7 @@ async fn send_sticker_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn send_location_whatsapp() {
+async fn send_location() {
     let request_body = SendLocationRequestBody::new(
         get_test_sender_number(),
         get_test_destination_number(),
@@ -146,7 +146,7 @@ async fn send_location_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn send_contact_whatsapp() {
+async fn send_contact() {
     let contact = Contact::new(ContactName::new("John".to_string(), "John Doe".to_string()));
     let request_body = SendContactRequestBody::new(
         get_test_sender_number(),
@@ -164,7 +164,7 @@ async fn send_contact_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn send_interactive_buttons_whatsapp() {
+async fn send_interactive_buttons() {
     let button = InteractiveButton::new_reply_button("1".to_string(), "Button Title".to_string());
     let request_body = SendInteractiveButtonsRequestBody::new(
         get_test_sender_number(),
@@ -186,7 +186,7 @@ async fn send_interactive_buttons_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn send_interactive_list_whatsapp() {
+async fn send_interactive_list() {
     let row = InteractiveRow::new("1".to_string(), "Row Title".to_string());
 
     let section = InteractiveListSection::new(vec![row]);
@@ -211,7 +211,7 @@ async fn send_interactive_list_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn send_interactive_product_whatsapp() {
+async fn send_interactive_product() {
     let request_body = SendInteractiveProductRequestBody::new(
         get_test_sender_number(),
         get_test_destination_number(),
@@ -232,7 +232,7 @@ async fn send_interactive_product_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn send_interactive_multiproduct_whatsapp() {
+async fn send_interactive_multiproduct() {
     let section = InteractiveMultiproductSection::new(vec!["1".to_string(), "2".to_string()]);
     let request_body = SendInteractiveMultiproductRequestBody::new(
         get_test_sender_number(),
@@ -255,7 +255,7 @@ async fn send_interactive_multiproduct_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn create_template_whatsapp() {
+async fn create_template() {
     let structure = TemplateStructure::new(TemplateBody::new("hello".to_string()));
     let request_body = CreateTemplateRequestBody::new(
         "rust_sdk_test_template".to_string(),
@@ -275,7 +275,7 @@ async fn create_template_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn get_templates_whatsapp() {
+async fn get_templates() {
     let response = get_test_wa_client()
         .get_templates(get_test_sender_number())
         .await
@@ -287,7 +287,7 @@ async fn get_templates_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn delete_template_whatsapp() {
+async fn delete_template() {
     let status = get_test_wa_client()
         .delete_template(
             get_test_sender_number(),
@@ -301,7 +301,7 @@ async fn delete_template_whatsapp() {
 
 #[ignore]
 #[tokio::test]
-async fn send_template_whatsapp() {
+async fn send_template() {
     let template_content = TemplateContent::new(
         "rust_sdk_test_template".to_string(),
         TemplateData::new(TemplateBodyContent::new(vec!["hello".to_string()])),

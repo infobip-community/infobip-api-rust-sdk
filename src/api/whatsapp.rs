@@ -83,7 +83,7 @@ impl WhatsappClient {
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendTextRequestBody, TextContent};
     /// # use reqwest::StatusCode;
-    ///
+    /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
@@ -131,7 +131,7 @@ impl WhatsappClient {
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendDocumentRequestBody, DocumentContent};
     /// # use reqwest::StatusCode;
-    ///
+    /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
@@ -184,7 +184,7 @@ impl WhatsappClient {
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendImageRequestBody, ImageContent};
     /// # use reqwest::StatusCode;
-    ///
+    /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
@@ -200,6 +200,7 @@ impl WhatsappClient {
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
+    /// ```
     pub async fn send_image(
         &self,
         request_body: SendImageRequestBody,
@@ -224,6 +225,30 @@ impl WhatsappClient {
     /// Send an audio to a single recipient. Audio messages can only be successfully delivered if
     /// the recipient has contacted the business within the last 24 hours, otherwise template
     /// message should be used.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::whatsapp::{SendAudioRequestBody, AudioContent};
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let request_body = SendAudioRequestBody::new(
+    ///     "44444444444".to_string(),
+    ///     "55555555555".to_string(),
+    ///     AudioContent::new("https://url.to/audio.mp3".to_string())
+    /// );
+    ///
+    /// let response = wa_client.send_audio(request_body).await.unwrap();
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn send_audio(
         &self,
         request_body: SendAudioRequestBody,
@@ -255,7 +280,7 @@ impl WhatsappClient {
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendVideoRequestBody, VideoContent};
     /// # use reqwest::StatusCode;
-    ///
+    /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
@@ -303,7 +328,7 @@ impl WhatsappClient {
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendStickerRequestBody, StickerContent};
     /// # use reqwest::StatusCode;
-    ///
+    /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
@@ -356,7 +381,7 @@ impl WhatsappClient {
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendLocationRequestBody, LocationContent};
     /// # use reqwest::StatusCode;
-    ///
+    /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
@@ -402,6 +427,31 @@ impl WhatsappClient {
     /// Send a contact to a single recipient. Contact messages can only be successfully delivered
     /// if the recipient has contacted the business within the last 24 hours, otherwise template
     /// message should be used.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::whatsapp::{SendContactRequestBody, ContactContent, Contact, ContactName};
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let contact = Contact::new(ContactName::new("John".to_string(), "Doe".to_string()));
+    /// let request_body = SendContactRequestBody::new(
+    ///     "44444444444".to_string(),
+    ///     "55555555555".to_string(),
+    ///     ContactContent::new(vec![contact])
+    /// );
+    ///
+    /// let response = wa_client.send_contact(request_body).await.unwrap();
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn send_contact(
         &self,
         request_body: SendContactRequestBody,
@@ -431,6 +481,39 @@ impl WhatsappClient {
     /// Send an interactive buttons message to a single recipient. Interactive buttons messages
     /// can only be successfully delivered if the recipient has contacted the business within the
     /// last 24 hours, otherwise template message should be used.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::whatsapp::{
+    /// #     SendInteractiveButtonsRequestBody,
+    /// #     InteractiveBody,
+    /// #     InteractiveButton,
+    /// #     InteractiveButtonsAction,
+    /// #     InteractiveButtonsContent,
+    /// # };
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let button = InteractiveButton::new_reply_button("1".to_string(), "button1".to_string());
+    /// let body = InteractiveBody::new("Hello World".to_string());
+    /// let action = InteractiveButtonsAction::new(vec![button]);
+    /// let request_body = SendInteractiveButtonsRequestBody::new(
+    ///     "44444444444".to_string(),
+    ///     "55555555555".to_string(),
+    ///     InteractiveButtonsContent::new(body, action)
+    /// );
+    ///
+    /// let response = wa_client.send_interactive_buttons(request_body).await.unwrap();
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn send_interactive_buttons(
         &self,
         request_body: SendInteractiveButtonsRequestBody,
@@ -459,6 +542,41 @@ impl WhatsappClient {
     /// Send an interactive list message to a single recipient. Interactive list messages can only
     /// be successfully delivered if the recipient has contacted the business within the last 24
     /// hours, otherwise template message should be used.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::whatsapp::{
+    /// #     SendInteractiveListRequestBody,
+    /// #     InteractiveBody,
+    /// #     InteractiveListAction,
+    /// #     InteractiveListContent,
+    /// #     InteractiveRow,
+    /// #     InteractiveListSection,
+    /// # };
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let body = InteractiveBody::new("Hello World".to_string());
+    /// let row = InteractiveRow::new("1".to_string(), "row1".to_string());
+    /// let section = InteractiveListSection::new(vec![row]);
+    /// let action = InteractiveListAction::new("list_title".to_string(), vec![section]);
+    /// let request_body = SendInteractiveListRequestBody::new(
+    ///     "44444444444".to_string(),
+    ///     "55555555555".to_string(),
+    ///     InteractiveListContent::new(body, action)
+    /// );
+    ///
+    /// let response = wa_client.send_interactive_list(request_body).await.unwrap();
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn send_interactive_list(
         &self,
         request_body: SendInteractiveListRequestBody,
@@ -487,6 +605,33 @@ impl WhatsappClient {
     /// Send an interactive product message to a single recipient. Interactive product messages
     /// can only be successfully delivered if the recipient has contacted the business within the
     /// last 24 hours, otherwise template message should be used.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::whatsapp::{
+    /// #     SendInteractiveProductRequestBody, InteractiveProductAction, InteractiveProductContent
+    /// # };
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let action = InteractiveProductAction::new("1".to_string(), "2".to_string());
+    /// let request_body = SendInteractiveProductRequestBody::new(
+    ///     "44444444444".to_string(),
+    ///     "55555555555".to_string(),
+    ///      InteractiveProductContent::new(action)
+    /// );
+    ///
+    /// let response = wa_client.send_interactive_product(request_body).await.unwrap();
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn send_interactive_product(
         &self,
         request_body: SendInteractiveProductRequestBody,
@@ -515,6 +660,41 @@ impl WhatsappClient {
     /// Send an interactive multi-product message to a single recipient. Interactive multi-product
     /// messages can only be successfully delivered if the recipient has contacted the business
     /// within the last 24 hours, otherwise template message should be used.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::whatsapp::{
+    /// #     InteractiveBody,
+    /// #     InteractiveMultiproductAction,
+    /// #     InteractiveMultiproductContent,
+    /// #     InteractiveMultiproductHeader,
+    /// #     InteractiveMultiproductSection,
+    /// #     SendInteractiveMultiproductRequestBody,
+    /// # };
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let header = InteractiveMultiproductHeader::new_text_header("header1".to_string());
+    /// let body = InteractiveBody::new("Hello World".to_string());
+    /// let section = InteractiveMultiproductSection::new(vec!["1".to_string(), "2".to_string()]);
+    /// let action = InteractiveMultiproductAction::new("1".to_string(), vec![section]);
+    /// let request_body = SendInteractiveMultiproductRequestBody::new(
+    ///     "44444444444".to_string(),
+    ///     "55555555555".to_string(),
+    ///     InteractiveMultiproductContent::new(header, body, action)
+    /// );
+    ///
+    /// let response = wa_client.send_interactive_multiproduct(request_body).await.unwrap();
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn send_interactive_multiproduct(
         &self,
         request_body: SendInteractiveMultiproductRequestBody,
@@ -543,6 +723,41 @@ impl WhatsappClient {
     /// Create a WhatsApp template. Created template will be submitted for WhatsApp's review and
     /// approval. Once approved, template can be sent to end-users. Refer to template guidelines
     /// for additional info.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::whatsapp::{
+    /// #     CreateTemplateRequestBody,
+    /// #     TemplateStructure,
+    /// #     TemplateLanguage,
+    /// #     TemplateCategory,
+    /// #     TemplateBody,
+    /// # };
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let structure = TemplateStructure::new(TemplateBody::new("Hello World".to_string()));
+    /// let request_body = CreateTemplateRequestBody::new(
+    ///     "template_name".to_string(),
+    ///     TemplateLanguage::EnUs,
+    ///     TemplateCategory::Marketing,
+    ///     structure,
+    /// );
+    ///
+    /// let response = wa_client.create_template(
+    ///     "1234567891011".to_string(),
+    ///     request_body)
+    /// .await.unwrap();
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn create_template(
         &self,
         sender: String,
@@ -567,6 +782,23 @@ impl WhatsappClient {
     }
 
     /// Get all the templates and their statuses for a given sender.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let response = wa_client.get_templates("12345789101112".to_string()).await.unwrap();
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_templates(
         &self,
         sender: String,
@@ -596,14 +828,35 @@ impl WhatsappClient {
     }
 
     /// Delete a WhatsApp template.
-    //
-    // If registered in multiple languages, deleting the message template will also delete all its
-    // languages.
-    // The template will be deleted for all senders registered under the same WhatsApp Business
-    // Account (WABA).
-    // The system will attempt to deliver sent messages for 30 days, regardless of the template
-    // deletion.
-    // Once deleted, the name of the approved template cannot be reused for 30 days.
+    ///
+    /// If registered in multiple languages, deleting the message template will also delete all its
+    /// languages.
+    /// The template will be deleted for all senders registered under the same WhatsApp Business
+    /// Account (WABA).
+    /// The system will attempt to deliver sent messages for 30 days, regardless of the template
+    /// deletion.
+    /// Once deleted, the name of the approved template cannot be reused for 30 days.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let status = wa_client.delete_template(
+    ///     "1234567891011".to_string(),
+    ///     "template_name".to_string()
+    /// )
+    /// .await.unwrap();
+    ///
+    /// assert_eq!(status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn delete_template(
         &self,
         sender: String,
@@ -635,6 +888,42 @@ impl WhatsappClient {
     /// Send a single or multiple template messages to one or more recipients. Template messages
     /// can be sent and delivered at anytime. Each template needs to be registered and pre-approved
     /// by WhatsApp.
+    ///
+    /// # Example
+    ///
+    /// ```no_run
+    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::whatsapp::{
+    /// #     FailoverMessage,
+    /// #     TemplateBodyContent,
+    /// #     TemplateContent,
+    /// #     TemplateData,
+    /// #     TemplateLanguage,
+    /// #     SendTemplateRequestBody
+    /// # };
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let body = TemplateBodyContent::new(vec!["placeholder1".to_string()]);
+    /// let data = TemplateData::new(body);
+    /// let content = TemplateContent::new("template_name".to_string(), data, TemplateLanguage::EnUs.to_string());
+    /// let message = FailoverMessage::new(
+    ///     "1234567891011".to_string(),
+    ///     "1234567891012".to_string(),
+    ///     content,
+    /// );
+    /// let request_body = SendTemplateRequestBody::new(vec![message]);
+    ///
+    /// let response = wa_client.send_template(request_body).await.unwrap();
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn send_template(
         &self,
         request_body: SendTemplateRequestBody,
