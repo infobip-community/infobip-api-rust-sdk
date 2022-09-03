@@ -5,7 +5,7 @@ use serde::Serialize;
 use validator::Validate;
 
 use crate::api::{
-    build_api_error, SdkError, SdkResponse, send_no_body_request, send_valid_json_request,
+    build_api_error, send_no_body_request, send_valid_json_request, SdkError, SdkResponse,
 };
 use crate::configuration::Configuration;
 use crate::model::whatsapp::{
@@ -860,11 +860,11 @@ impl WhatsappClient {
     pub async fn delete_template(
         &self,
         sender: String,
-        template_id: String,
+        template_name: String,
     ) -> Result<reqwest::StatusCode, SdkError> {
         let path = PATH_DELETE_TEMPLATE
             .replace("{sender}", &sender)
-            .replace("{templateName}", &template_id);
+            .replace("{templateName}", &template_name);
 
         let response = send_no_body_request(
             &self.client,

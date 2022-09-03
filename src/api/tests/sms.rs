@@ -1,10 +1,10 @@
-use crate::api::SdkError;
 use crate::api::sms::*;
 use crate::api::tests::{
-    DUMMY_TEXT, get_test_configuration, mock_blocking_json_endpoint, mock_json_endpoint,
+    get_test_configuration, mock_blocking_json_endpoint, mock_json_endpoint, DUMMY_TEXT,
 };
-use crate::model::sms::*;
+use crate::api::SdkError;
 use crate::model::sms::ScheduledStatus::PAUSED;
+use crate::model::sms::*;
 
 const DUMMY_BASE_URL: &str = "https://some.url";
 
@@ -128,7 +128,8 @@ async fn test_preview_server_error() {
             .request_error
             .service_exception
             .text
-            .unwrap().is_empty());
+            .unwrap()
+            .is_empty());
     } else {
         assert!(false, "not an API error")
     }

@@ -145,7 +145,7 @@ fn add_auth_blocking(
 
 fn build_api_error(status: StatusCode, text: &str) -> SdkError {
     match serde_json::from_str(text) {
-        Ok(details) => SdkError::ApiRequestError(ApiError{details, status}),
+        Ok(details) => SdkError::ApiRequestError(ApiError { details, status }),
         Err(e) => SdkError::Serde(e),
     }
 }
