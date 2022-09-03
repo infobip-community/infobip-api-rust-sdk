@@ -17,7 +17,7 @@ const DUMMY_TEXT: &str = "Dummy text for tests. Some special chars: áéíø";
 fn get_test_wa_client() -> WhatsappClient {
     WhatsappClient::with_configuration(
         configuration::Configuration::from_env_api_key()
-            .expect("failed to build default test SMS client"),
+            .expect("failed to build default test client"),
     )
 }
 

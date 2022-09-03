@@ -52,13 +52,19 @@ impl fmt::Display for ApiError {
 
 /// Holds information about a server-side error.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ServiceException {
-    #[serde(rename = "messageId")]
+    /// Identifier of the error.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<String>,
-    #[serde(rename = "text")]
-    pub text: String,
-    #[serde(rename = "validationErrors", skip_serializing_if = "Option::is_none")]
-    pub validation_errors: Option<String>,
+
+    /// Detailed error description.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<String>,
+
+    /// Map of validation errors.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub validation_errors: Option<HashMap<String, Vec<String>>>,
 }
 
 /// Holds the exception produced by a server-side error.
@@ -139,7 +145,7 @@ fn add_auth_blocking(
 
 fn build_api_error(status: StatusCode, text: &str) -> SdkError {
     match serde_json::from_str(text) {
-        Ok(details) => SdkError::ApiRequestError(ApiError { details, status }),
+        Ok(details) => SdkError::ApiRequestError(ApiError{details, status}),
         Err(e) => SdkError::Serde(e),
     }
 }

@@ -2,9 +2,13 @@ use std::collections::HashMap;
 
 use validator::Validate;
 
+use crate::{
+    configuration::Configuration,
+    model::sms::{PreviewRequestBody, PreviewResponseBody},
+};
 use crate::api::{
-    build_api_error, send_blocking_valid_json_request, send_no_body_request,
-    send_valid_json_request, ApiError, SdkError, SdkResponse,
+    ApiError, build_api_error, SdkError,
+    SdkResponse, send_blocking_valid_json_request, send_no_body_request, send_valid_json_request,
 };
 use crate::model::sms::{
     GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody,
@@ -15,10 +19,6 @@ use crate::model::sms::{
     SendOverQueryParametersQueryParameters, SendOverQueryParametersResponseBody, SendRequestBody,
     SendResponseBody, UpdateScheduledStatusQueryParameters, UpdateScheduledStatusRequestBody,
     UpdateScheduledStatusResponseBody,
-};
-use crate::{
-    configuration::Configuration,
-    model::sms::{PreviewRequestBody, PreviewResponseBody},
 };
 
 pub const PATH_GET_DELIVERY_REPORTS: &str = "/sms/1/reports";

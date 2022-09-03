@@ -5,7 +5,7 @@ use serde::Serialize;
 use validator::Validate;
 
 use crate::api::{
-    build_api_error, send_no_body_request, send_valid_json_request, SdkError, SdkResponse,
+    build_api_error, SdkError, SdkResponse, send_no_body_request, send_valid_json_request,
 };
 use crate::configuration::Configuration;
 use crate::model::whatsapp::{
