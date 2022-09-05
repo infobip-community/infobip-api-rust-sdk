@@ -100,11 +100,19 @@ pub struct VideoContent {
     /// `http://`. Supported video types are `MP4`, `3GPP`. Maximum video size is 16MB.
     #[validate(url)]
     pub media_url: String,
+
+    /// Caption of the video.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate(length(min = 0, max = 3000))]
+    pub caption: Option<String>,
 }
 
 impl VideoContent {
     pub fn new(media_url: String) -> Self {
-        VideoContent { media_url }
+        VideoContent {
+            media_url,
+            caption: None,
+        }
     }
 }
 
@@ -776,6 +784,8 @@ pub struct InteractiveListSection {
     pub title: Option<String>,
 
     /// An array of rows sent within a section. Section must contain at least one row. Message can have up to ten rows.
+    #[validate(length(min = 1))]
+    #[validate]
     pub rows: Vec<InteractiveRow>,
 }
 
@@ -794,6 +804,7 @@ pub struct InteractiveListAction {
 
     /// Array of sections in the list.
     #[validate(length(min = 1, max = 10))]
+    #[validate]
     pub sections: Vec<InteractiveListSection>,
 }
 
@@ -837,6 +848,7 @@ pub struct InteractiveListContent {
 
     /// Footer of a message containing one or more interactive elements.
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate]
     pub footer: Option<InteractiveFooter>,
 }
 
@@ -972,6 +984,7 @@ impl InteractiveMultiproductSection {
 pub struct InteractiveMultiproductAction {
     /// The ID that uniquely identifies the catalog registered with Meta and connected to the
     /// WhatsApp Business Account the sender belongs to.
+    #[validate(length(min = 1))]
     pub catalog_id: String,
 
     /// An array of multi-product sections.
@@ -1618,7 +1631,6 @@ pub struct TemplateBodyContent {
     /// Template's parameter values submitted in the same order as in the registered template.
     /// The value must not be null, but it can be an empty array, if the template was registered
     /// without placeholders. Values within the array must not be null or empty.
-    #[validate(length(min = 1))]
     pub placeholders: Vec<String>,
 }
 
@@ -1788,6 +1800,8 @@ impl FailoverMessage {
 #[serde(rename_all = "camelCase")]
 pub struct SendTemplateRequestBody {
     /// An array of messages being sent.
+    #[validate(length(min = 1))]
+    #[validate]
     pub messages: Vec<FailoverMessage>,
 
     /// The ID that uniquely identifies the request. Bulk ID will be received only when you send a
