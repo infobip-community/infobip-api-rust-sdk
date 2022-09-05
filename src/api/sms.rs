@@ -50,7 +50,7 @@ impl SmsClient {
     }
 
     /// Check how different message configurations will affect your message text, number of
-    /// characters and message parts.
+    /// characters, and message parts.
     ///
     /// # Example
     ///
@@ -273,7 +273,8 @@ impl SmsClient {
         }
     }
 
-    /// See the status and the scheduled time of your SMS messages.
+    /// See all scheduled messages and their scheduled date and time. To schedule a message, use
+    /// the sendAt field when sending a message.
     ///
     /// # Example
     /// ```no_run
@@ -567,7 +568,8 @@ impl SmsClient {
         }
     }
 
-    /// Change the date and time for sending scheduled messages.
+    /// Change the date and time of already scheduled messages. To schedule a message, use the
+    /// sendAt field when sending a message.
     ///
     /// # Example
     /// ```no_run
@@ -674,7 +676,8 @@ impl SmsClient {
         }
     }
 
-    /// Change status or completely cancel sending of scheduled messages.
+    /// Change status or completely cancel sending of scheduled messages. To schedule a message,
+    /// use the sendAt field when sending a message.
     ///
     /// # Example
     /// ```no_run
@@ -691,6 +694,7 @@ impl SmsClient {
     /// let request_body = UpdateScheduledStatusRequestBody::new(ScheduledStatus::CANCELED);
     ///
     /// let response = sms_client.update_scheduled_status(query_parameters, request_body).await?;
+    ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
@@ -736,7 +740,7 @@ pub struct BlockingSmsClient {
 }
 
 impl BlockingSmsClient {
-    /// Builds and returns a new `BlockingSmsClient` with specified configuration.
+    /// Builds and returns a new `BlockingSmsClient` with a specified configuration.
     pub fn with_configuration(configuration: Configuration) -> BlockingSmsClient {
         BlockingSmsClient {
             configuration,

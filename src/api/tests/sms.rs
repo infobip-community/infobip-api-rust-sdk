@@ -128,7 +128,8 @@ async fn test_preview_server_error() {
             .request_error
             .service_exception
             .text
-            .is_empty())
+            .unwrap()
+            .is_empty());
     } else {
         assert!(false, "not an API error")
     }
@@ -235,8 +236,6 @@ async fn test_get_delivery_reports_bad_parameters() {
         .unwrap_err();
     if let SdkError::Validation(validation_error) = error {
         assert!(!validation_error.errors().is_empty());
-    } else {
-        assert!(false, "not validation error")
     }
 }
 
