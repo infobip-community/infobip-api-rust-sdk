@@ -11,6 +11,9 @@ use validator::Validate;
 
 use crate::configuration::{ApiKey, Configuration};
 
+#[cfg(feature = "email")]
+pub mod email;
+
 #[cfg(feature = "sms")]
 pub mod sms;
 
@@ -31,6 +34,9 @@ pub enum SdkError {
 
     #[error("api request error")]
     ApiRequestError(#[from] ApiError),
+
+    #[error("IO error")]
+    Io(#[from] std::io::Error),
 }
 
 /// Holds the status code and error details when a 4xx or 5xx response is received.
@@ -157,7 +163,10 @@ async fn send_no_body_request(
     method: reqwest::Method,
     path: &str,
 ) -> Result<Response, SdkError> {
-    let url = format!("{}{}", configuration.base_url(), path);
+    let mut url = format!("{}{}", configuration.base_url(), path);
+    if !url.starts_with("https://") {
+        url = format!("https://{}", url);
+    }
     let mut builder = client.request(method, url).query(&query_parameters);
 
     builder = add_auth(builder, configuration);
@@ -175,7 +184,10 @@ async fn send_valid_json_request<T: Validate + serde::Serialize>(
 ) -> Result<Response, SdkError> {
     request_body.validate()?;
 
-    let url = format!("{}{}", configuration.base_url(), path);
+    let mut url = format!("{}{}", configuration.base_url(), path);
+    if !url.starts_with("https://") {
+        url = format!("https://{}", url);
+    }
     let mut builder = client
         .request(method, url)
         .json(&request_body)
@@ -186,14 +198,17 @@ async fn send_valid_json_request<T: Validate + serde::Serialize>(
     Ok(builder.send().await?)
 }
 
-async fn _send_multipart_request(
+async fn send_multipart_request(
     client: &reqwest::Client,
     configuration: &Configuration,
     form: reqwest::multipart::Form,
     method: reqwest::Method,
     path: &str,
 ) -> Result<Response, SdkError> {
-    let url = format!("{}{}", configuration.base_url(), path);
+    let mut url = format!("{}{}", configuration.base_url(), path);
+    if !url.starts_with("https://") {
+        url = format!("https://{}", url);
+    }
     let mut builder = client.request(method, url);
 
     builder = add_auth(builder, configuration);
@@ -210,7 +225,10 @@ fn send_blocking_valid_json_request<T: Validate + serde::Serialize>(
 ) -> Result<reqwest::blocking::Response, SdkError> {
     request_body.validate()?;
 
-    let url = format!("{}{}", configuration.base_url(), path);
+    let mut url = format!("{}{}", configuration.base_url(), path);
+    if !url.starts_with("https://") {
+        url = format!("https://{}", url);
+    }
     let mut builder = client.request(method, url);
 
     builder = add_auth_blocking(builder, configuration);
