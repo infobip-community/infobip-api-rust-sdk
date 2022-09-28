@@ -129,18 +129,18 @@ async fn build_form(request_body: SendRequestBody) -> io::Result<Form> {
         form = form.text("replyTo", reply_to);
     }
     if let Some(default_placeholders) = request_body.default_placeholders {
-        form = form.text("defaultPlaceholders", default_placeholders.to_string());
+        form = form.text("defaultPlaceholders", default_placeholders);
     }
     if let Some(preserve_recipients) = request_body.preserve_recipients {
         form = form.text("preserveRecipients", preserve_recipients.to_string());
     }
     if let Some(send_at) = request_body.send_at {
-        form = form.text("sendAt", send_at.to_string());
+        form = form.text("sendAt", send_at);
     }
     if let Some(landing_page_placeholders) = request_body.landing_page_placeholders {
         form = form.text(
             "landingPagePlaceholders",
-            landing_page_placeholders.to_string(),
+            landing_page_placeholders,
         );
     }
     if let Some(landing_page_id) = request_body.landing_page_id {
