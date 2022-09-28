@@ -24,14 +24,16 @@ More Channels to be added in the near future!
 To use the library, you'll need to set up an [Infobip account](https://www.infobip.com/signup).
 Then you can use your API Key and custom base URL to call the endpoints. You can use the
 `Configuration::from_env_api_key()` method to load the configuration from the environment. To
-do that, set the `IB_API_KEY` and `IB_BASE_URL` variables.
+do that, set the `IB_API_KEY` and `IB_BASE_URL` variables. Alternatively, you can use the
+`Configuration::from_dotenv_api_key()` method to load the configuration from a `.env` file.
 
 ## 📦 Installation
 To use the library, add the dependency to your projects `Cargo.toml`
 ```toml
 [dependencies]
-infobip_sdk = "0.1"
+infobip_sdk = "<version>"
 ```
+Replace <version> is the latest (or desired) release of the library. For example `0.2.0`.
 
 ## 🚀 Usage
 To use the library, import the client and channel-specific models. Then create a client and
@@ -126,7 +128,7 @@ let message = Message {
 ```
 
 ### Model validation
-Some models have mandatory fields. Optional fields are wrapped in `Option` pointers. Models also
+Some models have mandatory fields. Optional fields are wrapped in `Option` Enums. Models also
 have additional checks to make sure that fields have valid values, when possible. Validation
 is done automatically when calling an endpoint, or you can call the `.validate()` method of the
 model.
@@ -135,7 +137,7 @@ model.
 You can speed up compile time by turning only the needed channels as library features.
 For example, to only build SMS, add the dependency like this:
 ```toml
-infobip_sdk = { version = "0.1", features = ["sms"] }
+infobip_sdk = { version = "0.3", features = ["sms"] }
 ```
 You can see the complete list of features in the Cargo.toml of the project. Feature names
 follow channel names.
