@@ -40,7 +40,7 @@ async fn test_preview_valid() {
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
     assert!(!response.body.original_text.unwrap().is_empty());
-    assert!(response.body.previews.unwrap().len() > 0usize);
+    assert!(!response.body.previews.unwrap().is_empty());
 }
 
 #[tokio::test]
@@ -91,7 +91,7 @@ fn test_blocking_preview_valid() {
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
     assert!(!response.body.original_text.unwrap().is_empty());
-    assert!(response.body.previews.unwrap().len() > 0usize);
+    assert!(!response.body.previews.unwrap().is_empty());
 }
 
 #[tokio::test]

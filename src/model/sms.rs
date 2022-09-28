@@ -14,7 +14,7 @@ lazy_static! {
     static ref TURKEY_RECIPIENT_TYPES: Regex = Regex::new(r"^(TACIR|BIREYSEL)$").unwrap();
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct PreviewRequestBody {
     /// Code for language character set of a message text.
@@ -41,7 +41,7 @@ impl PreviewRequestBody {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct Language {
     /// Language code for the correct character set.
@@ -58,7 +58,7 @@ impl Language {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PreviewLanguageConfiguration {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -101,7 +101,7 @@ pub struct PreviewResponseBody {
     pub previews: Option<Vec<Preview>>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct GetDeliveryReportsQueryParameters {
     /// Unique ID assigned to the request if messaging multiple recipients or sending multiple
@@ -136,7 +136,7 @@ impl Default for GetDeliveryReportsQueryParameters {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Status {
     /// Action that should be taken to eliminate the error.
@@ -172,7 +172,7 @@ pub struct Price {
     pub price_per_message: Option<f64>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Error {
     /// Human-readable description of the error.
@@ -262,7 +262,7 @@ pub struct GetDeliveryReportsResponseBody {
     pub results: Option<Vec<Report>>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Tracking {
     /// Custom base url used for shortening links from SMS text in `URL` Conversion rate tracking
@@ -309,7 +309,7 @@ pub enum TimeUnit {
     DAY,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 pub struct DeliveryTime {
     /// Hour when the time window opens when used in from property or closes when used into the
     /// property.
@@ -328,7 +328,7 @@ impl DeliveryTime {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SpeedLimit {
     /// The number of messages to be sent per timeUnit. By default, the system sends messages as
@@ -362,7 +362,7 @@ pub enum DeliveryDay {
     SUNDAY,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 pub struct DeliveryTimeWindow {
     /// Days which are included in the delivery time window. Values are: `MONDAY`, `TUESDAY`,
     /// `WEDNESDAY`, `THURSDAY`, `FRIDAY`, `SATURDAY`, `SUNDAY`. At least one day must be stated.
@@ -392,7 +392,7 @@ impl DeliveryTimeWindow {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct Destination {
     /// The ID that uniquely identifies the message sent.
@@ -414,7 +414,7 @@ impl Destination {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct IndiaDlt {
     /// Id of your registered DTL content template that matches this message's text.
@@ -435,7 +435,7 @@ impl IndiaDlt {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct TurkeyIys {
     /// Brand code is an ID of the company based on a company VAT number. If not provided in
@@ -457,7 +457,7 @@ impl TurkeyIys {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct RegionalOptions {
     /// Distributed Ledger Technology (DLT) specific parameters required for sending SMS to phone
@@ -597,7 +597,7 @@ impl Message {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct BinaryData {
     /// Binary content data coding. The default value is (0) for GSM7. Example: (8) for Unicode
@@ -787,7 +787,7 @@ impl SendBinaryRequestBody {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SentMessageDetails {
     /// The ID that uniquely identifies the message sent.
@@ -819,7 +819,7 @@ pub struct SendResponseBody {
 
 pub type SendBinaryResponseBody = SendResponseBody;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 pub struct GetScheduledQueryParameters {
     #[validate(length(min = 1))]
     pub bulk_id: String,
@@ -831,7 +831,7 @@ impl GetScheduledQueryParameters {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetScheduledResponseBody {
     pub bulk_id: String,
@@ -839,7 +839,7 @@ pub struct GetScheduledResponseBody {
     pub send_at: String,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct GetLogsQueryParameters {
     /// The sender ID which can be alphanumeric or numeric.
@@ -976,7 +976,7 @@ pub struct GetLogsResponseBody {
     pub results: Option<Vec<Log>>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 pub struct GetInboundReportsQueryParameters {
     #[validate(range(max = 1000))]
     pub limit: Option<i32>,
@@ -1055,7 +1055,7 @@ pub struct InboundSmsReport {
     pub to: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 pub struct SendOverQueryParametersQueryParameters {
     /// Username for authentication.
     pub username: String,
@@ -1159,7 +1159,7 @@ pub type SendOverQueryParametersResponseBody = SendResponseBody;
 
 pub type RescheduleQueryParameters = GetScheduledQueryParameters;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct RescheduleRequestBody {
     /// Date and time when the message is to be sent. Used for scheduled SMS (see Scheduled SMS
@@ -1189,7 +1189,7 @@ pub enum ScheduledStatus {
 
 pub type GetScheduledStatusQueryParameters = GetScheduledQueryParameters;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetScheduledStatusResponseBody {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1201,7 +1201,7 @@ pub struct GetScheduledStatusResponseBody {
 
 pub type UpdateScheduledStatusQueryParameters = RescheduleQueryParameters;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateScheduledStatusRequestBody {
     pub status: ScheduledStatus,

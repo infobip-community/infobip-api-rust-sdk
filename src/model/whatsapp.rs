@@ -3,7 +3,7 @@
 use serde_derive::{Deserialize, Serialize};
 use validator::Validate;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct TextContent {
     /// Content of the message being sent.
@@ -25,7 +25,7 @@ impl TextContent {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct DocumentContent {
     /// URL of a document sent in a WhatsApp message. Must be a valid URL starting with `https://`
@@ -54,7 +54,7 @@ impl DocumentContent {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct ImageContent {
     /// URL of an image sent in a WhatsApp message. Must be a valid URL starting with `https://`
@@ -77,7 +77,7 @@ impl ImageContent {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct AudioContent {
     /// URL of an audio sent in a WhatsApp message. Must be a valid URL starting with `https://`
@@ -93,7 +93,7 @@ impl AudioContent {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct VideoContent {
     /// URL of a video sent in a WhatsApp message. Must be a valid URL starting with `https://` or
@@ -116,7 +116,7 @@ impl VideoContent {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct StickerContent {
     /// URL of a sticker sent in a WhatsApp message. Must be a valid URL starting with `https://`
@@ -171,7 +171,7 @@ pub enum AddressType {
     WORK,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct ContactAddress {
     /// Street name.
@@ -225,7 +225,7 @@ impl Default for ContactAddress {
 
 pub type EmailType = AddressType;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct ContactName {
     /// Contact's first name.
@@ -266,7 +266,7 @@ impl ContactName {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct ContactOrganization {
     /// Company name.
@@ -304,7 +304,7 @@ pub enum PhoneType {
     WORK,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct ContactPhone {
     /// Contact's phone number.
@@ -338,7 +338,7 @@ impl Default for ContactPhone {
 
 pub type UrlType = AddressType;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct ContactUrl {
     /// Contact's url.
@@ -351,7 +351,7 @@ pub struct ContactUrl {
     pub url_type: Option<UrlType>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct ContactEmail {
     /// Contact's email.
@@ -363,7 +363,7 @@ pub struct ContactEmail {
     pub email_type: Option<EmailType>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct Contact {
     /// Array of addresses information.
@@ -423,7 +423,7 @@ impl ContactContent {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct SendContentRequestBody<T: serde::Serialize + Validate> {
     /// Registered WhatsApp sender number. Must be in international format and comply with
@@ -574,7 +574,7 @@ impl SendContactRequestBody {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct InteractiveBody {
     /// Content of the message body.
@@ -588,7 +588,7 @@ impl InteractiveBody {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum InteractiveButton {
     #[serde(rename = "REPLY")]
@@ -609,7 +609,7 @@ impl InteractiveButton {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct InteractiveButtonsAction {
     /// An array of buttons sent in a message. It can have up to three buttons.
@@ -623,7 +623,7 @@ impl InteractiveButtonsAction {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum InteractiveButtonsHeader {
     #[serde(rename = "DOCUMENT")]
@@ -686,7 +686,7 @@ impl InteractiveButtonsHeader {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct InteractiveFooter {
     /// Content of the message footer.
@@ -747,7 +747,7 @@ impl SendInteractiveButtonsRequestBody {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct InteractiveRow {
     /// Identifier of the row. It must be unique across all sections.
@@ -775,7 +775,7 @@ impl InteractiveRow {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct InteractiveListSection {
     /// Title of the section. Required, if the message has more than one section.
@@ -814,7 +814,7 @@ impl InteractiveListAction {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum InteractiveListHeader {
     #[serde(rename = "TEXT")]
@@ -878,7 +878,7 @@ impl SendInteractiveListRequestBody {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct InteractiveProductAction {
     /// The ID that uniquely identifies the catalog registered with Meta and connected to the
@@ -900,7 +900,7 @@ impl InteractiveProductAction {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct InteractiveProductContent {
     /// Allows you to specify catalog and product details sent in the product message.
@@ -941,7 +941,7 @@ impl SendInteractiveProductRequestBody {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum InteractiveMultiproductHeader {
     #[serde(rename = "TEXT")]
@@ -957,7 +957,7 @@ impl InteractiveMultiproductHeader {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct InteractiveMultiproductSection {
     /// Title of the section. Required, if the message has more than one section.
@@ -979,7 +979,7 @@ impl InteractiveMultiproductSection {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct InteractiveMultiproductAction {
     /// The ID that uniquely identifies the catalog registered with Meta and connected to the
@@ -1311,7 +1311,7 @@ impl ToString for TemplateLanguage {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "format")]
 pub enum TemplateHeader {
     #[serde(rename = "DOCUMENT")]
@@ -1382,7 +1382,7 @@ impl TemplateHeader {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct TemplateFooter {
     /// Plain text, up to 60 characters.
@@ -1396,7 +1396,7 @@ impl TemplateFooter {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum TemplateButton {
     #[serde(rename = "PHONE_NUMBER")]
@@ -1446,7 +1446,7 @@ impl TemplateButton {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct TemplateBody {
     /// Plain text or text with placeholders. Placeholders have to be correctly formatted and in
@@ -1476,7 +1476,7 @@ pub enum TemplateType {
     UNSUPPORTED,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct TemplateStructure {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1625,7 +1625,7 @@ impl TemplateHeaderContent {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct TemplateBodyContent {
     /// Template's parameter values submitted in the same order as in the registered template.
@@ -1640,7 +1640,7 @@ impl TemplateBodyContent {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "type")]
 pub enum TemplateButtonContent {
     #[serde(rename = "QUICK_REPLY")]
@@ -1724,7 +1724,7 @@ impl TemplateContent {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct SmsFailover {
     /// SMS sender number. Must be in international format.
@@ -1819,7 +1819,7 @@ impl SendTemplateRequestBody {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Status {
     /// Status group ID.
@@ -1847,7 +1847,7 @@ pub struct Status {
     pub description: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SendContentResponseBody {
     /// The destination address of the message.

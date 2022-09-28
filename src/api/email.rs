@@ -138,10 +138,7 @@ async fn build_form(request_body: SendRequestBody) -> io::Result<Form> {
         form = form.text("sendAt", send_at);
     }
     if let Some(landing_page_placeholders) = request_body.landing_page_placeholders {
-        form = form.text(
-            "landingPagePlaceholders",
-            landing_page_placeholders,
-        );
+        form = form.text("landingPagePlaceholders", landing_page_placeholders);
     }
     if let Some(landing_page_id) = request_body.landing_page_id {
         form = form.text("landingPageId", landing_page_id);

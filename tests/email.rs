@@ -37,5 +37,5 @@ async fn send() {
     let response = get_test_email_client().send(request_body).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
-    assert!(response.body.messages.unwrap().len() > 0usize);
+    assert!(!response.body.messages.unwrap().is_empty());
 }

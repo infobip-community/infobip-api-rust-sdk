@@ -1,7 +1,7 @@
 use serde_derive::{Deserialize, Serialize};
 use validator::Validate;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct SendRequestBody {
     /// Email address with optional sender name. This field is required if `templateId` is not
@@ -168,7 +168,7 @@ impl SendRequestBody {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SentMessageDetails {
     /// The destination address of the message.
@@ -183,7 +183,7 @@ pub struct SentMessageDetails {
     pub status: Option<Status>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Status {
     /// Status group ID.

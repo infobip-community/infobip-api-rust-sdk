@@ -57,7 +57,7 @@ impl fmt::Display for ApiError {
 }
 
 /// Holds information about a server-side error.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ServiceException {
     /// Identifier of the error.
@@ -74,7 +74,7 @@ pub struct ServiceException {
 }
 
 /// Holds the exception produced by a server-side error.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct RequestError {
     #[serde(rename = "serviceException")]
     pub service_exception: ServiceException,
@@ -98,7 +98,7 @@ impl fmt::Display for ApiErrorDetails {
 }
 
 /// Holds the status code and the response body of a successful API call.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct SdkResponse<T> {
     pub body: T,
     pub status: StatusCode,
