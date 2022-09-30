@@ -1,61 +1,30 @@
+use std::collections::HashMap;
 use std::fs::File;
 use std::io;
 use std::io::Read;
 
 use reqwest::multipart::Form;
 use reqwest::multipart::Part;
+use validator::Validate;
 
-use crate::api::{build_api_error, send_multipart_request, SdkError, SdkResponse};
+use crate::api::{
+    build_api_error, send_multipart_request, send_no_body_request, send_valid_json_request,
+    SdkError, SdkResponse,
+};
 use crate::configuration::Configuration;
-use crate::model::email::{SendRequestBody, SendResponseBody};
+use crate::model::email::{
+    GetBulksQueryParameters, GetBulksResponseBody, GetScheduledStatusQueryParameters,
+    GetScheduledStatusResponseBody, RescheduleQueryParameters, RescheduleRequestBody,
+    RescheduleResponseBody, SendRequestBody, SendResponseBody,
+    UpdateScheduledStatusQueryParameters, UpdateScheduledStatusRequestBody,
+    UpdateScheduledStatusResponseBody,
+};
 
 pub const PATH_SEND: &str = "/email/3/send";
-
-/// Main asynchronous client for the Infobip Email channel.
-#[derive(Clone, Debug)]
-pub struct EmailClient {
-    configuration: Configuration,
-    client: reqwest::Client,
-}
-
-impl EmailClient {
-    /// Builds and returns a new asynchronous `EmailClient` with a specified configuration.
-    pub fn with_configuration(configuration: Configuration) -> Self {
-        EmailClient {
-            configuration,
-            client: reqwest::Client::new(),
-        }
-    }
-
-    /// Send an email or multiple emails to a recipient or multiple recipients with CC/BCC enabled.
-    pub async fn send(
-        &self,
-        request_body: SendRequestBody,
-    ) -> Result<SdkResponse<SendResponseBody>, SdkError> {
-        let form = build_form(request_body).await?;
-
-        let response = send_multipart_request(
-            &self.client,
-            &self.configuration,
-            form,
-            reqwest::Method::POST,
-            PATH_SEND,
-        )
-        .await?;
-
-        let status = response.status();
-        let text = response.text().await?;
-
-        if status.is_success() {
-            Ok(SdkResponse {
-                body: serde_json::from_str(&text)?,
-                status,
-            })
-        } else {
-            Err(build_api_error(status, &text))
-        }
-    }
-}
+pub const PATH_GET_BULKS: &str = "/email/1/bulks";
+pub const PATH_RESCHEDULE: &str = "/email/1/bulks";
+pub const PATH_GET_SCHEDULED_STATUS: &str = "/email/1/bulks/status";
+pub const PATH_UPDATE_SCHEDULED_STATUS: &str = "/email/1/bulks/status";
 
 fn get_file_part(file_name: String) -> io::Result<Part> {
     let mut file = File::open(file_name.clone())?;
@@ -145,4 +114,221 @@ async fn build_form(request_body: SendRequestBody) -> io::Result<Form> {
     }
 
     Ok(form)
+}
+
+/// Main asynchronous client for the Infobip Email channel.
+#[derive(Clone, Debug)]
+pub struct EmailClient {
+    configuration: Configuration,
+    client: reqwest::Client,
+}
+
+impl EmailClient {
+    /// Builds and returns a new asynchronous `EmailClient` with a specified configuration.
+    pub fn with_configuration(configuration: Configuration) -> Self {
+        EmailClient {
+            configuration,
+            client: reqwest::Client::new(),
+        }
+    }
+
+    /// Send an email or multiple emails to a recipient or multiple recipients with CC/BCC enabled.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::email::SendRequestBody;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let mut request_body = SendRequestBody::new("someone@domain.com".to_string());
+    /// request_body.from = Some("someone@company.com".to_string());
+    /// request_body.subject = Some("Test subject".to_string());
+    /// request_body.text = Some("Hello world!".to_string());
+    ///
+    /// let response = client.send(request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn send(
+        &self,
+        request_body: SendRequestBody,
+    ) -> Result<SdkResponse<SendResponseBody>, SdkError> {
+        let form = build_form(request_body).await?;
+
+        let response = send_multipart_request(
+            &self.client,
+            &self.configuration,
+            form,
+            reqwest::Method::POST,
+            PATH_SEND,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// See the scheduled time of your Email messages.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::email::GetBulksQueryParameters;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let query_parameters = GetBulksQueryParameters::new("some-bulk-id".to_string());
+    ///
+    /// let response = client.get_bulks(query_parameters).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn get_bulks(
+        &self,
+        query_parameters: GetBulksQueryParameters,
+    ) -> Result<SdkResponse<GetBulksResponseBody>, SdkError> {
+        query_parameters.validate()?;
+
+        let parameters_map = HashMap::from([("bulkId".to_string(), query_parameters.bulk_id)]);
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            parameters_map,
+            reqwest::Method::GET,
+            PATH_GET_BULKS,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Change the date and time for sending scheduled messages.
+    pub async fn reschedule(
+        &self,
+        query_parameters: RescheduleQueryParameters,
+        request_body: RescheduleRequestBody,
+    ) -> Result<SdkResponse<RescheduleResponseBody>, SdkError> {
+        query_parameters.validate()?;
+
+        let parameters_map = HashMap::from([("bulkId".to_string(), query_parameters.bulk_id)]);
+
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            parameters_map,
+            reqwest::Method::PUT,
+            PATH_RESCHEDULE,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// See the status of scheduled email messages.
+    pub async fn get_scheduled_status(
+        &self,
+        query_parameters: GetScheduledStatusQueryParameters,
+    ) -> Result<SdkResponse<GetScheduledStatusResponseBody>, SdkError> {
+        query_parameters.validate()?;
+
+        let parameters_map = HashMap::from([("bulkId".to_string(), query_parameters.bulk_id)]);
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            parameters_map,
+            reqwest::Method::GET,
+            PATH_GET_SCHEDULED_STATUS,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Change status or completely cancel sending of scheduled messages.
+    pub async fn update_scheduled_status(
+        &self,
+        query_parameters: UpdateScheduledStatusQueryParameters,
+        request_body: UpdateScheduledStatusRequestBody,
+    ) -> Result<SdkResponse<UpdateScheduledStatusResponseBody>, SdkError> {
+        query_parameters.validate()?;
+
+        let parameters_map = HashMap::from([("bulkId".to_string(), query_parameters.bulk_id)]);
+
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            parameters_map,
+            reqwest::Method::PUT,
+            PATH_UPDATE_SCHEDULED_STATUS,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
 }

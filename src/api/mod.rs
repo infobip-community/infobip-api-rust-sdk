@@ -26,13 +26,13 @@ pub enum SdkError {
     #[error("request body has field errors")]
     Validation(#[from] validator::ValidationErrors),
 
-    #[error("client error calling endpoint")]
+    #[error("HTTP client error")]
     Reqwest(#[from] reqwest::Error),
 
     #[error("serialization error")]
     Serde(#[from] serde_json::Error),
 
-    #[error("api request error")]
+    #[error("API request error")]
     ApiRequestError(#[from] ApiError),
 
     #[error("IO error")]

@@ -218,3 +218,87 @@ pub struct SendResponseBody {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub messages: Option<Vec<SentMessageDetails>>,
 }
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+pub struct GetBulksQueryParameters {
+    #[validate(length(min = 1))]
+    pub bulk_id: String,
+}
+
+impl GetBulksQueryParameters {
+    pub fn new(bulk_id: String) -> Self {
+        GetBulksQueryParameters { bulk_id }
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GetBulksResponseBody {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_bulk_id: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bulks: Option<Vec<BulkInfo>>,
+}
+
+#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BulkInfo {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bulk_id: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub send_at: Option<u64>,
+}
+
+pub type RescheduleQueryParameters = GetBulksQueryParameters;
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct RescheduleRequestBody {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub send_at: Option<u64>,
+}
+
+pub type RescheduleResponseBody = BulkInfo;
+
+pub type GetScheduledStatusQueryParameters = GetBulksQueryParameters;
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum BulkStatus {
+    PENDING,
+    PAUSED,
+    PROCESSING,
+    CANCELED,
+    FINISHED,
+    FAILED,
+}
+
+#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+pub struct BulkStatusInfo {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bulk_id: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<BulkStatus>,
+}
+
+#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GetScheduledStatusResponseBody {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub external_bulk_id: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bulks: Option<Vec<BulkStatusInfo>>,
+}
+
+pub type UpdateScheduledStatusQueryParameters = GetBulksQueryParameters;
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateScheduledStatusRequestBody {
+    pub status: BulkStatus,
+}
+
+pub type UpdateScheduledStatusResponseBody = BulkStatusInfo;
