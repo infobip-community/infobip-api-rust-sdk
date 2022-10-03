@@ -356,14 +356,35 @@ impl SmsClient {
         query_parameters.validate()?;
 
         let mut parameters_map = HashMap::<String, String>::new();
+        if let Some(from) = query_parameters.from {
+            parameters_map.insert("from".to_string(), from);
+        }
+        if let Some(to) = query_parameters.to {
+            parameters_map.insert("to".to_string(), to);
+        }
         if let Some(bulk_id) = query_parameters.bulk_id {
             parameters_map.insert("bulkId".to_string(), bulk_id);
         }
         if let Some(message_id) = query_parameters.message_id {
             parameters_map.insert("messageId".to_string(), message_id);
         }
+        if let Some(general_status) = query_parameters.general_status {
+            parameters_map.insert("generalStatus".to_string(), general_status);
+        }
+        if let Some(sent_since) = query_parameters.sent_since {
+            parameters_map.insert("sentSince".to_string(), sent_since);
+        }
+        if let Some(sent_until) = query_parameters.sent_until {
+            parameters_map.insert("sentUntil".to_string(), sent_until);
+        }
         if let Some(limit) = query_parameters.limit {
             parameters_map.insert("limit".to_string(), limit.to_string());
+        }
+        if let Some(mcc) = query_parameters.mcc {
+            parameters_map.insert("mcc".to_string(), mcc);
+        }
+        if let Some(mnc) = query_parameters.mnc {
+            parameters_map.insert("mnc".to_string(), mnc);
         }
 
         let response = send_no_body_request(
