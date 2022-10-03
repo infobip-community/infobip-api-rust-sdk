@@ -1,10 +1,9 @@
 use std::collections::HashMap;
-use std::fs::File;
 use std::io;
-use std::io::Read;
 
 use reqwest::multipart::Form;
 use reqwest::multipart::Part;
+use tokio::io::AsyncReadExt;
 use validator::Validate;
 
 use crate::api::{
@@ -13,11 +12,12 @@ use crate::api::{
 };
 use crate::configuration::Configuration;
 use crate::model::email::{
-    GetBulksQueryParameters, GetBulksResponseBody, GetScheduledStatusQueryParameters,
-    GetScheduledStatusResponseBody, RescheduleQueryParameters, RescheduleRequestBody,
-    RescheduleResponseBody, SendRequestBody, SendResponseBody,
+    GetBulksQueryParameters, GetBulksResponseBody, GetDeliveryReportsQueryParameters,
+    GetDeliveryReportsResponseBody, GetLogsQueryParameters, GetLogsResponseBody,
+    GetScheduledStatusQueryParameters, GetScheduledStatusResponseBody, RescheduleQueryParameters,
+    RescheduleRequestBody, RescheduleResponseBody, SendRequestBody, SendResponseBody,
     UpdateScheduledStatusQueryParameters, UpdateScheduledStatusRequestBody,
-    UpdateScheduledStatusResponseBody,
+    UpdateScheduledStatusResponseBody, ValidateAddressRequestBody, ValidateAddressResponseBody,
 };
 
 pub const PATH_SEND: &str = "/email/3/send";
@@ -25,11 +25,14 @@ pub const PATH_GET_BULKS: &str = "/email/1/bulks";
 pub const PATH_RESCHEDULE: &str = "/email/1/bulks";
 pub const PATH_GET_SCHEDULED_STATUS: &str = "/email/1/bulks/status";
 pub const PATH_UPDATE_SCHEDULED_STATUS: &str = "/email/1/bulks/status";
+pub const PATH_GET_DELIVERY_REPORTS: &str = "/email/1/reports";
+pub const PATH_GET_LOGS: &str = "/email/1/logs";
+pub const PATH_VALIDATE: &str = "/email/2/validation";
 
-fn get_file_part(file_name: String) -> io::Result<Part> {
-    let mut file = File::open(file_name.clone())?;
+async fn get_file_part(file_name: String) -> io::Result<Part> {
+    let mut file = tokio::fs::File::open(file_name.clone()).await?;
     let mut buffer = Vec::new();
-    let count = file.read_to_end(&mut buffer)?;
+    let count = file.read_to_end(&mut buffer).await?;
 
     Ok(Part::stream_with_length(buffer, count as u64).file_name(file_name))
 }
@@ -59,10 +62,10 @@ async fn build_form(request_body: SendRequestBody) -> io::Result<Form> {
         form = form.text("templateId", template_id.to_string());
     }
     if let Some(attachment) = request_body.attachment {
-        form = form.part("attachment", get_file_part(attachment)?);
+        form = form.part("attachment", get_file_part(attachment).await?);
     }
     if let Some(inline_image) = request_body.inline_image {
-        form = form.part("inlineImage", get_file_part(inline_image)?);
+        form = form.part("inlineImage", get_file_part(inline_image).await?);
     }
     if let Some(intermediate_report) = request_body.intermediate_report {
         form = form.text("intermediateReport", intermediate_report.to_string());
@@ -316,6 +319,130 @@ impl EmailClient {
             parameters_map,
             reqwest::Method::PUT,
             PATH_UPDATE_SCHEDULED_STATUS,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Get one-time delivery reports for all sent emails.
+    pub async fn get_delivery_reports(
+        &self,
+        query_parameters: GetDeliveryReportsQueryParameters,
+    ) -> Result<SdkResponse<GetDeliveryReportsResponseBody>, SdkError> {
+        query_parameters.validate()?;
+
+        let mut parameters_map = HashMap::<String, String>::new();
+        if let Some(bulk_id) = query_parameters.bulk_id {
+            parameters_map.insert("bulkId".to_string(), bulk_id);
+        }
+        if let Some(message_id) = query_parameters.message_id {
+            parameters_map.insert("messageId".to_string(), message_id);
+        }
+        if let Some(limit) = query_parameters.limit {
+            parameters_map.insert("limit".to_string(), limit.to_string());
+        }
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            parameters_map,
+            reqwest::Method::GET,
+            PATH_GET_DELIVERY_REPORTS,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Get email logs of sent Email messagesId for request. Email logs
+    /// are available for the last 48 hours.
+    pub async fn get_logs(
+        &self,
+        query_parameters: GetLogsQueryParameters,
+    ) -> Result<SdkResponse<GetLogsResponseBody>, SdkError> {
+        query_parameters.validate()?;
+
+        let mut parameters_map = HashMap::<String, String>::new();
+        if let Some(message_id) = query_parameters.message_id {
+            parameters_map.insert("messageId".to_string(), message_id);
+        }
+        if let Some(from) = query_parameters.from {
+            parameters_map.insert("from".to_string(), from);
+        }
+        if let Some(to) = query_parameters.to {
+            parameters_map.insert("to".to_string(), to);
+        }
+        if let Some(bulk_id) = query_parameters.bulk_id {
+            parameters_map.insert("bulkId".to_string(), bulk_id);
+        }
+        if let Some(general_status) = query_parameters.general_status {
+            parameters_map.insert("generalStatus".to_string(), general_status);
+        }
+        if let Some(sent_since) = query_parameters.sent_since {
+            parameters_map.insert("sentSince".to_string(), sent_since);
+        }
+        if let Some(sent_until) = query_parameters.sent_until {
+            parameters_map.insert("sentUntil".to_string(), sent_until);
+        }
+        if let Some(limit) = query_parameters.limit {
+            parameters_map.insert("limit".to_string(), limit.to_string());
+        }
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            parameters_map,
+            reqwest::Method::GET,
+            PATH_GET_LOGS,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Run validation to identify poor quality emails to clean up your recipient list.
+    pub async fn validate_address(
+        &self,
+        request_body: ValidateAddressRequestBody,
+    ) -> Result<SdkResponse<ValidateAddressResponseBody>, SdkError> {
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            HashMap::new(),
+            reqwest::Method::POST,
+            PATH_VALIDATE,
         )
         .await?;
 

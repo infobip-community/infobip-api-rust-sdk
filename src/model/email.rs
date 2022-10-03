@@ -183,6 +183,28 @@ pub struct SentMessageDetails {
     pub status: Option<Status>,
 }
 
+#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ReportError {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub group_id: Option<i32>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub group_name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<i32>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub permanent: Option<bool>,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Status {
@@ -205,6 +227,10 @@ pub struct Status {
     /// Status description.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
+
+    /// Action name.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub action: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -256,8 +282,14 @@ pub type RescheduleQueryParameters = GetBulksQueryParameters;
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct RescheduleRequestBody {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub send_at: Option<u64>,
+    #[validate(length(min = 1))]
+    pub send_at: String,
+}
+
+impl RescheduleRequestBody {
+    pub fn new(send_at: String) -> Self {
+        RescheduleRequestBody { send_at }
+    }
 }
 
 pub type RescheduleResponseBody = BulkInfo;
@@ -301,4 +333,225 @@ pub struct UpdateScheduledStatusRequestBody {
     pub status: BulkStatus,
 }
 
+impl UpdateScheduledStatusRequestBody {
+    pub fn new(status: BulkStatus) -> Self {
+        UpdateScheduledStatusRequestBody { status }
+    }
+}
+
 pub type UpdateScheduledStatusResponseBody = BulkStatusInfo;
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct GetDeliveryReportsQueryParameters {
+    /// Bulk ID for which report is requested.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bulk_id: Option<String>,
+
+    /// The ID that uniquely identifies the sent email.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_id: Option<String>,
+
+    /// Maximum number of reports.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i32>,
+}
+
+#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Price {
+    /// Price per one email request.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price_per_message: Option<f32>,
+
+    /// The currency in which the price is expressed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub currency: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Report {
+    /// The ID that uniquely identifies bulks of request.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bulk_id: Option<String>,
+
+    /// The ID that uniquely identifies the sent email request.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_id: Option<String>,
+
+    /// The recipient email address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub to: Option<String>,
+
+    /// Tells when the email was initiated. Has the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sent_at: Option<String>,
+
+    /// Tells when the email request was processed by Infobip
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub done_at: Option<String>,
+
+    /// Email request count.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_count: Option<i32>,
+
+    /// Sent email price.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<Price>,
+
+    /// Indicates whether the initiated email has been successfully sent, not sent, delivered,
+    /// not delivered, waiting for delivery or any other possible status.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<Status>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub error: Option<ReportError>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GetDeliveryReportsResponseBody {
+    #[serde(rename = "results", skip_serializing_if = "Option::is_none")]
+    pub results: Option<Vec<Report>>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct GetLogsQueryParameters {
+    /// The ID that uniquely identifies the sent email.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_id: Option<String>,
+
+    /// From email address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub from: Option<String>,
+
+    /// The recipient email address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub to: Option<String>,
+
+    /// Bulk ID that uniquely identifies the request.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bulk_id: Option<String>,
+
+    /// Indicates whether the initiated email has been successfully sent, not sent, delivered,
+    /// not delivered, waiting for delivery or any other possible status.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub general_status: Option<String>,
+
+    /// Tells when the email was initiated. Has the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sent_since: Option<String>,
+
+    /// Tells when the email request was processed by Infobip. Has the following format:
+    /// `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sent_until: Option<String>,
+
+    /// Maximum number of logs.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub limit: Option<i32>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Log {
+    /// The ID that uniquely identifies the sent email request.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_id: Option<String>,
+
+    /// The recipient email address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub to: Option<String>,
+
+    /// From email address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub from: Option<String>,
+
+    /// The text from email body.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub text: Option<String>,
+
+    /// Tells when the email was initiated. Has the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sent_at: Option<String>,
+
+    /// Tells when the email request was processed by Infobip
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub done_at: Option<String>,
+
+    /// Email request count.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_count: Option<i32>,
+
+    /// Sent email price.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub price: Option<Price>,
+
+    /// Indicates whether the initiated email has been successfully sent, not sent, delivered,
+    /// not delivered, waiting for delivery or any other possible status.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub status: Option<Status>,
+
+    /// The ID that uniquely identifies the request.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bulk_id: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct GetLogsResponseBody {
+    #[serde(rename = "results", skip_serializing_if = "Option::is_none")]
+    pub results: Option<Vec<Log>>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct ValidateAddressRequestBody {
+    /// Email address of the recipient.
+    #[validate(length(min = 1))]
+    to: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ValidateAddressResponseBody {
+    /// Email address of the recipient.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub to: Option<String>,
+
+    /// Represents status of recipient email address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub valid_mailbox: Option<String>,
+
+    /// Represents syntax of recipient email address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub valid_syntax: Option<bool>,
+
+    /// Denotes catch all status of recipient email address.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub catch_all: Option<bool>,
+
+    /// Suggests alternate addresses that maybe valid.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub did_you_mean: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disposable: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub role_based: Option<bool>,
+
+    /// Reason is provided when validMailbox status is unknown.
+    /// 1. INBOX_FULL - The user quota exceeded / The user inbox is full / The user doesn't accept
+    /// any more requests.
+    /// 2. UNEXPECTED_FAILURE - The mail Server returned a temporary error.
+    /// 3. THROTTLED - The mail server is not allowing us momentarily because of too many requests.
+    /// 4. TIMED_OUT - The Mail Server took a longer time to respond / there was a delay in the
+    /// network.
+    /// 5. TEMP_REJECTION - Mail server temporarily rejected.
+    /// 6. UNABLE_TO_CONNECT - Unable to connect to the Mail Server.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reason: Option<String>,
+}
