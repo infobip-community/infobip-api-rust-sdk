@@ -555,3 +555,144 @@ pub struct ValidateAddressResponseBody {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+pub struct GetDomainsQueryParameters {
+    /// Maximum number of domains to be viewed per page. Default value is 10 with a maximum of 20 records per page.
+    #[validate(range(min = 1, max = 20))]
+    pub size: Option<i32>,
+
+    /// Page number you want to see. Default is 0.
+    #[validate(range(min = 1))]
+    pub page: Option<i32>,
+}
+
+#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Tracking {
+    /// Indicates whether tracking of clicks is enabled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub clicks: Option<bool>,
+
+    /// Indicates whether tracking of opens is enabled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub opens: Option<bool>,
+
+    /// Indicates whether tracking of unsubscribes is enabled.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unsubscribe: Option<bool>,
+}
+
+#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DnsRecord {
+    /// Type of the record.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub record_type: Option<String>,
+
+    /// Name of the record.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+
+    /// Expected value to be set for the given record.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expected_value: Option<String>,
+
+    /// Boolean value representing if the record is verified or not.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub verified: Option<bool>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Domain {
+    /// Id of the domain.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub domain_id: Option<i64>,
+
+    /// Name of the domain.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub domain_name: Option<String>,
+
+    /// Activation status of the domain.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub active: Option<bool>,
+
+    /// Tracking details of the domain.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tracking: Option<Tracking>,
+
+    /// DNS records for the domain.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dns_records: Option<Vec<DnsRecord>>,
+
+    /// Status if the domain is blocked.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blocked: Option<bool>,
+
+    /// Date the domain was created. Has the following format: `yyyy-MM-dd'T'HH:mm:ss.SSSZ`
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub created_at: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Paging {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub page: Option<i32>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub size: Option<i32>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_pages: Option<i32>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub total_results: Option<i32>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GetDomainsResponseBody {
+    /// Pagination details like page number, page size, etc.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub paging: Option<Paging>,
+
+    /// List of domains that belong to the account.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub results: Option<Vec<Domain>>,
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+pub enum DkimKeyLength {
+    L1024 = 1024,
+    L2048 = 2048,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct AddDomainRequestBody {
+    pub domain_name: String,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub dkim_key_length: Option<DkimKeyLength>,
+}
+
+pub type AddDomainResponseBody = Domain;
+
+pub type GetDomainResponseBody = Domain;
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateTrackingRequestBody {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub opens: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub clicks: Option<bool>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub unsubscribe: Option<bool>,
+}
+
+pub type UpdateTrackingResponseBody = Domain;

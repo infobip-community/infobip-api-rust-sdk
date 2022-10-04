@@ -25,13 +25,13 @@ pub const PATH_GET_DELIVERY_REPORTS: &str = "/sms/1/reports";
 pub const PATH_GET_INBOUND: &str = "/sms/1/inbox/reports";
 pub const PATH_GET_LOGS: &str = "/sms/1/logs";
 pub const PATH_GET_SCHEDULED: &str = "/sms/1/bulks";
-pub const PATH_RESCHEDULE: &str = "/sms/1/bulks";
 pub const PATH_GET_SCHEDULED_STATUS: &str = "/sms/1/bulks/status";
-pub const PATH_UPDATE_SCHEDULED_STATUS: &str = "/sms/1/bulks/status";
 pub const PATH_PREVIEW: &str = "/sms/1/preview";
+pub const PATH_RESCHEDULE: &str = "/sms/1/bulks";
 pub const PATH_SEND: &str = "/sms/2/text/advanced";
 pub const PATH_SEND_BINARY: &str = "/sms/2/binary/advanced";
 pub const PATH_SEND_OVER_QUERY_PARAMS: &str = "/sms/1/text/query";
+pub const PATH_UPDATE_SCHEDULED_STATUS: &str = "/sms/1/bulks/status";
 
 /// Main asynchronous client for the Infobip SMS channel.
 #[derive(Clone, Debug)]

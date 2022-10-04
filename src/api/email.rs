@@ -12,22 +12,30 @@ use crate::api::{
 };
 use crate::configuration::Configuration;
 use crate::model::email::{
-    GetBulksQueryParameters, GetBulksResponseBody, GetDeliveryReportsQueryParameters,
-    GetDeliveryReportsResponseBody, GetLogsQueryParameters, GetLogsResponseBody,
+    AddDomainRequestBody, AddDomainResponseBody, GetBulksQueryParameters, GetBulksResponseBody,
+    GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody, GetDomainResponseBody,
+    GetDomainsQueryParameters, GetDomainsResponseBody, GetLogsQueryParameters, GetLogsResponseBody,
     GetScheduledStatusQueryParameters, GetScheduledStatusResponseBody, RescheduleQueryParameters,
     RescheduleRequestBody, RescheduleResponseBody, SendRequestBody, SendResponseBody,
     UpdateScheduledStatusQueryParameters, UpdateScheduledStatusRequestBody,
-    UpdateScheduledStatusResponseBody, ValidateAddressRequestBody, ValidateAddressResponseBody,
+    UpdateScheduledStatusResponseBody, UpdateTrackingRequestBody, UpdateTrackingResponseBody,
+    ValidateAddressRequestBody, ValidateAddressResponseBody,
 };
 
-pub const PATH_SEND: &str = "/email/3/send";
+pub const PATH_ADD_DOMAIN: &str = "/email/1/domains";
+pub const PATH_DELETE_DOMAIN: &str = "/email/1/domains/{domainName}";
 pub const PATH_GET_BULKS: &str = "/email/1/bulks";
-pub const PATH_RESCHEDULE: &str = "/email/1/bulks";
-pub const PATH_GET_SCHEDULED_STATUS: &str = "/email/1/bulks/status";
-pub const PATH_UPDATE_SCHEDULED_STATUS: &str = "/email/1/bulks/status";
 pub const PATH_GET_DELIVERY_REPORTS: &str = "/email/1/reports";
+pub const PATH_GET_DOMAIN: &str = "/email/1/domains/{domainName}";
+pub const PATH_GET_DOMAINS: &str = "/sms/1/domains";
 pub const PATH_GET_LOGS: &str = "/email/1/logs";
+pub const PATH_GET_SCHEDULED_STATUS: &str = "/email/1/bulks/status";
+pub const PATH_RESCHEDULE: &str = "/email/1/bulks";
+pub const PATH_SEND: &str = "/email/3/send";
+pub const PATH_UPDATE_SCHEDULED_STATUS: &str = "/email/1/bulks/status";
+pub const PATH_UPDATE_TRACKING: &str = "/email/1/domains/{domainName}/tracking";
 pub const PATH_VALIDATE: &str = "/email/2/validation";
+pub const PATH_VERIFY_DOMAIN: &str = "/email/1/domains/{domainName}/verify";
 
 async fn get_file_part(file_name: String) -> io::Result<Part> {
     let mut file = tokio::fs::File::open(file_name.clone()).await?;
@@ -455,6 +463,187 @@ impl EmailClient {
                 status,
             })
         } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Get all domains associated with the account. It also provides details of the
+    /// retrieved domain like the DNS records, tracking details, active/blocked status, etc.
+    pub async fn get_domains(
+        &self,
+        query_parameters: GetDomainsQueryParameters,
+    ) -> Result<SdkResponse<GetDomainsResponseBody>, SdkError> {
+        query_parameters.validate()?;
+
+        let mut parameters_map = HashMap::<String, String>::new();
+        if let Some(size) = query_parameters.size {
+            parameters_map.insert("size".to_string(), size.to_string());
+        }
+        if let Some(page) = query_parameters.page {
+            parameters_map.insert("page".to_string(), page.to_string());
+        }
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            parameters_map,
+            reqwest::Method::GET,
+            PATH_GET_DOMAINS,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// This method allows you to add new domains with a limit to create a maximum of 1000 domains
+    /// in a day.
+    pub async fn add_domain(
+        &self,
+        request_body: AddDomainRequestBody,
+    ) -> Result<SdkResponse<AddDomainResponseBody>, SdkError> {
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            HashMap::new(),
+            reqwest::Method::POST,
+            PATH_ADD_DOMAIN,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Get the details of the domain like the DNS records, tracking details, active/blocked
+    /// status, etc.
+    pub async fn get_domain(
+        &self,
+        domain_name: String,
+    ) -> Result<SdkResponse<GetDomainResponseBody>, SdkError> {
+        let path = PATH_GET_DOMAIN.replace("{domainName}", domain_name.as_str());
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            HashMap::new(),
+            reqwest::Method::GET,
+            path.as_str(),
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// This method allows you to delete an existing domain.
+    pub async fn delete_domain(
+        &self,
+        domain_name: String,
+    ) -> Result<reqwest::StatusCode, SdkError> {
+        let path = PATH_DELETE_DOMAIN.replace("{domainName}", domain_name.as_str());
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            HashMap::new(),
+            reqwest::Method::DELETE,
+            path.as_str(),
+        )
+        .await?;
+
+        let status = response.status();
+
+        if status.is_success() {
+            Ok(status)
+        } else {
+            let text = response.text().await?;
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Update tracking events for the provided domain. Tracking events can be updated only for
+    /// CLICKS, OPENS and UNSUBSCRIBES.
+    pub async fn update_tracking(
+        &self,
+        domain_name: String,
+        request_body: UpdateTrackingRequestBody,
+    ) -> Result<SdkResponse<UpdateTrackingResponseBody>, SdkError> {
+        let path = PATH_UPDATE_TRACKING.replace("{domainName}", domain_name.as_str());
+
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            HashMap::new(),
+            reqwest::Method::PUT,
+            path.as_str(),
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Verify records(TXT, MX, DKIM) associated with the provided domain.
+    pub async fn verify_domain(
+        &self,
+        domain_name: String,
+    ) -> Result<reqwest::StatusCode, SdkError> {
+        let path = PATH_VERIFY_DOMAIN.replace("{domainName}", domain_name.as_str());
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            HashMap::new(),
+            reqwest::Method::POST,
+            path.as_str(),
+        )
+        .await?;
+
+        let status = response.status();
+
+        if status.is_success() {
+            Ok(status)
+        } else {
+            let text = response.text().await?;
             Err(build_api_error(status, &text))
         }
     }
