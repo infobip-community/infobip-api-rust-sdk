@@ -357,6 +357,22 @@ pub struct GetDeliveryReportsQueryParameters {
     pub limit: Option<i32>,
 }
 
+impl GetDeliveryReportsQueryParameters {
+    pub fn new() -> Self {
+        GetDeliveryReportsQueryParameters {
+            bulk_id: None,
+            message_id: None,
+            limit: None,
+        }
+    }
+}
+
+impl Default for GetDeliveryReportsQueryParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Price {
@@ -454,6 +470,27 @@ pub struct GetLogsQueryParameters {
     pub limit: Option<i32>,
 }
 
+impl GetLogsQueryParameters {
+    pub fn new() -> Self {
+        GetLogsQueryParameters {
+            message_id: None,
+            from: None,
+            to: None,
+            bulk_id: None,
+            general_status: None,
+            sent_since: None,
+            sent_until: None,
+            limit: None,
+        }
+    }
+}
+
+impl Default for GetLogsQueryParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Log {
@@ -514,6 +551,12 @@ pub struct ValidateAddressRequestBody {
     to: String,
 }
 
+impl ValidateAddressRequestBody {
+    pub fn new(to: String) -> Self {
+        ValidateAddressRequestBody { to }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ValidateAddressResponseBody {
@@ -565,6 +608,21 @@ pub struct GetDomainsQueryParameters {
     /// Page number you want to see. Default is 0.
     #[validate(range(min = 1))]
     pub page: Option<i32>,
+}
+
+impl GetDomainsQueryParameters {
+    pub fn new() -> Self {
+        GetDomainsQueryParameters {
+            size: None,
+            page: None,
+        }
+    }
+}
+
+impl Default for GetDomainsQueryParameters {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
@@ -665,7 +723,9 @@ pub struct GetDomainsResponseBody {
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 pub enum DkimKeyLength {
+    #[serde(rename = "1024")]
     L1024 = 1024,
+    #[serde(rename = "2048")]
     L2048 = 2048,
 }
 
@@ -678,6 +738,15 @@ pub struct AddDomainRequestBody {
     pub dkim_key_length: Option<DkimKeyLength>,
 }
 
+impl AddDomainRequestBody {
+    pub fn new(domain_name: String) -> Self {
+        AddDomainRequestBody {
+            domain_name,
+            dkim_key_length: None,
+        }
+    }
+}
+
 pub type AddDomainResponseBody = Domain;
 
 pub type GetDomainResponseBody = Domain;
@@ -685,7 +754,7 @@ pub type GetDomainResponseBody = Domain;
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct UpdateTrackingRequestBody {
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "open", skip_serializing_if = "Option::is_none")]
     pub opens: Option<bool>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -693,6 +762,22 @@ pub struct UpdateTrackingRequestBody {
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub unsubscribe: Option<bool>,
+}
+
+impl UpdateTrackingRequestBody {
+    pub fn new() -> Self {
+        UpdateTrackingRequestBody {
+            opens: None,
+            clicks: None,
+            unsubscribe: None,
+        }
+    }
+}
+
+impl Default for UpdateTrackingRequestBody {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 pub type UpdateTrackingResponseBody = Domain;

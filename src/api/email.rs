@@ -27,7 +27,7 @@ pub const PATH_DELETE_DOMAIN: &str = "/email/1/domains/{domainName}";
 pub const PATH_GET_BULKS: &str = "/email/1/bulks";
 pub const PATH_GET_DELIVERY_REPORTS: &str = "/email/1/reports";
 pub const PATH_GET_DOMAIN: &str = "/email/1/domains/{domainName}";
-pub const PATH_GET_DOMAINS: &str = "/sms/1/domains";
+pub const PATH_GET_DOMAINS: &str = "/email/1/domains";
 pub const PATH_GET_LOGS: &str = "/email/1/logs";
 pub const PATH_GET_SCHEDULED_STATUS: &str = "/email/1/bulks/status";
 pub const PATH_RESCHEDULE: &str = "/email/1/bulks";
@@ -247,6 +247,27 @@ impl EmailClient {
     }
 
     /// Change the date and time for sending scheduled messages.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::email::{RescheduleQueryParameters, RescheduleRequestBody};
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let query_params = RescheduleQueryParameters::new("test-bulk-id-rust-003".to_string());
+    /// let request_body = RescheduleRequestBody::new("2022-10-05T17:29:52Z".to_string());
+    ///
+    /// let response = client.reschedule(query_params, request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn reschedule(
         &self,
         query_parameters: RescheduleQueryParameters,
@@ -280,6 +301,26 @@ impl EmailClient {
     }
 
     /// See the status of scheduled email messages.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::email::GetScheduledStatusQueryParameters;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let query_params = GetScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+    ///
+    /// let response = client.get_scheduled_status(query_params).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_scheduled_status(
         &self,
         query_parameters: GetScheduledStatusQueryParameters,
@@ -311,6 +352,28 @@ impl EmailClient {
     }
 
     /// Change status or completely cancel sending of scheduled messages.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::email::{UpdateScheduledStatusQueryParameters, UpdateScheduledStatusRequestBody};
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// use infobip_sdk::model::email::BulkStatus;
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let query_params = UpdateScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+    /// let request_body = UpdateScheduledStatusRequestBody::new(BulkStatus::CANCELED);
+    ///
+    /// let response = client.update_scheduled_status(query_params, request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn update_scheduled_status(
         &self,
         query_parameters: UpdateScheduledStatusQueryParameters,
@@ -344,6 +407,26 @@ impl EmailClient {
     }
 
     /// Get one-time delivery reports for all sent emails.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::email::GetDeliveryReportsQueryParameters;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let query_params = GetDeliveryReportsQueryParameters::default();
+    ///
+    /// let response = client.get_delivery_reports(query_params).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_delivery_reports(
         &self,
         query_parameters: GetDeliveryReportsQueryParameters,
@@ -385,6 +468,26 @@ impl EmailClient {
 
     /// Get email logs of sent Email messagesId for request. Email logs
     /// are available for the last 48 hours.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::email::GetLogsQueryParameters;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let query_params = GetLogsQueryParameters::default();
+    ///
+    /// let response = client.get_logs(query_params).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_logs(
         &self,
         query_parameters: GetLogsQueryParameters,
@@ -440,6 +543,26 @@ impl EmailClient {
     }
 
     /// Run validation to identify poor quality emails to clean up your recipient list.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::email::ValidateAddressRequestBody;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let request_body = ValidateAddressRequestBody::new("someone@somewhere.com".to_string());
+    ///
+    /// let response = client.validate_address(request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn validate_address(
         &self,
         request_body: ValidateAddressRequestBody,
@@ -469,6 +592,26 @@ impl EmailClient {
 
     /// Get all domains associated with the account. It also provides details of the
     /// retrieved domain like the DNS records, tracking details, active/blocked status, etc.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::email::GetDomainsQueryParameters;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let query_params = GetDomainsQueryParameters::default();
+    ///
+    /// let response = client.get_domains(query_params).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_domains(
         &self,
         query_parameters: GetDomainsQueryParameters,
@@ -507,6 +650,26 @@ impl EmailClient {
 
     /// This method allows you to add new domains with a limit to create a maximum of 1000 domains
     /// in a day.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::email::AddDomainRequestBody;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let request_body = AddDomainRequestBody::new("example.com".to_string());
+    ///
+    /// let response = client.add_domain(request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn add_domain(
         &self,
         request_body: AddDomainRequestBody,
@@ -536,6 +699,23 @@ impl EmailClient {
 
     /// Get the details of the domain like the DNS records, tracking details, active/blocked
     /// status, etc.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let response = client.get_domain("example.com".to_string()).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn get_domain(
         &self,
         domain_name: String,
@@ -565,6 +745,23 @@ impl EmailClient {
     }
 
     /// This method allows you to delete an existing domain.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let status = client.delete_domain("example.com".to_string()).await?;
+    ///
+    /// assert_eq!(status, StatusCode::NO_CONTENT);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn delete_domain(
         &self,
         domain_name: String,
@@ -592,6 +789,27 @@ impl EmailClient {
 
     /// Update tracking events for the provided domain. Tracking events can be updated only for
     /// CLICKS, OPENS and UNSUBSCRIBES.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::email::UpdateTrackingRequestBody;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let mut request_body = UpdateTrackingRequestBody::default();
+    /// request_body.clicks = Some(true);
+    ///
+    /// let response = client.update_tracking("domain.com".to_string(), request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn update_tracking(
         &self,
         domain_name: String,
@@ -623,6 +841,23 @@ impl EmailClient {
     }
 
     /// Verify records(TXT, MX, DKIM) associated with the provided domain.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::email::EmailClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    ///
+    /// let status = client.verify_domain("example.com".to_string()).await?;
+    ///
+    /// assert_eq!(status, StatusCode::ACCEPTED);
+    /// # Ok(())
+    /// # }
+    /// ```
     pub async fn verify_domain(
         &self,
         domain_name: String,
