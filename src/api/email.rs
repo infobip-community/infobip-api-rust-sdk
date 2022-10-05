@@ -66,6 +66,9 @@ async fn build_form(request_body: SendRequestBody) -> io::Result<Form> {
     if let Some(html) = request_body.html {
         form = form.text("html", html);
     }
+    if let Some(amp_html) = request_body.amp_html {
+        form = form.text("ampHtml", amp_html);
+    }
     if let Some(template_id) = request_body.template_id {
         form = form.text("templateId", template_id.to_string());
     }
@@ -171,6 +174,8 @@ impl EmailClient {
         &self,
         request_body: SendRequestBody,
     ) -> Result<SdkResponse<SendResponseBody>, SdkError> {
+        request_body.validate()?;
+
         let form = build_form(request_body).await?;
 
         let response = send_multipart_request(

@@ -7,11 +7,10 @@ pub struct SendRequestBody {
     /// Email address with optional sender name. This field is required if `templateId` is not
     /// present.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[validate(email)]
     pub from: Option<String>,
 
     /// Email address of the recipient.
-    #[validate(email)]
+    #[validate(length(min = 1))]
     pub to: String,
 
     /// CC recipient email address.
@@ -35,6 +34,11 @@ pub struct SendRequestBody {
     /// ignored and `html` will be delivered as a message body.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub html: Option<String>,
+
+    /// Amp HTML body of the message. If ampHtml is present, html is mandatory. Amp HTML is not
+    /// supported by all the email clients. Please check this link for configuring gmail client
+    /// https://developers.google.com/gmail/ampemail/
+    pub amp_html: Option<String>,
 
     /// Template ID used for generating email content. The template is created over Infobip web
     /// interface. If `templateId` is present, then `html` and `text` values are ignored.
@@ -101,7 +105,6 @@ pub struct SendRequestBody {
 
     /// Email address to which recipients of the email can reply.
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[validate(email)]
     pub reply_to: Option<String>,
 
     /// General placeholder, given in a form of json example:
@@ -145,6 +148,7 @@ impl SendRequestBody {
             subject: None,
             text: None,
             html: None,
+            amp_html: None,
             template_id: None,
             attachment: None,
             inline_image: None,
