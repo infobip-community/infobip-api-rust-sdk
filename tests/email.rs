@@ -214,7 +214,7 @@ async fn delete_domain() {
 #[ignore]
 #[tokio::test]
 async fn update_tracking() {
-    let mut request_body = UpdateTrackingRequestBody::default();
+    let mut request_body = UpdateTrackingRequestBody::new();
     request_body.opens = Some(false);
 
     let response = get_test_email_client()

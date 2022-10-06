@@ -55,7 +55,7 @@ async fn test_preview_bad_request() {
     if let SdkError::Validation(validation_error) = error {
         assert!(!validation_error.errors().is_empty());
     } else {
-        assert!(false, "not validation error")
+        panic!("not validation error")
     }
 }
 
@@ -131,7 +131,7 @@ async fn test_preview_server_error() {
             .unwrap()
             .is_empty());
     } else {
-        assert!(false, "not an API error")
+        panic!("not an API error")
     }
 }
 

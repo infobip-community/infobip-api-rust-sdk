@@ -66,7 +66,7 @@ async fn test_send_invalid_request() {
     if let SdkError::Validation(validation_error) = error {
         assert!(!validation_error.errors().is_empty());
     } else {
-        assert!(false, "not validation error");
+        panic!("not validation error");
     }
 }
 
@@ -113,7 +113,7 @@ async fn get_bulks_invalid() {
     if let SdkError::Validation(validation_error) = error {
         assert!(!validation_error.errors().is_empty());
     } else {
-        assert!(false, "not validation error");
+        panic!("not a validation error");
     }
 }
 
@@ -162,7 +162,7 @@ async fn reschedule_no_bulk_id() {
     if let SdkError::Validation(validation_error) = error {
         assert!(!validation_error.errors().is_empty());
     } else {
-        assert!(false, "not validation error");
+        panic!("not validation error");
     }
 }
 

@@ -123,14 +123,14 @@ fn test_validate_address_request_body_no_to() {
 
 #[test]
 fn test_get_domains_query_parameters_valid() {
-    let query_params = GetDomainsQueryParameters::default();
+    let query_params = GetDomainsQueryParameters::new();
 
     assert!(query_params.validate().is_ok());
 }
 
 #[test]
 fn test_get_domains_query_parameters_invalid_page() {
-    let mut query_params = GetDomainsQueryParameters::default();
+    let mut query_params = GetDomainsQueryParameters::new();
     query_params.page = Some(0);
 
     assert!(query_params.validate().is_err());
@@ -138,7 +138,7 @@ fn test_get_domains_query_parameters_invalid_page() {
 
 #[test]
 fn test_get_domains_query_parameters_invalid_page_size() {
-    let mut query_params = GetDomainsQueryParameters::default();
+    let mut query_params = GetDomainsQueryParameters::new();
     query_params.size = Some(21);
 
     assert!(query_params.validate().is_err());
