@@ -62,6 +62,12 @@ Please make sure that all tests and linters pass for all changes. You can check 
 We mostly adhere to the [Rust API Guidelines Checklist](https://rust-lang.github.io/api-guidelines/checklist.html) for style and best practices.
 We use `rustfmt` to keep the code well-formatted.
 
+If you made any change that requires updating the readme, please change the lib.rs file, and then generate the README.md file by running the following command:
+```bash
+cargo readme --no-indent-headings > README.md
+```
+And make sure to re-add the nice icons when reviewing the commit diff.
+
 ### ✅ Step 5: Commit
 It is recommended to keep your changes grouped logically within individual commits.
 Many contributors find it easier to review changes that are split across multiple commits.

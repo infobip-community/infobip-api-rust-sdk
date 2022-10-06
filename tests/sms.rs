@@ -41,7 +41,7 @@ async fn preview_sms() {
     let response = get_test_sms_client().preview(request_body).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
-    assert!(response.body.previews.unwrap().len() > 0usize);
+    assert!(!response.body.previews.unwrap().is_empty());
 }
 
 #[ignore]
@@ -54,7 +54,7 @@ fn preview_sms_blocking() {
         .unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
-    assert!(response.body.previews.unwrap().len() > 0usize);
+    assert!(!response.body.previews.unwrap().is_empty());
 }
 
 #[ignore]
@@ -78,50 +78,38 @@ async fn preview_sms_multiple() {
     assert_eq!(resp2.as_ref().unwrap().status, StatusCode::OK);
     assert_eq!(resp3.as_ref().unwrap().status, StatusCode::OK);
     assert_eq!(resp4.as_ref().unwrap().status, StatusCode::OK);
-    assert!(
-        resp1
-            .as_ref()
-            .unwrap()
-            .body
-            .previews
-            .as_ref()
-            .unwrap()
-            .len()
-            > 0usize
-    );
-    assert!(
-        resp2
-            .as_ref()
-            .unwrap()
-            .body
-            .previews
-            .as_ref()
-            .unwrap()
-            .len()
-            > 0usize
-    );
-    assert!(
-        resp3
-            .as_ref()
-            .unwrap()
-            .body
-            .previews
-            .as_ref()
-            .unwrap()
-            .len()
-            > 0usize
-    );
-    assert!(
-        resp4
-            .as_ref()
-            .unwrap()
-            .body
-            .previews
-            .as_ref()
-            .unwrap()
-            .len()
-            > 0usize
-    );
+    assert!(!resp1
+        .as_ref()
+        .unwrap()
+        .body
+        .previews
+        .as_ref()
+        .unwrap()
+        .is_empty());
+    assert!(!resp2
+        .as_ref()
+        .unwrap()
+        .body
+        .previews
+        .as_ref()
+        .unwrap()
+        .is_empty());
+    assert!(!resp3
+        .as_ref()
+        .unwrap()
+        .body
+        .previews
+        .as_ref()
+        .unwrap()
+        .is_empty());
+    assert!(!resp4
+        .as_ref()
+        .unwrap()
+        .body
+        .previews
+        .as_ref()
+        .unwrap()
+        .is_empty());
 }
 
 #[ignore]
@@ -143,10 +131,10 @@ fn preview_sms_multiple_blocking() {
     assert_eq!(response2.status, StatusCode::OK);
     assert_eq!(response3.status, StatusCode::OK);
     assert_eq!(response4.status, StatusCode::OK);
-    assert!(response1.body.previews.unwrap().len() > 0usize);
-    assert!(response2.body.previews.unwrap().len() > 0usize);
-    assert!(response3.body.previews.unwrap().len() > 0usize);
-    assert!(response4.body.previews.unwrap().len() > 0usize);
+    assert!(!response1.body.previews.unwrap().is_empty());
+    assert!(!response2.body.previews.unwrap().is_empty());
+    assert!(!response3.body.previews.unwrap().is_empty());
+    assert!(!response4.body.previews.unwrap().is_empty());
 }
 
 #[ignore]

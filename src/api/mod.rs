@@ -11,6 +11,9 @@ use validator::Validate;
 
 use crate::configuration::{ApiKey, Configuration};
 
+#[cfg(feature = "email")]
+pub mod email;
+
 #[cfg(feature = "sms")]
 pub mod sms;
 
@@ -23,14 +26,17 @@ pub enum SdkError {
     #[error("request body has field errors")]
     Validation(#[from] validator::ValidationErrors),
 
-    #[error("client error calling endpoint")]
+    #[error("HTTP client error")]
     Reqwest(#[from] reqwest::Error),
 
     #[error("serialization error")]
     Serde(#[from] serde_json::Error),
 
-    #[error("api request error")]
+    #[error("API request error")]
     ApiRequestError(#[from] ApiError),
+
+    #[error("IO error")]
+    Io(#[from] std::io::Error),
 }
 
 /// Holds the status code and error details when a 4xx or 5xx response is received.
@@ -51,7 +57,7 @@ impl fmt::Display for ApiError {
 }
 
 /// Holds information about a server-side error.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ServiceException {
     /// Identifier of the error.
@@ -68,14 +74,14 @@ pub struct ServiceException {
 }
 
 /// Holds the exception produced by a server-side error.
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct RequestError {
     #[serde(rename = "serviceException")]
     pub service_exception: ServiceException,
 }
 
 /// Holds the details about a 4xx/5xx server-side error.
-#[derive(Clone, Debug, Error, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Error, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ApiErrorDetails {
     #[serde(rename = "requestError")]
     pub request_error: RequestError,
@@ -92,7 +98,7 @@ impl fmt::Display for ApiErrorDetails {
 }
 
 /// Holds the status code and the response body of a successful API call.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct SdkResponse<T> {
     pub body: T,
     pub status: StatusCode,
@@ -186,7 +192,7 @@ async fn send_valid_json_request<T: Validate + serde::Serialize>(
     Ok(builder.send().await?)
 }
 
-async fn _send_multipart_request(
+async fn send_multipart_request(
     client: &reqwest::Client,
     configuration: &Configuration,
     form: reqwest::multipart::Form,

@@ -10,6 +10,9 @@ mod sms;
 #[cfg(test)]
 mod whatsapp;
 
+#[cfg(test)]
+mod email;
+
 const DUMMY_TEXT: &str = "Some text for tests.";
 
 async fn mock_json_endpoint(

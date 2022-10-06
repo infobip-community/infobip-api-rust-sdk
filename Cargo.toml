@@ -7,11 +7,12 @@ homepage = "https://www.infobip.com/"
 license = "MIT OR Apache-2.0"
 name = "infobip_sdk"
 repository = "https://github.com/infobip-community/infobip-api-rust-sdk"
-version = "0.2.0"
+version = "0.3.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+dotenv = "0.15.0"
 lazy_static = "1.4"
 regex = "1.6"
 reqwest = { version = "0.11", features = ["blocking", "json", "multipart"] }
@@ -24,8 +25,10 @@ validator = { version = "0.16", features = ["derive"] }
 
 [dev-dependencies]
 httpmock = "0.6"
+chrono = "0.4"
 
 [features]
-default = ["sms", "whatsapp"]
+default = ["sms", "whatsapp", "email"]
 sms = []
 whatsapp = []
+email = []

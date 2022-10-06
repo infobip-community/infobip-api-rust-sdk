@@ -40,7 +40,7 @@ async fn test_preview_valid() {
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
     assert!(!response.body.original_text.unwrap().is_empty());
-    assert!(response.body.previews.unwrap().len() > 0usize);
+    assert!(!response.body.previews.unwrap().is_empty());
 }
 
 #[tokio::test]
@@ -55,7 +55,7 @@ async fn test_preview_bad_request() {
     if let SdkError::Validation(validation_error) = error {
         assert!(!validation_error.errors().is_empty());
     } else {
-        assert!(false, "not validation error")
+        panic!("not validation error")
     }
 }
 
@@ -91,7 +91,7 @@ fn test_blocking_preview_valid() {
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
     assert!(!response.body.original_text.unwrap().is_empty());
-    assert!(response.body.previews.unwrap().len() > 0usize);
+    assert!(!response.body.previews.unwrap().is_empty());
 }
 
 #[tokio::test]
@@ -131,7 +131,7 @@ async fn test_preview_server_error() {
             .unwrap()
             .is_empty());
     } else {
-        assert!(false, "not an API error")
+        panic!("not an API error")
     }
 }
 

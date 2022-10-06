@@ -1,3 +1,5 @@
+//! Module with client and endpoint functions for the SMS channel.
+
 use std::collections::HashMap;
 
 use validator::Validate;
@@ -25,13 +27,13 @@ pub const PATH_GET_DELIVERY_REPORTS: &str = "/sms/1/reports";
 pub const PATH_GET_INBOUND: &str = "/sms/1/inbox/reports";
 pub const PATH_GET_LOGS: &str = "/sms/1/logs";
 pub const PATH_GET_SCHEDULED: &str = "/sms/1/bulks";
-pub const PATH_RESCHEDULE: &str = "/sms/1/bulks";
 pub const PATH_GET_SCHEDULED_STATUS: &str = "/sms/1/bulks/status";
-pub const PATH_UPDATE_SCHEDULED_STATUS: &str = "/sms/1/bulks/status";
 pub const PATH_PREVIEW: &str = "/sms/1/preview";
+pub const PATH_RESCHEDULE: &str = "/sms/1/bulks";
 pub const PATH_SEND: &str = "/sms/2/text/advanced";
 pub const PATH_SEND_BINARY: &str = "/sms/2/binary/advanced";
 pub const PATH_SEND_OVER_QUERY_PARAMS: &str = "/sms/1/text/query";
+pub const PATH_UPDATE_SCHEDULED_STATUS: &str = "/sms/1/bulks/status";
 
 /// Main asynchronous client for the Infobip SMS channel.
 #[derive(Clone, Debug)]
@@ -356,14 +358,35 @@ impl SmsClient {
         query_parameters.validate()?;
 
         let mut parameters_map = HashMap::<String, String>::new();
+        if let Some(from) = query_parameters.from {
+            parameters_map.insert("from".to_string(), from);
+        }
+        if let Some(to) = query_parameters.to {
+            parameters_map.insert("to".to_string(), to);
+        }
         if let Some(bulk_id) = query_parameters.bulk_id {
             parameters_map.insert("bulkId".to_string(), bulk_id);
         }
         if let Some(message_id) = query_parameters.message_id {
             parameters_map.insert("messageId".to_string(), message_id);
         }
+        if let Some(general_status) = query_parameters.general_status {
+            parameters_map.insert("generalStatus".to_string(), general_status);
+        }
+        if let Some(sent_since) = query_parameters.sent_since {
+            parameters_map.insert("sentSince".to_string(), sent_since);
+        }
+        if let Some(sent_until) = query_parameters.sent_until {
+            parameters_map.insert("sentUntil".to_string(), sent_until);
+        }
         if let Some(limit) = query_parameters.limit {
             parameters_map.insert("limit".to_string(), limit.to_string());
+        }
+        if let Some(mcc) = query_parameters.mcc {
+            parameters_map.insert("mcc".to_string(), mcc);
+        }
+        if let Some(mnc) = query_parameters.mnc {
+            parameters_map.insert("mnc".to_string(), mnc);
         }
 
         let response = send_no_body_request(
