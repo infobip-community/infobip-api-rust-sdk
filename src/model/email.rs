@@ -736,6 +736,7 @@ pub enum DkimKeyLength {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct AddDomainRequestBody {
+    #[validate(length(min = 1))]
     pub domain_name: String,
 
     #[serde(skip_serializing_if = "Option::is_none")]

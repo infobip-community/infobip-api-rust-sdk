@@ -61,7 +61,7 @@ async fn send_bulk() {
 #[ignore]
 #[tokio::test]
 async fn get_bulks() {
-    let query_params = GetBulksQueryParameters::new("test-bulk-id-rust-002".to_string());
+    let query_params = GetBulksQueryParameters::new("test-bulk-id-rust-003".to_string());
 
     let response = get_test_email_client()
         .get_bulks(query_params)

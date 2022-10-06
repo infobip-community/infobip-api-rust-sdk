@@ -1,6 +1,6 @@
 use validator::Validate;
 
-use crate::model::email::SendRequestBody;
+use crate::model::email::*;
 
 pub fn get_dummy_send_email_request_body() -> SendRequestBody {
     let mut request = SendRequestBody::new("some@company.com".to_string());
@@ -61,6 +61,99 @@ fn test_send_request_body_long_subject() {
 fn tets_send_request_body_long_callback_data() {
     let mut request_body = get_dummy_send_email_request_body();
     request_body.callback_data = Some("C".repeat(4001));
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn test_get_bulks_query_parameters_valid() {
+    let query_params = GetBulksQueryParameters::new("some-bulk-id".to_string());
+
+    assert!(query_params.validate().is_ok());
+}
+
+#[test]
+fn test_get_bulks_query_parameters_no_bulk_id() {
+    let query_params = GetBulksQueryParameters::new("".to_string());
+
+    assert!(query_params.validate().is_err());
+}
+
+#[test]
+fn test_reschedule_query_parameters_valid() {
+    let query_params = RescheduleQueryParameters::new("some-bulk-id".to_string());
+
+    assert!(query_params.validate().is_ok());
+}
+
+#[test]
+fn test_reschedule_query_parameters_no_bulk_id() {
+    let query_params = RescheduleQueryParameters::new("".to_string());
+
+    assert!(query_params.validate().is_err());
+}
+
+#[test]
+fn test_reschedule_request_body_valid() {
+    let request_body = RescheduleRequestBody::new("2022-10-03T20:27:41Z".to_string());
+
+    assert!(request_body.validate().is_ok());
+}
+
+#[test]
+fn test_reschedule_request_body_no_send_at() {
+    let request_body = RescheduleRequestBody::new("".to_string());
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn test_validate_address_request_body_valid() {
+    let request_body = ValidateAddressRequestBody::new("hello@hi.com".to_string());
+
+    assert!(request_body.validate().is_ok());
+}
+
+#[test]
+fn test_validate_address_request_body_no_to() {
+    let request_body = ValidateAddressRequestBody::new("".to_string());
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn test_get_domains_query_parameters_valid() {
+    let query_params = GetDomainsQueryParameters::default();
+
+    assert!(query_params.validate().is_ok());
+}
+
+#[test]
+fn test_get_domains_query_parameters_invalid_page() {
+    let mut query_params = GetDomainsQueryParameters::default();
+    query_params.page = Some(0);
+
+    assert!(query_params.validate().is_err());
+}
+
+#[test]
+fn test_get_domains_query_parameters_invalid_page_size() {
+    let mut query_params = GetDomainsQueryParameters::default();
+    query_params.size = Some(21);
+
+    assert!(query_params.validate().is_err());
+}
+
+#[test]
+fn test_add_domain_request_body_valid() {
+    let request_body = AddDomainRequestBody::new("some-domain.com".to_string());
+
+    assert!(request_body.validate().is_ok());
+}
+
+#[test]
+fn test_add_domain_request_body_no_domain() {
+    let request_body = AddDomainRequestBody::new("".to_string());
 
     assert!(request_body.validate().is_err());
 }
