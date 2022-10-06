@@ -81,7 +81,7 @@ pub struct RequestError {
 }
 
 /// Holds the details about a 4xx/5xx server-side error.
-#[derive(Clone, Debug, Error, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Error, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ApiErrorDetails {
     #[serde(rename = "requestError")]
     pub request_error: RequestError,

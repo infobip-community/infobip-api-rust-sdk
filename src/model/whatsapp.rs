@@ -408,7 +408,7 @@ impl Contact {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct ContactContent {
     /// An array of contacts sent in a WhatsApp message.
@@ -700,7 +700,7 @@ impl InteractiveFooter {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct InteractiveButtonsContent {
     /// Body of a message containing one or more interactive elements.
@@ -795,7 +795,7 @@ impl InteractiveListSection {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct InteractiveListAction {
     /// Title of the list. Does not allow emojis or markdown.
@@ -830,7 +830,7 @@ impl InteractiveListHeader {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct InteractiveListContent {
     /// Body of a message containing one or more interactive elements.
@@ -1002,7 +1002,7 @@ impl InteractiveMultiproductAction {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct InteractiveMultiproductContent {
     /// Header of a message containing one or more interactive elements.
@@ -1514,7 +1514,7 @@ impl TemplateStructure {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateTemplateRequestBody {
     /// Template name. Must only contain lowercase alphanumeric characters and underscores.
@@ -1911,7 +1911,7 @@ pub enum TemplateStatus {
     Disabled,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateTemplateResponseBody {
     /// Template ID.
@@ -1939,7 +1939,7 @@ pub struct CreateTemplateResponseBody {
     pub structure: Option<TemplateStructure>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Template {
     /// Template ID.
@@ -1971,7 +1971,7 @@ pub struct Template {
     pub structure: Option<TemplateStructure>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetTemplatesResponseBody {
     /// List of all templates for given sender.
@@ -1981,7 +1981,7 @@ pub struct GetTemplatesResponseBody {
 
 pub type SentMessageInfo = SendContentResponseBody;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SendTemplateResponseBody {
     /// Array of sent message objects, one object per every message.

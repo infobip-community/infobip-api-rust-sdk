@@ -187,7 +187,7 @@ pub struct SentMessageDetails {
     pub status: Option<Status>,
 }
 
-#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ReportError {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -237,7 +237,7 @@ pub struct Status {
     pub action: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SendResponseBody {
     /// The ID that uniquely identifies a list of message responses.
@@ -261,7 +261,7 @@ impl GetBulksQueryParameters {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetBulksResponseBody {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -271,7 +271,7 @@ pub struct GetBulksResponseBody {
     pub bulks: Option<Vec<BulkInfo>>,
 }
 
-#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BulkInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -310,7 +310,7 @@ pub enum BulkStatus {
     FAILED,
 }
 
-#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct BulkStatusInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bulk_id: Option<String>,
@@ -319,7 +319,7 @@ pub struct BulkStatusInfo {
     pub status: Option<BulkStatus>,
 }
 
-#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetScheduledStatusResponseBody {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -561,7 +561,7 @@ impl ValidateAddressRequestBody {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ValidateAddressResponseBody {
     /// Email address of the recipient.
@@ -629,7 +629,7 @@ impl Default for GetDomainsQueryParameters {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Tracking {
     /// Indicates whether tracking of clicks is enabled.
@@ -645,7 +645,7 @@ pub struct Tracking {
     pub unsubscribe: Option<bool>,
 }
 
-#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DnsRecord {
     /// Type of the record.
@@ -665,7 +665,7 @@ pub struct DnsRecord {
     pub verified: Option<bool>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Domain {
     /// Id of the domain.
@@ -697,7 +697,7 @@ pub struct Domain {
     pub created_at: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Paging {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -713,7 +713,7 @@ pub struct Paging {
     pub total_results: Option<i32>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetDomainsResponseBody {
     /// Pagination details like page number, page size, etc.

@@ -69,7 +69,7 @@ pub struct PreviewLanguageConfiguration {
     pub transliteration: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Preview {
     /// Number of remaining characters in the last SMS part.
@@ -89,7 +89,7 @@ pub struct Preview {
     pub text_preview: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PreviewResponseBody {
     /// Text supplied in the request.
@@ -488,7 +488,7 @@ impl Default for RegionalOptions {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct Message {
     /// Additional data that can be used for identifying, managing, or monitoring a message.
@@ -626,7 +626,7 @@ impl BinaryData {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct BinaryMessage {
     #[validate]
@@ -716,7 +716,7 @@ impl BinaryMessage {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct SendRequestBody {
     /// Unique ID assigned to the request if messaging multiple recipients or sending multiple
@@ -754,7 +754,7 @@ impl SendRequestBody {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct SendBinaryRequestBody {
     /// The ID which uniquely identifies the request. Bulk ID will be received only when you send a
@@ -804,7 +804,7 @@ pub struct SentMessageDetails {
     pub to: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SendResponseBody {
     /// The ID that uniquely identifies the request. Bulk ID will be received only when you send a
