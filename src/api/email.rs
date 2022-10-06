@@ -362,12 +362,11 @@ impl EmailClient {
     /// ```no_run
     /// # use infobip_sdk::api::email::EmailClient;
     /// # use infobip_sdk::configuration::Configuration;
-    /// # use infobip_sdk::model::email::{UpdateScheduledStatusQueryParameters, UpdateScheduledStatusRequestBody};
+    /// # use infobip_sdk::model::email::{BulkStatus, UpdateScheduledStatusQueryParameters, UpdateScheduledStatusRequestBody};
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// use infobip_sdk::model::email::BulkStatus;
     /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
     ///
     /// let query_params = UpdateScheduledStatusQueryParameters::new("some-bulk-id".to_string());

@@ -37,7 +37,7 @@ pub struct SendRequestBody {
 
     /// Amp HTML body of the message. If ampHtml is present, html is mandatory. Amp HTML is not
     /// supported by all the email clients. Please check this link for configuring gmail client
-    /// https://developers.google.com/gmail/ampemail/
+    /// `<https://developers.google.com/gmail/ampemail/>`
     pub amp_html: Option<String>,
 
     /// Template ID used for generating email content. The template is created over Infobip web
