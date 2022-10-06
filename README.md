@@ -17,6 +17,7 @@ models errors. The module structure is divided by communication channel.
 ## 📡 Supported Channels
 - [SMS](https://www.infobip.com/docs/api/channels/sms)
 - [WhatsApp](https://www.infobip.com/docs/api/channels/whatsapp)
+- [Email](https://www.infobip.com/docs/api/channels/email)
 
 More Channels to be added in the near future!
 
