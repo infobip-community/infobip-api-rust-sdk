@@ -1,3 +1,5 @@
+//! Module with client and endpoint functions for the WhatsApp channel.
+
 use std::collections::HashMap;
 
 use reqwest::{Method, Response};

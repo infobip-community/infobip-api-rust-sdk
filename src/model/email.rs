@@ -1,3 +1,5 @@
+//! Models for calling Email endpoints.
+
 use serde_derive::{Deserialize, Serialize};
 use validator::Validate;
 

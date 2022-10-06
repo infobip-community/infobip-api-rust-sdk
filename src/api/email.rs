@@ -1,3 +1,5 @@
+//! Module with client and endpoint functions for the Email channel.
+
 use std::collections::HashMap;
 use std::io;
 

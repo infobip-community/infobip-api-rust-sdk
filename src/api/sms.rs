@@ -1,3 +1,5 @@
+//! Module with client and endpoint functions for the SMS channel.
+
 use std::collections::HashMap;
 
 use validator::Validate;
