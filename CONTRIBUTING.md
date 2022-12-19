@@ -33,19 +33,17 @@ Please use the issue tracker for bugs only!
 ## ⬇️ Pull request
 
 ### 🍴 Step 1: Fork
-Fork the project on GitHub and clone your fork locally.
-Example for Python SDK repository:
+Fork the project on GitHub. Then clone your fork locally like this:
 ```bash
-git clone https://github.com/<your username>/infobip-api-go-sdk.git
-cd infobip-api-go-sdk
-git remote add upstream https://github.com/infobip-community/infobip-api-go-sdk.git
+git clone https://github.com/<your username>/infobip-api-rust-sdk.git
+cd infobip-api-rust-sdk
+git remote add upstream https://github.com/infobip-community/infobip-api-rust-sdk.git
 git fetch upstream
 ```
 ### 🛠️ Step 2: Build
-Please run all the tests in the repository, all tests should pass.
-You can manually test by calling the included script from the root of the project:
+You can manually test that the project compiles by calling the Cargo build command from the root of the project:
 ```bash
-bash scripts/run_tests.sh
+cargo build
 ```
 
 ### 🌱 Step 3: Branch

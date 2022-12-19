@@ -391,7 +391,7 @@ pub struct Price {
     pub currency: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Report {
     /// The ID that uniquely identifies bulks of request.
@@ -431,7 +431,7 @@ pub struct Report {
     pub error: Option<ReportError>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetDeliveryReportsResponseBody {
     #[serde(rename = "results", skip_serializing_if = "Option::is_none")]
@@ -497,7 +497,7 @@ impl Default for GetLogsQueryParameters {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Log {
     /// The ID that uniquely identifies the sent email request.
@@ -542,7 +542,7 @@ pub struct Log {
     pub bulk_id: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct GetLogsResponseBody {
     #[serde(rename = "results", skip_serializing_if = "Option::is_none")]
