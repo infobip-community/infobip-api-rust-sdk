@@ -68,6 +68,7 @@
     ".eslintrc.js",
     ".vscode/settings.json",
     ".gitignore",
-    ".github/workflows"
+    ".github/workflows",
+    "Cargo.toml"
   ]
 }
