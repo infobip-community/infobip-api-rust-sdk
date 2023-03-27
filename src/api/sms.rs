@@ -9,14 +9,25 @@ use crate::api::{
     send_valid_json_request, ApiError, SdkError, SdkResponse,
 };
 use crate::model::sms::{
+    CreateTfaApplicationRequestBody, CreateTfaApplicationResponseBody,
+    CreateTfaMessageTemplateRequestBody, CreateTfaMessageTemplateResponseBody,
     GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody,
     GetInboundReportsQueryParameters, GetInboundReportsResponseBody, GetLogsQueryParameters,
     GetLogsResponseBody, GetScheduledQueryParameters, GetScheduledResponseBody,
-    GetScheduledStatusQueryParameters, GetScheduledStatusResponseBody, RescheduleQueryParameters,
-    RescheduleRequestBody, RescheduleResponseBody, SendBinaryRequestBody, SendBinaryResponseBody,
-    SendOverQueryParametersQueryParameters, SendOverQueryParametersResponseBody, SendRequestBody,
-    SendResponseBody, UpdateScheduledStatusQueryParameters, UpdateScheduledStatusRequestBody,
-    UpdateScheduledStatusResponseBody,
+    GetScheduledStatusQueryParameters, GetScheduledStatusResponseBody,
+    GetTfaApplicationResponseBody, GetTfaApplicationsResponseBody,
+    GetTfaMessageTemplateResponseBody, GetTfaMessageTemplatesResponseBody,
+    GetTfaVerificationStatusQueryParameters, GetTfaVerificationStatusResponseBody,
+    RescheduleQueryParameters, RescheduleRequestBody, RescheduleResponseBody,
+    ResendPinOverSmsRequestBody, ResendPinOverSmsResponseBody, SendBinaryRequestBody,
+    SendBinaryResponseBody, SendOverQueryParametersQueryParameters,
+    SendOverQueryParametersResponseBody, SendPinOverSmsQueryParameters, SendPinOverSmsRequestBody,
+    SendPinOverSmsResponseBody, SendPinOverVoiceRequestBody, SendPinOverVoiceResponseBody,
+    SendRequestBody, SendResponseBody, UpdateScheduledStatusQueryParameters,
+    UpdateScheduledStatusRequestBody, UpdateScheduledStatusResponseBody,
+    UpdateTfaApplicationRequestBody, UpdateTfaApplicationResponseBody,
+    UpdateTfaMessageTemplateRequestBody, UpdateTfaMessageTemplateResponseBody,
+    VerifyPhoneNumberRequestBody, VerifyPhoneNumberResponseBody,
 };
 use crate::{
     configuration::Configuration,
@@ -34,6 +45,19 @@ pub const PATH_SEND: &str = "/sms/2/text/advanced";
 pub const PATH_SEND_BINARY: &str = "/sms/2/binary/advanced";
 pub const PATH_SEND_OVER_QUERY_PARAMS: &str = "/sms/1/text/query";
 pub const PATH_UPDATE_SCHEDULED_STATUS: &str = "/sms/1/bulks/status";
+pub const PATH_GET_TFA_APPLICATIONS: &str = "/2fa/2/applications";
+pub const PATH_CREATE_TFA_APPLICATION: &str = "/2fa/2/applications";
+pub const PATH_GET_TFA_APPLICATION: &str = "/2fa/2/applications/{appId}";
+pub const PATH_UPDATE_TFA_APPLICATION: &str = "/2fa/2/applications/{appId}";
+pub const PATH_GET_TFA_MESSAGE_TEMPLATES: &str = "/2fa/2/applications/{appId}/messages";
+pub const PATH_CREATE_TFA_MESSAGE_TEMPLATE: &str = "/2fa/2/applications/{appId}/messages";
+pub const PATH_GET_TFA_MESSAGE_TEMPLATE: &str = "/2fa/2/applications/{appId}/messages/{msgId}";
+pub const PATH_UPDATE_TFA_MESSAGE_TEMPLATE: &str = "/2fa/2/applications/{appId}/messages/{msgId}";
+pub const PATH_SEND_PIN_OVER_SMS: &str = "/2fa/2/pin";
+pub const PATH_RESEND_PIN_OVER_SMS: &str = "/2fa/2/pin/{pinId}/resend";
+pub const PATH_SEND_PIN_OVER_VOICE: &str = "/2fa/2/pin/voice";
+pub const PATH_VERIFY_PHONE_NUMBER: &str = "/2fa/2/pin/{pinId}/verify";
+pub const PATH_GET_TFA_VERIFICATION_STATUS: &str = "/2fa/2/applications/{appId}/verifications";
 
 /// Main asynchronous client for the Infobip SMS channel.
 #[derive(Clone, Debug)]
@@ -289,7 +313,7 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = GetScheduledQueryParameters::new("dummy-rust-sdk-bulk-id".to_string());
+    /// let query_parameters = GetScheduledQueryParameters::new("dummy-bulk-id".to_string());
     ///
     /// let response = sms_client.get_scheduled(query_parameters).await?;
     ///
@@ -739,6 +763,655 @@ impl SmsClient {
             parameters_map,
             reqwest::Method::PUT,
             PATH_UPDATE_SCHEDULED_STATUS,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Get a list of your 2FA applications.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let response = client.get_tfa_applications().await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    pub async fn get_tfa_applications(
+        &self,
+    ) -> Result<SdkResponse<GetTfaApplicationsResponseBody>, SdkError> {
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            HashMap::new(),
+            reqwest::Method::GET,
+            PATH_GET_TFA_APPLICATIONS,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Create and configure a new 2FA application.
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::CreateTfaApplicationRequestBody;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let request_body = CreateTfaApplicationRequestBody::new("some-name".to_string());
+    ///
+    /// let response = client.create_tfa_application(request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::CREATED);
+    /// # Ok(())
+    /// # }
+    pub async fn create_tfa_application(
+        &self,
+        request_body: CreateTfaApplicationRequestBody,
+    ) -> Result<SdkResponse<CreateTfaApplicationResponseBody>, SdkError> {
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            HashMap::new(),
+            reqwest::Method::POST,
+            PATH_CREATE_TFA_APPLICATION,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Get a single 2FA application to see its configuration details.
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
+    /// let response = client.get_tfa_application(application_id).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn get_tfa_application(
+        &self,
+        application_id: &str,
+    ) -> Result<SdkResponse<GetTfaApplicationResponseBody>, SdkError> {
+        let path = &PATH_GET_TFA_APPLICATION.replace("{appId}", application_id);
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            HashMap::new(),
+            reqwest::Method::GET,
+            path,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Change configuration options for your existing 2FA application.
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::UpdateTfaApplicationRequestBody;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
+    /// let request_body = UpdateTfaApplicationRequestBody::new("some-new-name".to_string());
+    /// let response = client.update_tfa_application(application_id, request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn update_tfa_application(
+        &self,
+        application_id: &str,
+        request_body: UpdateTfaApplicationRequestBody,
+    ) -> Result<SdkResponse<UpdateTfaApplicationResponseBody>, SdkError> {
+        let path = &PATH_UPDATE_TFA_APPLICATION.replace("{appId}", application_id);
+
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            HashMap::new(),
+            reqwest::Method::PUT,
+            path,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Get all message templates in a 2FA application.
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
+    /// let response = client.get_tfa_message_templates(application_id).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn get_tfa_message_templates(
+        &self,
+        application_id: &str,
+    ) -> Result<SdkResponse<GetTfaMessageTemplatesResponseBody>, SdkError> {
+        let path = &PATH_GET_TFA_MESSAGE_TEMPLATES.replace("{appId}", application_id);
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            HashMap::new(),
+            reqwest::Method::GET,
+            path,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Create one or more message templates where your PIN will be dynamically included when you send the PIN message.
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::CreateTfaMessageTemplateRequestBody;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
+    /// let request_body = CreateTfaMessageTemplateRequestBody::new("some-name".to_string(), "some-content".to_string());
+    /// let response = client.create_tfa_message_template(application_id, request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn create_tfa_message_template(
+        &self,
+        application_id: &str,
+        request_body: CreateTfaMessageTemplateRequestBody,
+    ) -> Result<SdkResponse<CreateTfaMessageTemplateResponseBody>, SdkError> {
+        let path = &PATH_CREATE_TFA_MESSAGE_TEMPLATE.replace("{appId}", application_id);
+
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            HashMap::new(),
+            reqwest::Method::POST,
+            path,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Get a single 2FA message template from an application to see its configuration details.
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
+    /// let template_id = "02CC3CAAFD733136AA15DFAC720A0C42";
+    /// let response = client.get_tfa_message_template(application_id, template_id).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn get_tfa_message_template(
+        &self,
+        application_id: &str,
+        template_id: &str,
+    ) -> Result<SdkResponse<GetTfaMessageTemplateResponseBody>, SdkError> {
+        let path = &PATH_GET_TFA_MESSAGE_TEMPLATE
+            .replace("{appId}", application_id)
+            .replace("{templateId}", template_id);
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            HashMap::new(),
+            reqwest::Method::GET,
+            path,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Change configuration options for your existing 2FA application message template.
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::UpdateTfaMessageTemplateRequestBody;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
+    /// let template_id = "02CC3CAAFD733136AA15DFAC720A0C42";
+    /// let request_body = UpdateTfaMessageTemplateRequestBody::new("some-name".to_string(), "some-content".to_string());
+    ///
+    /// let response = client.update_tfa_message_template(application_id, template_id, request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn update_tfa_message_template(
+        &self,
+        application_id: &str,
+        template_id: &str,
+        request_body: UpdateTfaMessageTemplateRequestBody,
+    ) -> Result<SdkResponse<UpdateTfaMessageTemplateResponseBody>, SdkError> {
+        let path = &PATH_UPDATE_TFA_MESSAGE_TEMPLATE
+            .replace("{appId}", application_id)
+            .replace("{msgId}", template_id);
+
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            HashMap::new(),
+            reqwest::Method::PUT,
+            path,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Send a PIN code over SMS using a previously created message template.
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::SendPinOverSmsQueryParameters;
+    /// # use infobip_sdk::model::sms::SendPinOverSmsRequestBody;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let query_parameters = SendPinOverSmsQueryParameters::default();
+    /// let request_body = SendPinOverSmsRequestBody::new("some-application-id".to_string(), "some-template-id".to_string(), "555555555555".to_string());
+    ///
+    /// let response = client.send_pin_over_sms(query_parameters, request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn send_pin_over_sms(
+        &self,
+        query_parameters: SendPinOverSmsQueryParameters,
+        request_body: SendPinOverSmsRequestBody,
+    ) -> Result<SdkResponse<SendPinOverSmsResponseBody>, SdkError> {
+        query_parameters.validate()?;
+        let mut parameters_map = HashMap::new();
+        if let Some(nc_needed) = query_parameters.nc_needed {
+            parameters_map.insert("ncNeeded".to_string(), nc_needed.to_string());
+        }
+
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            parameters_map,
+            reqwest::Method::POST,
+            PATH_SEND_PIN_OVER_SMS,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Resend the same (previously sent) PIN code over SMS.
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::ResendPinOverSmsRequestBody;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let pin_id = "02CC3CAAFD733136AA15DFAC720A0C42";
+    /// let request_body = ResendPinOverSmsRequestBody::default();
+    ///
+    /// let response = client.resend_pin_over_sms(pin_id, request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn resend_pin_over_sms(
+        &self,
+        pin_id: &str,
+        request_body: ResendPinOverSmsRequestBody,
+    ) -> Result<SdkResponse<ResendPinOverSmsResponseBody>, SdkError> {
+        let path = &PATH_RESEND_PIN_OVER_SMS.replace("{pinId}", pin_id);
+
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            HashMap::new(),
+            reqwest::Method::POST,
+            path,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Send a PIN code over Voice using previously created message template.
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::SendPinOverVoiceRequestBody;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// request_body = SendPinOverVoiceRequestBody::new("some-application-id".to_string(), "some-template-id".to_string(), "555555555555".to_string());
+    ///
+    /// let response = client.send_pin_over_voice(request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn send_pin_over_voice(
+        &self,
+        request_body: SendPinOverVoiceRequestBody,
+    ) -> Result<SdkResponse<SendPinOverVoiceResponseBody>, SdkError> {
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            HashMap::new(),
+            reqwest::Method::POST,
+            PATH_SEND_PIN_OVER_VOICE,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Verify a phone number to confirm successful 2FA authentication.
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::VerifyPhoneNumberRequestBody;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// use infobip_sdk::model::sms::VerifyPhoneNumberResponseBody;
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let pin_id = "02CC3CAAFD733136AA15DFAC720A0C42";
+    /// let request_body = VerifyPhoneNumberRequestBody::new("123456".to_string());
+    /// let response = client.verify_phone_number(pin_id, request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn verify_phone_number(
+        &self,
+        pin_id: &str,
+        request_body: VerifyPhoneNumberRequestBody,
+    ) -> Result<SdkResponse<VerifyPhoneNumberResponseBody>, SdkError> {
+        let path = &PATH_VERIFY_PHONE_NUMBER.replace("{pinId}", pin_id);
+
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            HashMap::new(),
+            reqwest::Method::POST,
+            path,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
+    /// Check if a phone number is already verified for a specific 2FA application.
+    /// # Example
+    /// ```rust
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::{GetTfaVerificationStatusQueryParameters,
+    /// #         GetTfaVerificationStatusResponseBody};
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let query_parameters = GetTfaVerificationStatusQueryParameters::new("555555555555".to_string());
+    /// let response = client.get_tfa_verification_status("some-application-id", query_parameters).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn get_tfa_verification_status(
+        &self,
+        app_id: &str,
+        query_parameters: GetTfaVerificationStatusQueryParameters,
+    ) -> Result<SdkResponse<GetTfaVerificationStatusResponseBody>, SdkError> {
+        let path = &PATH_GET_TFA_VERIFICATION_STATUS.replace("{appId}", app_id);
+
+        query_parameters.validate()?;
+        let mut parameters_map = HashMap::new();
+        parameters_map.insert("msisdn".to_string(), query_parameters.msisdn);
+        if let Some(verified) = query_parameters.verified {
+            parameters_map.insert("verified".to_string(), verified.to_string());
+        }
+        if let Some(sent) = query_parameters.sent {
+            parameters_map.insert("sent".to_string(), sent.to_string());
+        }
+
+        let response = send_no_body_request(
+            &self.client,
+            &self.configuration,
+            HashMap::new(),
+            reqwest::Method::GET,
+            path,
         )
         .await?;
 

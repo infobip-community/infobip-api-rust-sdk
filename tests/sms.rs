@@ -293,3 +293,73 @@ async fn update_scheduled_status() {
         .unwrap();
     assert_eq!(response.status, StatusCode::OK);
 }
+
+#[ignore]
+#[tokio::test]
+async fn get_tfa_applications() {
+    let response = get_test_sms_client().get_tfa_applications().await.unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn create_tfa_application() {
+    let request_body = CreateTfaApplicationRequestBody::new("rust-application".to_string());
+
+    let response = get_test_sms_client()
+        .create_tfa_application(request_body)
+        .await
+        .unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::CREATED);
+}
+
+#[ignore]
+#[tokio::test]
+async fn get_tfa_application() {
+    let response = get_test_sms_client()
+        .get_tfa_application("02CC3CAAFD733136AA15DFAC720A0C42")
+        .await
+        .unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn update_tfa_application() {
+    let configuration = TfaApplicationConfiguration {
+        allow_multiple_pin_verifications: Some(true),
+        pin_attempts: None,
+        pin_time_to_live: None,
+        send_pin_per_application_limit: Some("5010/12h".to_string()),
+        send_pin_per_phone_number_limit: None,
+        verify_pin_limit: None,
+    };
+    let mut request_body = UpdateTfaApplicationRequestBody::new("rust-application-2".to_string());
+    request_body.configuration = Some(configuration);
+
+    let response = get_test_sms_client()
+        .update_tfa_application("02CC3CAAFD733136AA15DFAC720A0C42", request_body)
+        .await
+        .unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn get_tfa_message_templates() {
+    let response = get_test_sms_client()
+        .get_tfa_message_templates("02CC3CAAFD733136AA15DFAC720A0C42")
+        .await
+        .unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::OK);
+}
