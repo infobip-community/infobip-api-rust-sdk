@@ -3,7 +3,7 @@ use validator::Validate;
 use crate::model::email::*;
 
 pub fn get_dummy_send_email_request_body() -> SendRequestBody {
-    let mut request = SendRequestBody::new("some@company.com".to_string());
+    let mut request = SendRequestBody::new("some@company.com");
     request.from = Some("John Doe <john@company.com>".to_string());
     request.cc = Some("one@company.com,two@company.com".to_string());
     request.bcc = Some("three@company.com,four@some.com".to_string());
@@ -37,7 +37,7 @@ pub fn get_dummy_send_email_request_body() -> SendRequestBody {
 
 #[test]
 fn test_send_request_valid() {
-    let request_body = SendRequestBody::new("someone@company.com".to_string());
+    let request_body = SendRequestBody::new("someone@company.com");
 
     assert!(request_body.validate().is_ok());
 }
@@ -67,56 +67,56 @@ fn tets_send_request_body_long_callback_data() {
 
 #[test]
 fn test_get_bulks_query_parameters_valid() {
-    let query_params = GetBulksQueryParameters::new("some-bulk-id".to_string());
+    let query_params = GetBulksQueryParameters::new("some-bulk-id");
 
     assert!(query_params.validate().is_ok());
 }
 
 #[test]
 fn test_get_bulks_query_parameters_no_bulk_id() {
-    let query_params = GetBulksQueryParameters::new("".to_string());
+    let query_params = GetBulksQueryParameters::new("");
 
     assert!(query_params.validate().is_err());
 }
 
 #[test]
 fn test_reschedule_query_parameters_valid() {
-    let query_params = RescheduleQueryParameters::new("some-bulk-id".to_string());
+    let query_params = RescheduleQueryParameters::new("some-bulk-id");
 
     assert!(query_params.validate().is_ok());
 }
 
 #[test]
 fn test_reschedule_query_parameters_no_bulk_id() {
-    let query_params = RescheduleQueryParameters::new("".to_string());
+    let query_params = RescheduleQueryParameters::new("");
 
     assert!(query_params.validate().is_err());
 }
 
 #[test]
 fn test_reschedule_request_body_valid() {
-    let request_body = RescheduleRequestBody::new("2022-10-03T20:27:41Z".to_string());
+    let request_body = RescheduleRequestBody::new("2022-10-03T20:27:41Z");
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn test_reschedule_request_body_no_send_at() {
-    let request_body = RescheduleRequestBody::new("".to_string());
+    let request_body = RescheduleRequestBody::new("");
 
     assert!(request_body.validate().is_err());
 }
 
 #[test]
 fn test_validate_address_request_body_valid() {
-    let request_body = ValidateAddressRequestBody::new("hello@hi.com".to_string());
+    let request_body = ValidateAddressRequestBody::new("hello@hi.com");
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn test_validate_address_request_body_no_to() {
-    let request_body = ValidateAddressRequestBody::new("".to_string());
+    let request_body = ValidateAddressRequestBody::new("");
 
     assert!(request_body.validate().is_err());
 }
@@ -146,14 +146,14 @@ fn test_get_domains_query_parameters_invalid_page_size() {
 
 #[test]
 fn test_add_domain_request_body_valid() {
-    let request_body = AddDomainRequestBody::new("some-domain.com".to_string());
+    let request_body = AddDomainRequestBody::new("some-domain.com");
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn test_add_domain_request_body_no_domain() {
-    let request_body = AddDomainRequestBody::new("".to_string());
+    let request_body = AddDomainRequestBody::new("");
 
     assert!(request_body.validate().is_err());
 }

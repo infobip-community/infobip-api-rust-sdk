@@ -47,7 +47,7 @@ async fn test_send_valid() {
 
     let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = SendRequestBody::new("some@mail.com".to_string());
+    let request_body = SendRequestBody::new("some@mail.com");
 
     let response = client.send(request_body).await.unwrap();
 
@@ -59,7 +59,7 @@ async fn test_send_valid() {
 async fn test_send_invalid_request() {
     let client = EmailClient::with_configuration(get_test_configuration(DUMMY_BASE_URL));
 
-    let request_body = SendRequestBody::new("".to_string());
+    let request_body = SendRequestBody::new("");
 
     let error = client.send(request_body).await.unwrap_err();
 
@@ -94,7 +94,7 @@ async fn test_get_bulks_valid() {
 
     let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let query_params = GetBulksQueryParameters::new("bulk-id".to_string());
+    let query_params = GetBulksQueryParameters::new("bulk-id");
 
     let response = client.get_bulks(query_params).await.unwrap();
 
@@ -106,7 +106,7 @@ async fn test_get_bulks_valid() {
 async fn get_bulks_invalid() {
     let client = EmailClient::with_configuration(get_test_configuration(DUMMY_BASE_URL));
 
-    let query_params = GetBulksQueryParameters::new("".to_string());
+    let query_params = GetBulksQueryParameters::new("");
 
     let error = client.get_bulks(query_params).await.unwrap_err();
 
@@ -136,8 +136,8 @@ async fn reschedule_valid() {
 
     let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let query_parameters = RescheduleQueryParameters::new("bulk-id".to_string());
-    let request_body = RescheduleRequestBody::new("2022-10-03T20:27:41Z".to_string());
+    let query_parameters = RescheduleQueryParameters::new("bulk-id");
+    let request_body = RescheduleRequestBody::new("2022-10-03T20:27:41Z");
 
     let response = client
         .reschedule(query_parameters, request_body)
@@ -151,8 +151,8 @@ async fn reschedule_valid() {
 async fn reschedule_no_bulk_id() {
     let client = EmailClient::with_configuration(get_test_configuration(DUMMY_BASE_URL));
 
-    let query_parameters = RescheduleQueryParameters::new("".to_string());
-    let request_body = RescheduleRequestBody::new("2022-10-03T20:27:41Z".to_string());
+    let query_parameters = RescheduleQueryParameters::new("");
+    let request_body = RescheduleRequestBody::new("2022-10-03T20:27:41Z");
 
     let error = client
         .reschedule(query_parameters, request_body)
@@ -190,7 +190,7 @@ async fn get_scheduled_status_valid() {
 
     let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let query_parameters = GetScheduledStatusQueryParameters::new("bulk-id".to_string());
+    let query_parameters = GetScheduledStatusQueryParameters::new("bulk-id");
 
     let response = client.get_scheduled_status(query_parameters).await.unwrap();
 
@@ -216,7 +216,7 @@ async fn update_scheduled_status_valid() {
 
     let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let query_parameters = UpdateScheduledStatusQueryParameters::new("bulk-id".to_string());
+    let query_parameters = UpdateScheduledStatusQueryParameters::new("bulk-id");
     let request_body = UpdateScheduledStatusRequestBody::new(BulkStatus::CANCELED);
 
     let response = client
@@ -353,7 +353,7 @@ async fn validate_address_valid() {
 
     let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = ValidateAddressRequestBody::new("address@email.com".to_string());
+    let request_body = ValidateAddressRequestBody::new("address@email.com");
 
     let response = client.validate_address(request_body).await.unwrap();
 
@@ -447,7 +447,7 @@ async fn add_domain_valid() {
 
     let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = AddDomainRequestBody::new("domain.com".to_string());
+    let request_body = AddDomainRequestBody::new("domain.com");
 
     let response = client.add_domain(request_body).await.unwrap();
 
@@ -479,8 +479,8 @@ async fn get_domain_valid() {
     }
     "#;
 
-    let domain_name = "newDomain.com".to_string();
-    let path = PATH_GET_DOMAIN.replace("{domainName}", domain_name.as_str());
+    let domain_name = "newDomain.com";
+    let path = PATH_GET_DOMAIN.replace("{domainName}", domain_name);
 
     let server = mock_json_endpoint(
         httpmock::Method::GET,
@@ -492,15 +492,15 @@ async fn get_domain_valid() {
 
     let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let response = client.get_domain(domain_name.to_string()).await.unwrap();
+    let response = client.get_domain(domain_name).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
 }
 
 #[tokio::test]
 async fn delete_domain_valid() {
-    let domain_name = "newDomain.com".to_string();
-    let path = PATH_DELETE_DOMAIN.replace("{domainName}", domain_name.as_str());
+    let domain_name = "newDomain.com";
+    let path = PATH_DELETE_DOMAIN.replace("{domainName}", domain_name);
 
     let server = mock_json_endpoint(
         httpmock::Method::DELETE,
@@ -512,7 +512,7 @@ async fn delete_domain_valid() {
 
     let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let status = client.delete_domain(domain_name.to_string()).await.unwrap();
+    let status = client.delete_domain(domain_name).await.unwrap();
 
     assert_eq!(status, reqwest::StatusCode::NO_CONTENT);
 }
@@ -542,8 +542,8 @@ async fn update_tracking_valid() {
     }
     "#;
 
-    let domain_name = "newDomain.com".to_string();
-    let path = PATH_UPDATE_TRACKING.replace("{domainName}", domain_name.as_str());
+    let domain_name = "newDomain.com";
+    let path = PATH_UPDATE_TRACKING.replace("{domainName}", domain_name);
 
     let server = mock_json_endpoint(
         httpmock::Method::PUT,
@@ -558,7 +558,7 @@ async fn update_tracking_valid() {
     let request_body = UpdateTrackingRequestBody::default();
 
     let response = client
-        .update_tracking(domain_name.to_string(), request_body)
+        .update_tracking(domain_name, request_body)
         .await
         .unwrap();
 
@@ -567,8 +567,8 @@ async fn update_tracking_valid() {
 
 #[tokio::test]
 async fn verify_domain_valid() {
-    let domain_name = "newDomain.com".to_string();
-    let path = PATH_VERIFY_DOMAIN.replace("{domainName}", domain_name.as_str());
+    let domain_name = "newDomain.com";
+    let path = PATH_VERIFY_DOMAIN.replace("{domainName}", domain_name);
 
     let server = mock_json_endpoint(
         httpmock::Method::POST,
@@ -580,7 +580,7 @@ async fn verify_domain_valid() {
 
     let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let status = client.verify_domain(domain_name.to_string()).await.unwrap();
+    let status = client.verify_domain(domain_name).await.unwrap();
 
     assert_eq!(status, reqwest::StatusCode::ACCEPTED);
 }
