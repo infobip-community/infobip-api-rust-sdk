@@ -709,3 +709,616 @@ async fn test_get_logs_big_limit() {
 
     assert!(client.get_logs(query_parameters).await.is_err());
 }
+
+#[tokio::test]
+async fn test_get_tfa_applications_valid() {
+    let expected_response = r#"
+    [
+        {
+        "applicationId": "0933F3BC087D2A617AC6DCB2EF5B8A61",
+        "name": "Test application BASIC 1",
+        "configuration": {
+        "pinAttempts": 10,
+        "allowMultiplePinVerifications": true,
+        "pinTimeToLive": "2h",
+        "verifyPinLimit": "1/3s",
+        "sendPinPerApplicationLimit": "10000/1d",
+        "sendPinPerPhoneNumberLimit": "3/1d"
+        },
+        "enabled": true
+        }
+    ]
+    "#;
+
+    let server = mock_json_endpoint(
+        httpmock::Method::GET,
+        PATH_GET_TFA_APPLICATIONS,
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let response = client.get_tfa_applications().await.unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(response.body.len(), 1usize);
+}
+
+#[tokio::test]
+async fn test_create_tfa_application_valid() {
+    let expected_response = r#"
+    {
+      "applicationId": "1234567",
+      "name": "Application name",
+      "configuration": {
+        "pinAttempts": 5,
+        "allowMultiplePinVerifications": true,
+        "pinTimeToLive": "10m",
+        "verifyPinLimit": "2/4s",
+        "sendPinPerApplicationLimit": "5000/12h",
+        "sendPinPerPhoneNumberLimit": "2/1d"
+      },
+      "enabled": true
+    }
+    "#;
+
+    let server = mock_json_endpoint(
+        httpmock::Method::POST,
+        PATH_CREATE_TFA_APPLICATION,
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let request_body = CreateTfaApplicationRequestBody::new("Application name".to_string());
+
+    let response = client.create_tfa_application(request_body).await.unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(response.body.application_id.unwrap(), "1234567");
+}
+
+#[tokio::test]
+async fn test_create_tfa_application_no_name() {
+    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+
+    let request_body = CreateTfaApplicationRequestBody::new("".to_string());
+
+    assert!(client.create_tfa_application(request_body).await.is_err());
+}
+
+#[tokio::test]
+async fn test_get_tfa_application_valid() {
+    let expected_response = r#"
+    {
+      "applicationId": "1234567",
+      "name": "Application name",
+      "configuration": {
+        "pinAttempts": 5,
+        "allowMultiplePinVerifications": true,
+        "pinTimeToLive": "10m",
+        "verifyPinLimit": "2/4s",
+        "sendPinPerApplicationLimit": "5000/12h",
+        "sendPinPerPhoneNumberLimit": "2/1d"
+      },
+      "enabled": true
+    }
+    "#;
+
+    let server = mock_json_endpoint(
+        httpmock::Method::GET,
+        &PATH_GET_TFA_APPLICATION.replace("{appId}", "1234567"),
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let response = client.get_tfa_application("1234567").await.unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(response.body.application_id.unwrap(), "1234567");
+}
+
+#[tokio::test]
+async fn test_update_tfa_application_valid() {
+    let expected_response = r#"
+    {
+      "applicationId": "1234567",
+      "name": "Application name 2",
+      "configuration": {
+        "pinAttempts": 5,
+        "allowMultiplePinVerifications": true,
+        "pinTimeToLive": "10m",
+        "verifyPinLimit": "2/4s",
+        "sendPinPerApplicationLimit": "5000/12h",
+        "sendPinPerPhoneNumberLimit": "2/1d"
+      },
+      "enabled": true
+    }
+    "#;
+
+    let server = mock_json_endpoint(
+        httpmock::Method::PUT,
+        &PATH_UPDATE_TFA_APPLICATION.replace("{appId}", "1234567"),
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let request_body = UpdateTfaApplicationRequestBody::new("Application name 2".to_string());
+
+    let response = client
+        .update_tfa_application("1234567", request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(response.body.application_id.unwrap(), "1234567");
+}
+
+#[tokio::test]
+async fn test_get_tfa_message_templates_valid() {
+    let expected_response = r#"
+    [
+      {
+        "messageId": "9C815F8AF3328",
+        "applicationId": "HJ675435E3A6EA43432G5F37A635KJ8B",
+        "pinPlaceholder": "{{pin}}",
+        "messageText": "Your PIN is {{pin}}.",
+        "pinLength": 4,
+        "pinType": "NUMERIC",
+        "language": "en",
+        "repeatDTMF": "1#",
+        "speechRate": 1
+      }
+    ]
+    "#;
+
+    let server = mock_json_endpoint(
+        httpmock::Method::GET,
+        &PATH_GET_TFA_MESSAGE_TEMPLATES.replace("{appId}", "HJ675435E3A6EA43432G5F37A635KJ8B"),
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let response = client
+        .get_tfa_message_templates("HJ675435E3A6EA43432G5F37A635KJ8B")
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(response.body.len(), 1usize);
+}
+
+#[tokio::test]
+async fn test_create_tfa_message_template_valid() {
+    let expected_response = r#"
+    {
+      "pinPlaceholder": "{{pin}}",
+      "messageText": "Your pin is {{pin}}",
+      "pinLength": 4,
+      "pinType": "ALPHANUMERIC",
+      "language": "en",
+      "senderId": "Infobip 2FA",
+      "repeatDTMF": "1#",
+      "speechRate": 1
+    }
+    "#;
+
+    let server = mock_json_endpoint(
+        httpmock::Method::POST,
+        &PATH_CREATE_TFA_MESSAGE_TEMPLATE.replace("{appId}", "HJ675435E3A6EA43432G5F37A635KJ8B"),
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let request_body = CreateTfaMessageTemplateRequestBody::new(
+        "Your pin is {{pin}}".to_string(),
+        PinType::Alphanumeric,
+        4,
+    );
+    let application_id = "HJ675435E3A6EA43432G5F37A635KJ8B";
+
+    let response = client
+        .create_tfa_message_template(application_id, request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(response.body.pin_length, 4);
+}
+
+#[tokio::test]
+async fn test_create_tfa_message_template_empty_message_text() {
+    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+
+    let request_body =
+        CreateTfaMessageTemplateRequestBody::new("".to_string(), PinType::Alphanumeric, 4);
+
+    assert!(client
+        .create_tfa_message_template("some-app-id", request_body)
+        .await
+        .is_err());
+}
+
+#[tokio::test]
+async fn test_get_tfa_message_template_valid() {
+    let expected_response = r#"
+    {
+      "pinPlaceholder": "{{pin}}",
+      "messageText": "Your pin is {{pin}}",
+      "pinLength": 4,
+      "pinType": "ALPHANUMERIC",
+      "language": "en",
+      "senderId": "Infobip 2FA",
+      "repeatDTMF": "1#",
+      "speechRate": 1
+    }
+    "#;
+
+    let endpoint_path = &PATH_GET_TFA_MESSAGE_TEMPLATE
+        .replace("{appId}", "HJ675435E3A6EA43432G5F37A635KJ8B")
+        .replace("{msgId}", "16A8B5FE2BCD6CA716A2D780CB3F3390");
+    let server = mock_json_endpoint(
+        httpmock::Method::GET,
+        endpoint_path,
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let response = client
+        .get_tfa_message_template(
+            "HJ675435E3A6EA43432G5F37A635KJ8B",
+            "16A8B5FE2BCD6CA716A2D780CB3F3390",
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(response.body.pin_length, 4);
+}
+
+#[tokio::test]
+async fn test_update_tfa_message_template_valid() {
+    let expected_response = r#"
+    {
+      "pinPlaceholder": "{{pin}}",
+      "messageText": "Your pin is {{pin}}",
+      "pinLength": 6,
+      "pinType": "ALPHANUMERIC",
+      "language": "en",
+      "senderId": "Infobip 2FA",
+      "repeatDTMF": "1#",
+      "speechRate": 1
+    }
+    "#;
+
+    let endpoint_path = &PATH_UPDATE_TFA_MESSAGE_TEMPLATE
+        .replace("{appId}", "HJ675435E3A6EA43432G5F37A635KJ8B")
+        .replace("{msgId}", "16A8B5FE2BCD6CA716A2D780CB3F3390");
+    let server = mock_json_endpoint(
+        httpmock::Method::PUT,
+        endpoint_path,
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let request_body = UpdateTfaMessageTemplateRequestBody::new(
+        "Your pin is {{pin}}".to_string(),
+        PinType::Alphanumeric,
+        6,
+    );
+
+    let response = client
+        .update_tfa_message_template(
+            "HJ675435E3A6EA43432G5F37A635KJ8B",
+            "16A8B5FE2BCD6CA716A2D780CB3F3390",
+            request_body,
+        )
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(response.body.pin_length, 6);
+}
+
+#[tokio::test]
+async fn test_send_pin_over_sms_valid() {
+    let expected_response = r#"
+    {
+      "pinId": "9C817C6F8AF3D48F9FE553282AFA2B67",
+      "to": "41793026727",
+      "ncStatus": "NC_DESTINATION_REACHABLE",
+      "smsStatus": "MESSAGE_SENT"
+    }
+    "#;
+
+    let server = mock_json_endpoint(
+        httpmock::Method::POST,
+        PATH_SEND_PIN_OVER_SMS,
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let query_parameters = SendPinOverSmsQueryParameters::default();
+    let request_body = SendPinOverSmsRequestBody::new(
+        "HJ675435E3A6EA43432G5F37A635KJ8B".to_string(),
+        "16A8B5FE2BCD6CA716A2D780CB3F3390".to_string(),
+        "5555555555".to_string(),
+    );
+
+    let response = client
+        .send_pin_over_sms(query_parameters, request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(
+        response.body.pin_id.unwrap(),
+        "9C817C6F8AF3D48F9FE553282AFA2B67"
+    );
+}
+
+#[tokio::test]
+async fn test_send_pin_over_sms_empty_app_id() {
+    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+
+    let query_parameters = SendPinOverSmsQueryParameters::default();
+    let request_body = SendPinOverSmsRequestBody::new(
+        "".to_string(),
+        "16A8B5FE2BCD6CA716A2D780CB3F3390".to_string(),
+        "5555555555".to_string(),
+    );
+
+    assert!(client
+        .send_pin_over_sms(query_parameters, request_body)
+        .await
+        .is_err());
+}
+
+#[tokio::test]
+async fn test_resend_pin_over_sms_valid() {
+    let expected_response = r#"
+    {
+      "pinId": "9C817C6F8AF3D48F9FE553282AFA2B67",
+      "to": "41793026727",
+      "ncStatus": "NC_DESTINATION_REACHABLE",
+      "smsStatus": "MESSAGE_SENT"
+    }
+    "#;
+
+    let endpoint_path =
+        &PATH_RESEND_PIN_OVER_SMS.replace("{pinId}", "9C817C6F8AF3D48F9FE553282AFA2B67");
+
+    let server = mock_json_endpoint(
+        httpmock::Method::POST,
+        endpoint_path,
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let request_body = ResendPinOverSmsRequestBody::new();
+
+    let response = client
+        .resend_pin_over_sms("9C817C6F8AF3D48F9FE553282AFA2B67", request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(
+        response.body.pin_id.unwrap(),
+        "9C817C6F8AF3D48F9FE553282AFA2B67"
+    );
+}
+
+#[tokio::test]
+async fn test_send_pin_over_voice_valid() {
+    let expected_response = r#"
+    {
+      "pinId": "9C817C6F8AF3D48F9FE553282AFA2B67",
+      "to": "41793026727",
+      "callStatus": "PENDING_ACCEPTED"
+    }
+    "#;
+
+    let server = mock_json_endpoint(
+        httpmock::Method::POST,
+        PATH_SEND_PIN_OVER_VOICE,
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let request_body = SendPinOverVoiceRequestBody::new(
+        "HJ675435E3A6EA43432G5F37A635KJ8B".to_string(),
+        "16A8B5FE2BCD6CA716A2D780CB3F3390".to_string(),
+        "5555555555".to_string(),
+    );
+
+    let response = client.send_pin_over_voice(request_body).await.unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(
+        response.body.pin_id.unwrap(),
+        "9C817C6F8AF3D48F9FE553282AFA2B67"
+    );
+}
+
+#[tokio::test]
+async fn test_send_pin_over_voice_empty_app_id() {
+    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+
+    let request_body = SendPinOverVoiceRequestBody::new(
+        "".to_string(),
+        "16A8B5FE2BCD6CA716A2D780CB3F3390".to_string(),
+        "5555555555".to_string(),
+    );
+
+    assert!(client.send_pin_over_voice(request_body).await.is_err());
+}
+
+#[tokio::test]
+async fn test_resend_pin_over_voice_valid() {
+    let expected_response = r#"
+    {
+      "pinId": "9C817C6F8AF3D48F9FE553282AFA2B67",
+      "to": "41793026727",
+      "callStatus": "PENDING_ACCEPTED"
+    }
+    "#;
+
+    let endpoint_path =
+        &PATH_RESEND_PIN_OVER_VOICE.replace("{pinId}", "9C817C6F8AF3D48F9FE553282AFA2B67");
+
+    let server = mock_json_endpoint(
+        httpmock::Method::POST,
+        endpoint_path,
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let request_body = ResendPinOverVoiceRequestBody::new();
+
+    let response = client
+        .resend_pin_over_voice("9C817C6F8AF3D48F9FE553282AFA2B67", request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(
+        response.body.pin_id.unwrap(),
+        "9C817C6F8AF3D48F9FE553282AFA2B67"
+    );
+}
+
+#[tokio::test]
+async fn test_verify_phone_number_valid() {
+    let expected_response = r#"
+    {
+      "pinId": "9C817C6F8AF3D48F9FE553282AFA2B67",
+      "msisdn": "41793026727",
+      "verified": true,
+      "attemptsRemaining": 0
+    }
+    "#;
+
+    let endpoint_path =
+        &PATH_VERIFY_PHONE_NUMBER.replace("{pinId}", "9C817C6F8AF3D48F9FE553282AFA2B67");
+
+    let server = mock_json_endpoint(
+        httpmock::Method::POST,
+        endpoint_path,
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let request_body = VerifyPhoneNumberRequestBody::new("123456".to_string());
+
+    let response = client
+        .verify_phone_number("9C817C6F8AF3D48F9FE553282AFA2B67", request_body)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(
+        response.body.pin_id.unwrap(),
+        "9C817C6F8AF3D48F9FE553282AFA2B67"
+    );
+}
+
+#[tokio::test]
+async fn test_verify_phone_number_no_pin() {
+    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+
+    let request_body = VerifyPhoneNumberRequestBody::new("".to_string());
+
+    assert!(client
+        .verify_phone_number("some-pin-id", request_body)
+        .await
+        .is_err());
+}
+
+#[tokio::test]
+async fn test_get_tfa_verification_status_valid() {
+    let expected_response = r#"
+    {
+      "verifications": [
+        {
+          "msisdn": "41793026727",
+          "verified": true,
+          "verifiedAt": 1418364366,
+          "sentAt": 1418364246
+        }
+      ]
+    }
+    "#;
+
+    let endpoint_path =
+        &PATH_GET_TFA_VERIFICATION_STATUS.replace("{appId}", "16A8B5FE2BCD6CA716A2D780CB3F3390");
+
+    let server = mock_json_endpoint(
+        httpmock::Method::GET,
+        endpoint_path,
+        expected_response,
+        reqwest::StatusCode::OK,
+    )
+    .await;
+
+    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+
+    let query_parameters = GetTfaVerificationStatusQueryParameters::new("41793026727".to_string());
+
+    let response = client
+        .get_tfa_verification_status("16A8B5FE2BCD6CA716A2D780CB3F3390", query_parameters)
+        .await
+        .unwrap();
+
+    assert_eq!(response.status, reqwest::StatusCode::OK);
+    assert_eq!(response.body.verifications.unwrap().len(), 1usize);
+}
+
+#[tokio::test]
+async fn test_get_tfa_verification_status_empty_msisdn() {
+    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+
+    let query_parameters = GetTfaVerificationStatusQueryParameters::new("".to_string());
+
+    assert!(client
+        .get_tfa_verification_status("some-app-id", query_parameters)
+        .await
+        .is_err());
+}
