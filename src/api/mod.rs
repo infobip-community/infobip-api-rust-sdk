@@ -145,8 +145,7 @@ fn get_user_agent() -> Result<String, SdkError> {
         .exec()?
         .packages
         .into_iter()
-        .filter(|p| p.name == "infobip_sdk")
-        .next()
+        .find(|p| p.name == "infobip_sdk")
         .unwrap()
         .version;
 
