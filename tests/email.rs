@@ -6,6 +6,7 @@
 
 use chrono::DateTime;
 use reqwest::StatusCode;
+use std::env;
 
 use infobip_sdk::api::email::EmailClient;
 use infobip_sdk::configuration;
@@ -14,17 +15,17 @@ use infobip_sdk::model::email::*;
 
 fn get_test_email_client() -> EmailClient {
     EmailClient::with_configuration(
-        configuration::Configuration::from_dotenv_api_key()
+        configuration::Configuration::from_env_api_key()
             .expect("failed to build default test client"),
     )
 }
 
 fn get_test_from() -> String {
-    dotenv::var("IB_TEST_EMAIL_FROM").expect("failed to load test email from")
+    env::var("IB_TEST_EMAIL_FROM").expect("failed to load test email from")
 }
 
 fn get_test_to() -> String {
-    dotenv::var("IB_TEST_EMAIL_TO").expect("failed to load test email to")
+    env::var("IB_TEST_EMAIL_TO").expect("failed to load test email to")
 }
 
 #[ignore]
