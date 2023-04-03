@@ -363,3 +363,150 @@ async fn get_tfa_message_templates() {
     println!("{:?}", response.body);
     assert_eq!(response.status, StatusCode::OK);
 }
+
+#[ignore]
+#[tokio::test]
+async fn create_tfa_message_template() {
+    let request_body = CreateTfaMessageTemplateRequestBody::new(
+        "Your Rust PIN 2 is {{pin}}".to_string(),
+        PinType::Numeric,
+        6,
+    );
+
+    let response = get_test_sms_client()
+        .create_tfa_message_template("02CC3CAAFD733136AA15DFAC720A0C42", request_body)
+        .await
+        .unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn get_tfa_message_template() {
+    let response = get_test_sms_client()
+        .get_tfa_message_template(
+            "02CC3CAAFD733136AA15DFAC720A0C42",
+            "44A45DA3067F882BB4D87D6A48F9681E",
+        )
+        .await
+        .unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn update_tfa_message_template() {
+    let request_body = UpdateTfaMessageTemplateRequestBody::new(
+        "Your Rust PIN 3 is {{pin}}".to_string(),
+        PinType::Numeric,
+        6,
+    );
+
+    let response = get_test_sms_client()
+        .update_tfa_message_template(
+            "02CC3CAAFD733136AA15DFAC720A0C42",
+            "44A45DA3067F882BB4D87D6A48F9681E",
+            request_body,
+        )
+        .await
+        .unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_pin_over_sms() {
+    let query_parameters = SendPinOverSmsQueryParameters::new();
+    let request_body = SendPinOverSmsRequestBody::new(
+        "02CC3CAAFD733136AA15DFAC720A0C42".to_string(),
+        "44A45DA3067F882BB4D87D6A48F9681E".to_string(),
+        "523311800428".to_string(),
+    );
+
+    let response = get_test_sms_client()
+        .send_pin_over_sms(query_parameters, request_body)
+        .await
+        .unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn resend_pin_over_sms() {
+    let request_body = ResendPinOverSmsRequestBody::default();
+
+    let response = get_test_sms_client()
+        .resend_pin_over_sms("AAA30929B83F2ED86CC34781BCB7A546", request_body)
+        .await
+        .unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn send_pin_over_voice() {
+    let request_body = SendPinOverVoiceRequestBody::new(
+        "02CC3CAAFD733136AA15DFAC720A0C42".to_string(),
+        "44A45DA3067F882BB4D87D6A48F9681E".to_string(),
+        "523311800428".to_string(),
+    );
+
+    let response = get_test_sms_client()
+        .send_pin_over_voice(request_body)
+        .await
+        .unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn resend_pin_over_voice() {
+    let request_body = ResendPinOverVoiceRequestBody::default();
+
+    let response = get_test_sms_client()
+        .resend_pin_over_voice("AAA30929B83F2ED86CC34781BCB7A546", request_body)
+        .await
+        .unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn verify_phone_number() {
+    let request_body = VerifyPhoneNumberRequestBody::new("123456".to_string());
+
+    let response = get_test_sms_client()
+        .verify_phone_number("AAA30929B83F2ED86CC34781BCB7A546", request_body)
+        .await
+        .unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::OK);
+}
+
+#[ignore]
+#[tokio::test]
+async fn get_tfa_verification_status() {
+    let query_parameters = GetTfaVerificationStatusQueryParameters::new("523311800428".to_string());
+    let response = get_test_sms_client()
+        .get_tfa_verification_status("02CC3CAAFD733136AA15DFAC720A0C42", query_parameters)
+        .await
+        .unwrap();
+
+    println!("{:?}", response.body);
+    assert_eq!(response.status, StatusCode::OK);
+}

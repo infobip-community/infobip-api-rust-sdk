@@ -1,8 +1,8 @@
 //! Models for calling SMS endpoints.
 
-use std::collections::HashMap;
 use regex::Regex;
 use serde_derive::{Deserialize, Serialize};
+use std::collections::HashMap;
 use validator::Validate;
 
 lazy_static! {
@@ -444,6 +444,7 @@ impl Destination {
 pub struct IndiaDlt {
     /// Id of your registered DTL content template that matches this message's text.
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[validate(length(max = 30))]
     pub content_template_id: Option<String>,
 
     /// Your assigned DTL principal entity id.
@@ -1298,6 +1299,7 @@ pub struct TfaApplication {
     pub enabled: Option<bool>,
 
     /// 2FA application name.
+    #[validate(length(min = 1))]
     pub name: String,
 }
 
@@ -1408,11 +1410,12 @@ pub struct TfaMessageTemplate {
     pub message_id: Option<String>,
 
     /// Text of a message that will be sent. Message text must contain `pinPlaceholder`.
+    #[validate(length(min = 1))]
     pub message_text: String,
 
     /// PIN code length.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub pin_length: Option<i32>,
+    #[validate(range(min = 1))]
+    pub pin_length: i32,
 
     /// The PIN code placeholder that will be replaced with a generated PIN code.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1437,6 +1440,24 @@ pub struct TfaMessageTemplate {
     /// In case PIN message is sent by Voice, the speed of speech can be set for the message. Supported range is from `0.5` to `2`.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub speech_rate: Option<f64>,
+}
+
+impl TfaMessageTemplate {
+    pub fn new(message_text: String, pin_type: PinType, pin_length: i32) -> TfaMessageTemplate {
+        TfaMessageTemplate {
+            application_id: None,
+            language: None,
+            message_id: None,
+            message_text,
+            pin_length,
+            pin_placeholder: None,
+            pin_type,
+            regional: None,
+            repeat_dtmf: None,
+            sender_id: None,
+            speech_rate: None,
+        }
+    }
 }
 
 pub type GetTfaMessageTemplatesResponseBody = Vec<TfaMessageTemplate>;
@@ -1473,6 +1494,7 @@ impl Default for SendPinOverSmsQueryParameters {
 #[serde(rename_all = "camelCase")]
 pub struct SendPinOverSmsRequestBody {
     /// The ID of the application that represents your service, e.g. 2FA for login, 2FA for changing the password, etc.
+    #[validate(length(min = 1))]
     pub application_id: String,
 
     /// Use this parameter if you wish to override the sender ID from the [created](#channels/sms/create-2fa-message-template) message template parameter `senderId`.
@@ -1480,6 +1502,7 @@ pub struct SendPinOverSmsRequestBody {
     pub from: Option<String>,
 
     /// The ID of the message template (message body with the PIN placeholder) that is sent to the recipient.
+    #[validate(length(min = 1))]
     pub message_id: String,
 
     /// Key value pairs that will be replaced during message sending. Placeholder keys should NOT contain curly brackets and should NOT contain a `pin` placeholder. Valid example: `\"placeholders\":{\"firstName\":\"John\"}`
@@ -1487,6 +1510,7 @@ pub struct SendPinOverSmsRequestBody {
     pub placeholders: Option<HashMap<String, String>>,
 
     /// Phone number to which the 2FA message will be sent. Example: 41793026727.
+    #[validate(length(min = 1))]
     pub to: String,
 }
 
@@ -1536,6 +1560,18 @@ pub struct ResendPinRequestBody {
     pub placeholders: Option<HashMap<String, String>>,
 }
 
+impl ResendPinRequestBody {
+    pub fn new() -> Self {
+        Self { placeholders: None }
+    }
+}
+
+impl Default for ResendPinRequestBody {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub type ResendPinOverSmsRequestBody = ResendPinRequestBody;
 
 pub type ResendPinOverSmsResponseBody = SendPinResponseBody;
@@ -1544,9 +1580,14 @@ pub type SendPinOverVoiceRequestBody = SendPinOverSmsRequestBody;
 
 pub type SendPinOverVoiceResponseBody = SendPinResponseBody;
 
+pub type ResendPinOverVoiceRequestBody = ResendPinRequestBody;
+
+pub type ResendPinOverVoiceResponseBody = SendPinResponseBody;
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 pub struct VerifyPhoneNumberRequestBody {
     /// ID of the pin code that has to be verified.
+    #[validate(length(min = 1))]
     pub pin: String,
 }
 

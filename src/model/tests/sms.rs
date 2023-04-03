@@ -332,3 +332,114 @@ fn get_inbound_reports_query_parameters_big_limit() {
 
     assert!(query_parameters.validate().is_err());
 }
+
+#[test]
+fn create_tfa_application_request_body_valid() {
+    let request_body = CreateTfaApplicationRequestBody::new("some_name".to_string());
+
+    assert!(request_body.validate().is_ok());
+}
+
+#[test]
+fn create_tfa_application_request_body_empty_name() {
+    let request_body = CreateTfaApplicationRequestBody::new("".to_string());
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn create_tfa_message_template_request_body_valid() {
+    let request_body =
+        CreateTfaMessageTemplateRequestBody::new("some_name".to_string(), PinType::Alpha, 6);
+
+    assert!(request_body.validate().is_ok());
+}
+
+#[test]
+fn create_tfa_message_template_request_body_empty_name() {
+    let request_body = CreateTfaMessageTemplateRequestBody::new("".to_string(), PinType::Alpha, 6);
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn create_tfa_message_template_request_body_no_principal_entity_id() {
+    let mut request_body =
+        CreateTfaMessageTemplateRequestBody::new("some_name".to_string(), PinType::Alpha, 6);
+    let regional = TfaRegional {
+        india_dlt: Some(IndiaDlt::new("".to_string())),
+    };
+    request_body.regional = Some(regional);
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn update_tfa_message_template_request_body_no_principal_entity_id() {
+    let mut request_body =
+        UpdateTfaMessageTemplateRequestBody::new("some_name".to_string(), PinType::Alpha, 6);
+    let regional = TfaRegional {
+        india_dlt: Some(IndiaDlt::new("".to_string())),
+    };
+    request_body.regional = Some(regional);
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn send_pin_over_sms_request_body_valid() {
+    let request_body = SendPinOverSmsRequestBody::new(
+        "some-app-id".to_string(),
+        "some-message-id".to_string(),
+        "555555555555".to_string(),
+    );
+
+    assert!(request_body.validate().is_ok());
+}
+
+#[test]
+fn send_pin_over_sms_request_body_empty_app_id() {
+    let request_body = SendPinOverSmsRequestBody::new(
+        "".to_string(),
+        "some-message-id".to_string(),
+        "555555555555".to_string(),
+    );
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn send_pin_over_sms_request_body_empty_message_id() {
+    let request_body = SendPinOverSmsRequestBody::new(
+        "some-app-id".to_string(),
+        "".to_string(),
+        "555555555555".to_string(),
+    );
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn send_pin_over_sms_request_body_empty_to() {
+    let request_body = SendPinOverSmsRequestBody::new(
+        "some-app-id".to_string(),
+        "some-message-id".to_string(),
+        "".to_string(),
+    );
+
+    assert!(request_body.validate().is_err());
+}
+
+#[test]
+fn verify_phone_number_request_body_valid() {
+    let request_body = VerifyPhoneNumberRequestBody::new("1234".to_string());
+
+    assert!(request_body.validate().is_ok());
+}
+
+#[test]
+fn verify_phone_number_request_body_empty_pin() {
+    let request_body = VerifyPhoneNumberRequestBody::new("".to_string());
+
+    assert!(request_body.validate().is_err());
+}

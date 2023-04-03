@@ -19,15 +19,16 @@ use crate::model::sms::{
     GetTfaMessageTemplateResponseBody, GetTfaMessageTemplatesResponseBody,
     GetTfaVerificationStatusQueryParameters, GetTfaVerificationStatusResponseBody,
     RescheduleQueryParameters, RescheduleRequestBody, RescheduleResponseBody,
-    ResendPinOverSmsRequestBody, ResendPinOverSmsResponseBody, SendBinaryRequestBody,
-    SendBinaryResponseBody, SendOverQueryParametersQueryParameters,
-    SendOverQueryParametersResponseBody, SendPinOverSmsQueryParameters, SendPinOverSmsRequestBody,
-    SendPinOverSmsResponseBody, SendPinOverVoiceRequestBody, SendPinOverVoiceResponseBody,
-    SendRequestBody, SendResponseBody, UpdateScheduledStatusQueryParameters,
-    UpdateScheduledStatusRequestBody, UpdateScheduledStatusResponseBody,
-    UpdateTfaApplicationRequestBody, UpdateTfaApplicationResponseBody,
-    UpdateTfaMessageTemplateRequestBody, UpdateTfaMessageTemplateResponseBody,
-    VerifyPhoneNumberRequestBody, VerifyPhoneNumberResponseBody,
+    ResendPinOverSmsRequestBody, ResendPinOverSmsResponseBody, ResendPinOverVoiceRequestBody,
+    ResendPinOverVoiceResponseBody, SendBinaryRequestBody, SendBinaryResponseBody,
+    SendOverQueryParametersQueryParameters, SendOverQueryParametersResponseBody,
+    SendPinOverSmsQueryParameters, SendPinOverSmsRequestBody, SendPinOverSmsResponseBody,
+    SendPinOverVoiceRequestBody, SendPinOverVoiceResponseBody, SendRequestBody, SendResponseBody,
+    UpdateScheduledStatusQueryParameters, UpdateScheduledStatusRequestBody,
+    UpdateScheduledStatusResponseBody, UpdateTfaApplicationRequestBody,
+    UpdateTfaApplicationResponseBody, UpdateTfaMessageTemplateRequestBody,
+    UpdateTfaMessageTemplateResponseBody, VerifyPhoneNumberRequestBody,
+    VerifyPhoneNumberResponseBody,
 };
 use crate::{
     configuration::Configuration,
@@ -56,6 +57,7 @@ pub const PATH_UPDATE_TFA_MESSAGE_TEMPLATE: &str = "/2fa/2/applications/{appId}/
 pub const PATH_SEND_PIN_OVER_SMS: &str = "/2fa/2/pin";
 pub const PATH_RESEND_PIN_OVER_SMS: &str = "/2fa/2/pin/{pinId}/resend";
 pub const PATH_SEND_PIN_OVER_VOICE: &str = "/2fa/2/pin/voice";
+pub const PATH_RESEND_PIN_OVER_VOICE: &str = "/2fa/2/pin/{pinId}/resend/voice";
 pub const PATH_VERIFY_PHONE_NUMBER: &str = "/2fa/2/pin/{pinId}/verify";
 pub const PATH_GET_TFA_VERIFICATION_STATUS: &str = "/2fa/2/applications/{appId}/verifications";
 
@@ -869,7 +871,7 @@ impl SmsClient {
 
     /// Get a single 2FA application to see its configuration details.
     /// # Example
-    /// ```rust
+    /// ```norun
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use reqwest::StatusCode;
@@ -915,7 +917,7 @@ impl SmsClient {
 
     /// Change configuration options for your existing 2FA application.
     /// # Example
-    /// ```rust
+    /// ```norun
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::UpdateTfaApplicationRequestBody;
@@ -965,7 +967,7 @@ impl SmsClient {
 
     /// Get all message templates in a 2FA application.
     /// # Example
-    /// ```rust
+    /// ```norun
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use reqwest::StatusCode;
@@ -1011,7 +1013,7 @@ impl SmsClient {
 
     /// Create one or more message templates where your PIN will be dynamically included when you send the PIN message.
     /// # Example
-    /// ```rust
+    /// ```norun
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::CreateTfaMessageTemplateRequestBody;
@@ -1061,7 +1063,7 @@ impl SmsClient {
 
     /// Get a single 2FA message template from an application to see its configuration details.
     /// # Example
-    /// ```rust
+    /// ```norun
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use reqwest::StatusCode;
@@ -1085,7 +1087,7 @@ impl SmsClient {
     ) -> Result<SdkResponse<GetTfaMessageTemplateResponseBody>, SdkError> {
         let path = &PATH_GET_TFA_MESSAGE_TEMPLATE
             .replace("{appId}", application_id)
-            .replace("{templateId}", template_id);
+            .replace("{msgId}", template_id);
 
         let response = send_no_body_request(
             &self.client,
@@ -1111,7 +1113,7 @@ impl SmsClient {
 
     /// Change configuration options for your existing 2FA application message template.
     /// # Example
-    /// ```rust
+    /// ```norun
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::UpdateTfaMessageTemplateRequestBody;
@@ -1166,7 +1168,7 @@ impl SmsClient {
 
     /// Send a PIN code over SMS using a previously created message template.
     /// # Example
-    /// ```rust
+    /// ```norun
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::SendPinOverSmsQueryParameters;
@@ -1222,7 +1224,7 @@ impl SmsClient {
 
     /// Resend the same (previously sent) PIN code over SMS.
     /// # Example
-    /// ```rust
+    /// ```norun
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::ResendPinOverSmsRequestBody;
@@ -1273,7 +1275,7 @@ impl SmsClient {
 
     /// Send a PIN code over Voice using previously created message template.
     /// # Example
-    /// ```rust
+    /// ```norun
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::SendPinOverVoiceRequestBody;
@@ -1318,9 +1320,60 @@ impl SmsClient {
         }
     }
 
+    /// Resend the same (previously sent) PIN code over Voice.
+    /// # Example
+    /// ```no_run
+    /// # use infobip_sdk::api::sms::SmsClient;
+    /// # use infobip_sdk::configuration::Configuration;
+    /// # use infobip_sdk::model::sms::ResendPinOverVoiceRequestBody;
+    /// # use reqwest::StatusCode;
+    /// #
+    /// # #[tokio::main]
+    /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
+    ///
+    /// let pin_id = "02CC3CAAFD733136AA15DFAC720A0C42";
+    /// let request_body = ResendPinOverVoiceRequestBody::default();
+    ///
+    /// let response = client.resend_pin_over_voice(pin_id, request_body).await?;
+    ///
+    /// assert_eq!(response.status, StatusCode::OK);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub async fn resend_pin_over_voice(
+        &self,
+        pin_id: &str,
+        request_body: ResendPinOverVoiceRequestBody,
+    ) -> Result<SdkResponse<ResendPinOverVoiceResponseBody>, SdkError> {
+        let path = &PATH_RESEND_PIN_OVER_VOICE.replace("{pinId}", pin_id);
+
+        let response = send_valid_json_request(
+            &self.client,
+            &self.configuration,
+            request_body,
+            HashMap::new(),
+            reqwest::Method::POST,
+            path,
+        )
+        .await?;
+
+        let status = response.status();
+        let text = response.text().await?;
+
+        if status.is_success() {
+            Ok(SdkResponse {
+                body: serde_json::from_str(&text)?,
+                status,
+            })
+        } else {
+            Err(build_api_error(status, &text))
+        }
+    }
+
     /// Verify a phone number to confirm successful 2FA authentication.
     /// # Example
-    /// ```rust
+    /// ```norun
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::VerifyPhoneNumberRequestBody;
@@ -1371,7 +1424,7 @@ impl SmsClient {
 
     /// Check if a phone number is already verified for a specific 2FA application.
     /// # Example
-    /// ```rust
+    /// ```norun
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::{GetTfaVerificationStatusQueryParameters,
