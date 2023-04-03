@@ -8,33 +8,38 @@
 
 Client SDK to use the Infobip API with pure Rust.
 
-This crate enables you to use multiple Infobip communication channels, like SMS, MMS,
+This crate enables you to use multiple Infobip communication channels, like SMS, 2FA,
 WhatsApp, Email, etc. It abstracts the needed HTTP calls, models and validates payloads and
 models errors. The module structure is divided by communication channel.
 
 ---
 
 ## 📡 Supported Channels
-- [SMS](https://www.infobip.com/docs/api/channels/sms)
+Currently, we support the following channels:
+- [SMS + 2FA](https://www.infobip.com/docs/api/channels/sms)
 - [WhatsApp](https://www.infobip.com/docs/api/channels/whatsapp)
 - [Email](https://www.infobip.com/docs/api/channels/email)
 
-More Channels to be added in the near future!
+More channels to be added in the near future!
 
 ## 🔐 Authentication
 To use the library, you'll need to set up an [Infobip account](https://www.infobip.com/signup).
 Then you can use your API Key and custom base URL to call the endpoints. You can use the
 `Configuration::from_env_api_key()` method to load the configuration from the environment. To
-do that, set the `IB_API_KEY` and `IB_BASE_URL` variables. Alternatively, you can use the
-`Configuration::from_dotenv_api_key()` method to load the configuration from a `.env` file.
+do that, set the `IB_API_KEY` and `IB_BASE_URL` variables.
 
 ## 📦 Installation
-To use the library, add the dependency to your projects `Cargo.toml`
+To install the library, run the following command from your project:
+```bash
+cargo add infobip_sdk
+```
+
+Alternatively you can add the dependency to your project's `Cargo.toml`
 ```toml
 [dependencies]
 infobip_sdk = "<version>"
 ```
-Replace <version> is the latest (or desired) release of the library. For example `0.2.0`.
+Replace `<version>` with the latest (or desired) release of the library. For example `0.4.0`.
 
 ## 🚀 Usage
 To use the library, import the client and channel-specific models. Then create a client and
