@@ -768,10 +768,7 @@ impl EmailClient {
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn delete_domain(
-        &self,
-        domain_name: &str,
-    ) -> Result<reqwest::StatusCode, SdkError> {
+    pub async fn delete_domain(&self, domain_name: &str) -> Result<reqwest::StatusCode, SdkError> {
         let path = PATH_DELETE_DOMAIN.replace("{domainName}", domain_name);
 
         let response = send_no_body_request(
@@ -864,10 +861,7 @@ impl EmailClient {
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn verify_domain(
-        &self,
-        domain_name: &str,
-    ) -> Result<reqwest::StatusCode, SdkError> {
+    pub async fn verify_domain(&self, domain_name: &str) -> Result<reqwest::StatusCode, SdkError> {
         let path = PATH_VERIFY_DOMAIN.replace("{domainName}", domain_name);
 
         let response = send_no_body_request(

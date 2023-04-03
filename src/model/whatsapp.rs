@@ -17,9 +17,9 @@ pub struct TextContent {
 }
 
 impl TextContent {
-    pub fn new(text: String) -> Self {
+    pub fn new(text: &str) -> Self {
         TextContent {
-            text,
+            text: text.into(),
             preview_url: None,
         }
     }
@@ -45,9 +45,9 @@ pub struct DocumentContent {
 }
 
 impl DocumentContent {
-    pub fn new(media_url: String) -> Self {
+    pub fn new(media_url: &str) -> Self {
         DocumentContent {
-            media_url,
+            media_url: media_url.into(),
             caption: None,
             filename: None,
         }
@@ -69,9 +69,9 @@ pub struct ImageContent {
 }
 
 impl ImageContent {
-    pub fn new(media_url: String) -> Self {
+    pub fn new(media_url: &str) -> Self {
         ImageContent {
-            media_url,
+            media_url: media_url.into(),
             caption: None,
         }
     }
@@ -88,8 +88,10 @@ pub struct AudioContent {
 }
 
 impl AudioContent {
-    pub fn new(media_url: String) -> Self {
-        AudioContent { media_url }
+    pub fn new(media_url: &str) -> Self {
+        AudioContent {
+            media_url: media_url.into(),
+        }
     }
 }
 
@@ -108,9 +110,9 @@ pub struct VideoContent {
 }
 
 impl VideoContent {
-    pub fn new(media_url: String) -> Self {
+    pub fn new(media_url: &str) -> Self {
         VideoContent {
-            media_url,
+            media_url: media_url.into(),
             caption: None,
         }
     }
@@ -127,8 +129,10 @@ pub struct StickerContent {
 }
 
 impl StickerContent {
-    pub fn new(media_url: String) -> Self {
-        StickerContent { media_url }
+    pub fn new(media_url: &str) -> Self {
+        StickerContent {
+            media_url: media_url.into(),
+        }
     }
 }
 
@@ -254,14 +258,14 @@ pub struct ContactName {
 }
 
 impl ContactName {
-    pub fn new(first_name: String, formatted_name: String) -> Self {
+    pub fn new(first_name: &str, formatted_name: &str) -> Self {
         ContactName {
-            first_name,
+            first_name: first_name.into(),
             last_name: None,
             middle_name: None,
             name_suffix: None,
             name_prefix: None,
-            formatted_name,
+            formatted_name: formatted_name.into(),
         }
     }
 }
@@ -457,10 +461,10 @@ pub struct SendContentRequestBody<T: serde::Serialize + Validate> {
 pub type SendTextRequestBody = SendContentRequestBody<TextContent>;
 
 impl SendTextRequestBody {
-    pub fn new(from: String, to: String, content: TextContent) -> Self {
+    pub fn new(from: &str, to: &str, content: TextContent) -> Self {
         SendTextRequestBody {
-            from,
-            to,
+            from: from.into(),
+            to: to.into(),
             message_id: None,
             content,
             callback_data: None,
@@ -472,10 +476,10 @@ impl SendTextRequestBody {
 pub type SendDocumentRequestBody = SendContentRequestBody<DocumentContent>;
 
 impl SendDocumentRequestBody {
-    pub fn new(from: String, to: String, content: DocumentContent) -> Self {
+    pub fn new(from: &str, to: &str, content: DocumentContent) -> Self {
         SendDocumentRequestBody {
-            from,
-            to,
+            from: from.into(),
+            to: to.into(),
             message_id: None,
             content,
             callback_data: None,
@@ -487,10 +491,10 @@ impl SendDocumentRequestBody {
 pub type SendImageRequestBody = SendContentRequestBody<ImageContent>;
 
 impl SendImageRequestBody {
-    pub fn new(from: String, to: String, content: ImageContent) -> Self {
+    pub fn new(from: &str, to: &str, content: ImageContent) -> Self {
         SendImageRequestBody {
-            from,
-            to,
+            from: from.into(),
+            to: to.into(),
             message_id: None,
             content,
             callback_data: None,
@@ -502,10 +506,10 @@ impl SendImageRequestBody {
 pub type SendAudioRequestBody = SendContentRequestBody<AudioContent>;
 
 impl SendAudioRequestBody {
-    pub fn new(from: String, to: String, content: AudioContent) -> Self {
+    pub fn new(from: &str, to: &str, content: AudioContent) -> Self {
         SendAudioRequestBody {
-            from,
-            to,
+            from: from.into(),
+            to: to.into(),
             message_id: None,
             content,
             callback_data: None,
@@ -517,10 +521,10 @@ impl SendAudioRequestBody {
 pub type SendVideoRequestBody = SendContentRequestBody<VideoContent>;
 
 impl SendVideoRequestBody {
-    pub fn new(from: String, to: String, content: VideoContent) -> Self {
+    pub fn new(from: &str, to: &str, content: VideoContent) -> Self {
         SendVideoRequestBody {
-            from,
-            to,
+            from: from.into(),
+            to: to.into(),
             message_id: None,
             content,
             callback_data: None,
@@ -532,10 +536,10 @@ impl SendVideoRequestBody {
 pub type SendStickerRequestBody = SendContentRequestBody<StickerContent>;
 
 impl SendStickerRequestBody {
-    pub fn new(from: String, to: String, content: StickerContent) -> Self {
+    pub fn new(from: &str, to: &str, content: StickerContent) -> Self {
         SendStickerRequestBody {
-            from,
-            to,
+            from: from.into(),
+            to: to.into(),
             message_id: None,
             content,
             callback_data: None,
@@ -547,10 +551,10 @@ impl SendStickerRequestBody {
 pub type SendLocationRequestBody = SendContentRequestBody<LocationContent>;
 
 impl SendLocationRequestBody {
-    pub fn new(from: String, to: String, content: LocationContent) -> Self {
+    pub fn new(from: &str, to: &str, content: LocationContent) -> Self {
         SendLocationRequestBody {
-            from,
-            to,
+            from: from.into(),
+            to: to.into(),
             message_id: None,
             content,
             callback_data: None,
@@ -562,10 +566,10 @@ impl SendLocationRequestBody {
 pub type SendContactRequestBody = SendContentRequestBody<ContactContent>;
 
 impl SendContactRequestBody {
-    pub fn new(from: String, to: String, content: ContactContent) -> Self {
+    pub fn new(from: &str, to: &str, content: ContactContent) -> Self {
         SendContactRequestBody {
-            from,
-            to,
+            from: from.into(),
+            to: to.into(),
             message_id: None,
             content,
             callback_data: None,
@@ -583,8 +587,8 @@ pub struct InteractiveBody {
 }
 
 impl InteractiveBody {
-    pub fn new(text: String) -> Self {
-        InteractiveBody { text }
+    pub fn new(text: &str) -> Self {
+        InteractiveBody { text: text.into() }
     }
 }
 
@@ -604,8 +608,11 @@ pub enum InteractiveButton {
 }
 
 impl InteractiveButton {
-    pub fn new_reply_button(id: String, title: String) -> Self {
-        InteractiveButton::ReplyButton { id, title }
+    pub fn new_reply_button(id: &str, title: &str) -> Self {
+        InteractiveButton::ReplyButton {
+            id: id.into(),
+            title: title.into(),
+        }
     }
 }
 
@@ -666,23 +673,27 @@ pub enum InteractiveButtonsHeader {
 }
 
 impl InteractiveButtonsHeader {
-    pub fn new_document_header(media_url: String, filename: Option<String>) -> Self {
+    pub fn new_document_header(media_url: &str, filename: Option<String>) -> Self {
         InteractiveButtonsHeader::DocumentHeader {
-            media_url,
+            media_url: media_url.into(),
             filename,
         }
     }
 
-    pub fn new_image_header(media_url: String) -> Self {
-        InteractiveButtonsHeader::ImageHeader { media_url }
+    pub fn new_image_header(media_url: &str) -> Self {
+        InteractiveButtonsHeader::ImageHeader {
+            media_url: media_url.into(),
+        }
     }
 
-    pub fn new_text_header(text: String) -> Self {
-        InteractiveButtonsHeader::TextHeader { text }
+    pub fn new_text_header(text: &str) -> Self {
+        InteractiveButtonsHeader::TextHeader { text: text.into() }
     }
 
-    pub fn new_video_header(media_url: String) -> Self {
-        InteractiveButtonsHeader::VideoHeader { media_url }
+    pub fn new_video_header(media_url: &str) -> Self {
+        InteractiveButtonsHeader::VideoHeader {
+            media_url: media_url.into(),
+        }
     }
 }
 
@@ -695,8 +706,8 @@ pub struct InteractiveFooter {
 }
 
 impl InteractiveFooter {
-    pub fn new(text: String) -> Self {
-        InteractiveFooter { text }
+    pub fn new(text: &str) -> Self {
+        InteractiveFooter { text: text.into() }
     }
 }
 
@@ -735,10 +746,10 @@ impl InteractiveButtonsContent {
 pub type SendInteractiveButtonsRequestBody = SendContentRequestBody<InteractiveButtonsContent>;
 
 impl SendInteractiveButtonsRequestBody {
-    pub fn new(from: String, to: String, content: InteractiveButtonsContent) -> Self {
+    pub fn new(from: &str, to: &str, content: InteractiveButtonsContent) -> Self {
         SendInteractiveButtonsRequestBody {
-            from,
-            to,
+            from: from.into(),
+            to: to.into(),
             message_id: None,
             content,
             callback_data: None,
@@ -766,10 +777,10 @@ pub struct InteractiveRow {
 }
 
 impl InteractiveRow {
-    pub fn new(id: String, title: String) -> Self {
+    pub fn new(id: &str, title: &str) -> Self {
         InteractiveRow {
-            id,
-            title,
+            id: id.into(),
+            title: title.into(),
             description: None,
         }
     }
@@ -809,8 +820,11 @@ pub struct InteractiveListAction {
 }
 
 impl InteractiveListAction {
-    pub fn new(title: String, sections: Vec<InteractiveListSection>) -> Self {
-        InteractiveListAction { title, sections }
+    pub fn new(title: &str, sections: Vec<InteractiveListSection>) -> Self {
+        InteractiveListAction {
+            title: title.into(),
+            sections,
+        }
     }
 }
 
@@ -825,8 +839,8 @@ pub enum InteractiveListHeader {
 }
 
 impl InteractiveListHeader {
-    pub fn new_text_header(text: String) -> Self {
-        InteractiveListHeader::TextHeader { text }
+    pub fn new_text_header(text: &str) -> Self {
+        InteractiveListHeader::TextHeader { text: text.into() }
     }
 }
 
@@ -866,10 +880,10 @@ impl InteractiveListContent {
 pub type SendInteractiveListRequestBody = SendContentRequestBody<InteractiveListContent>;
 
 impl SendInteractiveListRequestBody {
-    pub fn new(from: String, to: String, content: InteractiveListContent) -> Self {
+    pub fn new(from: &str, to: &str, content: InteractiveListContent) -> Self {
         SendInteractiveListRequestBody {
-            from,
-            to,
+            from: from.into(),
+            to: to.into(),
             message_id: None,
             content,
             callback_data: None,
@@ -892,10 +906,10 @@ pub struct InteractiveProductAction {
 }
 
 impl InteractiveProductAction {
-    pub fn new(catalog_id: String, product_retailer_id: String) -> Self {
+    pub fn new(catalog_id: &str, product_retailer_id: &str) -> Self {
         InteractiveProductAction {
-            catalog_id,
-            product_retailer_id,
+            catalog_id: catalog_id.into(),
+            product_retailer_id: product_retailer_id.into(),
         }
     }
 }
@@ -929,10 +943,10 @@ impl InteractiveProductContent {
 pub type SendInteractiveProductRequestBody = SendContentRequestBody<InteractiveProductContent>;
 
 impl SendInteractiveProductRequestBody {
-    pub fn new(from: String, to: String, content: InteractiveProductContent) -> Self {
+    pub fn new(from: &str, to: &str, content: InteractiveProductContent) -> Self {
         SendInteractiveProductRequestBody {
-            from,
-            to,
+            from: from.into(),
+            to: to.into(),
             message_id: None,
             content,
             callback_data: None,
@@ -952,8 +966,8 @@ pub enum InteractiveMultiproductHeader {
 }
 
 impl InteractiveMultiproductHeader {
-    pub fn new_text_header(text: String) -> Self {
-        InteractiveMultiproductHeader::TextHeader { text }
+    pub fn new_text_header(text: &str) -> Self {
+        InteractiveMultiproductHeader::TextHeader { text: text.into() }
     }
 }
 
@@ -994,9 +1008,9 @@ pub struct InteractiveMultiproductAction {
 }
 
 impl InteractiveMultiproductAction {
-    pub fn new(catalog_id: String, sections: Vec<InteractiveMultiproductSection>) -> Self {
+    pub fn new(catalog_id: &str, sections: Vec<InteractiveMultiproductSection>) -> Self {
         InteractiveMultiproductAction {
-            catalog_id,
+            catalog_id: catalog_id.into(),
             sections,
         }
     }
@@ -1040,10 +1054,10 @@ pub type SendInteractiveMultiproductRequestBody =
     SendContentRequestBody<InteractiveMultiproductContent>;
 
 impl SendInteractiveMultiproductRequestBody {
-    pub fn new(from: String, to: String, content: InteractiveMultiproductContent) -> Self {
+    pub fn new(from: &str, to: &str, content: InteractiveMultiproductContent) -> Self {
         SendInteractiveMultiproductRequestBody {
-            from,
-            to,
+            from: from.into(),
+            to: to.into(),
             message_id: None,
             content,
             callback_data: None,
@@ -1352,28 +1366,28 @@ pub enum TemplateHeader {
 }
 
 impl TemplateHeader {
-    pub fn new_text(text: String) -> Self {
+    pub fn new_text(text: &str) -> Self {
         Self::Text {
-            text,
+            text: text.into(),
             example: None,
         }
     }
 
-    pub fn new_image(example: String) -> Self {
+    pub fn new_image(example: &str) -> Self {
         Self::Image {
-            example: Some(example),
+            example: Some(example.into()),
         }
     }
 
-    pub fn new_video(example: String) -> Self {
+    pub fn new_video(example: &str) -> Self {
         Self::Video {
-            example: Some(example),
+            example: Some(example.into()),
         }
     }
 
-    pub fn new_document(example: String) -> Self {
+    pub fn new_document(example: &str) -> Self {
         Self::Document {
-            example: Some(example),
+            example: Some(example.into()),
         }
     }
 
@@ -1391,8 +1405,8 @@ pub struct TemplateFooter {
 }
 
 impl TemplateFooter {
-    pub fn new(text: String) -> Self {
-        TemplateFooter { text }
+    pub fn new(text: &str) -> Self {
+        TemplateFooter { text: text.into() }
     }
 }
 
@@ -1429,18 +1443,21 @@ pub enum TemplateButton {
 }
 
 impl TemplateButton {
-    pub fn new_number(text: String, phone_number: String) -> Self {
-        Self::Number { text, phone_number }
+    pub fn new_number(text: &str, phone_number: &str) -> Self {
+        Self::Number {
+            text: text.into(),
+            phone_number: phone_number.into(),
+        }
     }
 
-    pub fn new_quick_reply(text: String) -> Self {
-        Self::QuickReply { text }
+    pub fn new_quick_reply(text: &str) -> Self {
+        Self::QuickReply { text: text.into() }
     }
 
-    pub fn new_url(text: String, url: String) -> Self {
+    pub fn new_url(text: &str, url: &str) -> Self {
         Self::Url {
-            text,
-            url,
+            text: text.into(),
+            url: url.into(),
             example: None,
         }
     }
@@ -1461,9 +1478,9 @@ pub struct TemplateBody {
 }
 
 impl TemplateBody {
-    pub fn new(text: String) -> Self {
+    pub fn new(text: &str) -> Self {
         TemplateBody {
-            text,
+            text: text.into(),
             examples: None,
         }
     }
@@ -1534,13 +1551,13 @@ pub struct CreateTemplateRequestBody {
 
 impl CreateTemplateRequestBody {
     pub fn new(
-        name: String,
+        name: &str,
         language: TemplateLanguage,
         category: TemplateCategory,
         structure: TemplateStructure,
     ) -> Self {
         CreateTemplateRequestBody {
-            name,
+            name: name.into(),
             language,
             category,
             structure,
@@ -1598,15 +1615,17 @@ pub enum TemplateHeaderContent {
 }
 
 impl TemplateHeaderContent {
-    pub fn new_document(media_url: String, filename: String) -> Self {
+    pub fn new_document(media_url: &str, filename: &str) -> Self {
         TemplateHeaderContent::Document {
-            media_url,
-            filename,
+            media_url: media_url.into(),
+            filename: filename.into(),
         }
     }
 
-    pub fn new_image(media_url: String) -> Self {
-        TemplateHeaderContent::Image { media_url }
+    pub fn new_image(media_url: &str) -> Self {
+        TemplateHeaderContent::Image {
+            media_url: media_url.into(),
+        }
     }
 
     pub fn new_location(latitude: f64, longitude: f64) -> Self {
@@ -1616,12 +1635,16 @@ impl TemplateHeaderContent {
         }
     }
 
-    pub fn new_text(placeholder: String) -> Self {
-        TemplateHeaderContent::Text { placeholder }
+    pub fn new_text(placeholder: &str) -> Self {
+        TemplateHeaderContent::Text {
+            placeholder: placeholder.into(),
+        }
     }
 
-    pub fn new_video(media_url: String) -> Self {
-        TemplateHeaderContent::Video { media_url }
+    pub fn new_video(media_url: &str) -> Self {
+        TemplateHeaderContent::Video {
+            media_url: media_url.into(),
+        }
     }
 }
 
@@ -1658,12 +1681,16 @@ pub enum TemplateButtonContent {
 }
 
 impl TemplateButtonContent {
-    pub fn new_quick_reply(parameter: String) -> Self {
-        TemplateButtonContent::QuickReply { parameter }
+    pub fn new_quick_reply(parameter: &str) -> Self {
+        TemplateButtonContent::QuickReply {
+            parameter: parameter.into(),
+        }
     }
 
-    pub fn new_url(parameter: String) -> Self {
-        TemplateButtonContent::Url { parameter }
+    pub fn new_url(parameter: &str) -> Self {
+        TemplateButtonContent::Url {
+            parameter: parameter.into(),
+        }
     }
 }
 
@@ -1715,11 +1742,11 @@ pub struct TemplateContent {
 }
 
 impl TemplateContent {
-    pub fn new(template_name: String, template_data: TemplateData, language: String) -> Self {
+    pub fn new(template_name: &str, template_data: TemplateData, language: &str) -> Self {
         TemplateContent {
-            template_name,
+            template_name: template_name.into(),
             template_data,
-            language,
+            language: language.into(),
         }
     }
 }
@@ -1737,8 +1764,11 @@ pub struct SmsFailover {
 }
 
 impl SmsFailover {
-    pub fn new(from: String, text: String) -> Self {
-        SmsFailover { from, text }
+    pub fn new(from: &str, text: &str) -> Self {
+        SmsFailover {
+            from: from.into(),
+            text: text.into(),
+        }
     }
 }
 
@@ -1783,10 +1813,10 @@ pub struct FailoverMessage {
 }
 
 impl FailoverMessage {
-    pub fn new(from: String, to: String, content: TemplateContent) -> Self {
+    pub fn new(from: &str, to: &str, content: TemplateContent) -> Self {
         Self {
-            from,
-            to,
+            from: from.into(),
+            to: to.into(),
             content,
             message_id: None,
             callback_data: None,

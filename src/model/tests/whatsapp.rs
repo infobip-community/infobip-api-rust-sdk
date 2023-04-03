@@ -12,9 +12,7 @@ fn get_dummy_send_template_request_body() -> SendTemplateRequestBody {
             media_url: "https://some.url".to_string(),
             filename: "file.txt".to_string(),
         }),
-        buttons: Some(vec![TemplateButtonContent::new_url(
-            "https://some.url".to_string(),
-        )]),
+        buttons: Some(vec![TemplateButtonContent::new_url("https://some.url")]),
     };
     let content = TemplateContent {
         template_name: "template_name1".to_string(),
@@ -346,18 +344,14 @@ fn get_dummy_create_template_request_body() -> CreateTemplateRequestBody {
 #[test]
 fn send_template_request_body_valid() {
     let content = TemplateContent::new(
-        "template_name1".to_string(),
+        "template_name1",
         TemplateData::new(TemplateBodyContent::new(vec![
             "value1".to_string(),
             "value2".to_string(),
         ])),
-        TemplateLanguage::EnUs.to_string(),
+        &TemplateLanguage::EnUs.to_string(),
     );
-    let message = FailoverMessage::new(
-        "444444444444".to_string(),
-        "555555555555".to_string(),
-        content,
-    );
+    let message = FailoverMessage::new("444444444444", "555555555555", content);
     let request_body = SendTemplateRequestBody::new(vec![message]);
 
     assert!(request_body.validate().is_ok());
@@ -497,9 +491,9 @@ fn send_template_request_body_message_content_long_template_name() {
 #[test]
 fn send_text_request_body_valid() {
     let request_body = SendTextRequestBody::new(
-        "444444444444".to_string(),
-        "555555555555".to_string(),
-        TextContent::new("message text".to_string()),
+        "444444444444",
+        "555555555555",
+        TextContent::new("message text"),
     );
 
     assert!(request_body.validate().is_ok());
@@ -596,9 +590,9 @@ fn send_text_request_sms_content_long_text() {
 #[test]
 fn send_document_request_valid() {
     let request_body = SendDocumentRequestBody::new(
-        "444444444444".to_string(),
-        "555555555555".to_string(),
-        DocumentContent::new("https://some.url".to_string()),
+        "444444444444",
+        "555555555555",
+        DocumentContent::new("https://some.url"),
     );
 
     assert!(request_body.validate().is_ok());
@@ -650,9 +644,9 @@ fn send_document_request_content_long_file_name() {
 #[test]
 fn send_image_request_body_valid() {
     let request_body = SendImageRequestBody::new(
-        "444444444444".to_string(),
-        "555555555555".to_string(),
-        ImageContent::new("https://some.url".to_string()),
+        "444444444444",
+        "555555555555",
+        ImageContent::new("https://some.url"),
     );
 
     assert!(request_body.validate().is_ok());
@@ -695,9 +689,9 @@ fn send_image_request_content_long_caption() {
 #[test]
 fn send_audio_request_body_valid() {
     let request_body = SendAudioRequestBody::new(
-        "444444444444".to_string(),
-        "555555555555".to_string(),
-        AudioContent::new("https://some.url".to_string()),
+        "444444444444",
+        "555555555555",
+        AudioContent::new("https://some.url"),
     );
 
     assert!(request_body.validate().is_ok());
@@ -731,9 +725,9 @@ fn send_audio_request_content_invalid_media_url() {
 #[test]
 fn send_video_request_body_valid() {
     let request_body = SendVideoRequestBody::new(
-        "444444444444".to_string(),
-        "555555555555".to_string(),
-        VideoContent::new("https://some.url".to_string()),
+        "444444444444",
+        "555555555555",
+        VideoContent::new("https://some.url"),
     );
 
     assert!(request_body.validate().is_ok());
@@ -776,9 +770,9 @@ fn send_video_request_content_long_caption() {
 #[test]
 fn send_sticker_request_body_valid() {
     let request_body = SendStickerRequestBody::new(
-        "444444444444".to_string(),
-        "555555555555".to_string(),
-        StickerContent::new("https://some.url".to_string()),
+        "444444444444",
+        "555555555555",
+        StickerContent::new("https://some.url"),
     );
 
     assert!(request_body.validate().is_ok());
@@ -812,8 +806,8 @@ fn send_sticker_request_content_invalid_media_url() {
 #[test]
 fn send_location_request_body_valid() {
     let request_body = SendLocationRequestBody::new(
-        "444444444444".to_string(),
-        "555555555555".to_string(),
+        "444444444444",
+        "555555555555",
         LocationContent::new(1.0, 2.0),
     );
 
@@ -866,12 +860,9 @@ fn send_location_request_content_long_name() {
 #[test]
 fn send_contact_request_body_valid() {
     let request_body = SendContactRequestBody::new(
-        "444444444444".to_string(),
-        "555555555555".to_string(),
-        ContactContent::new(vec![Contact::new(ContactName::new(
-            "John".to_string(),
-            "John Doe".to_string(),
-        ))]),
+        "444444444444",
+        "555555555555",
+        ContactContent::new(vec![Contact::new(ContactName::new("John", "John Doe"))]),
     );
 
     assert!(request_body.validate().is_ok());
@@ -895,12 +886,12 @@ fn send_contact_request_content_no_contacts() {
 
 #[test]
 fn send_interactive_buttons_request_body_valid() {
-    let button = InteractiveButton::new_reply_button("1".to_string(), "Button Title".to_string());
+    let button = InteractiveButton::new_reply_button("1", "Button Title");
     let request_body = SendInteractiveButtonsRequestBody::new(
-        "444444444444".to_string(),
-        "555555555555".to_string(),
+        "444444444444",
+        "555555555555",
         InteractiveButtonsContent::new(
-            InteractiveBody::new("Hello".to_string()),
+            InteractiveBody::new("Hello"),
             InteractiveButtonsAction::new(vec![button]),
         ),
     );
@@ -946,7 +937,7 @@ fn send_interactive_buttons_request_content_no_buttons() {
 fn send_interactive_buttons_request_content_no_footer_text() {
     let mut request_body = get_dummy_send_interactive_buttons_request_body();
 
-    request_body.content.footer = Some(InteractiveFooter::new("".to_string()));
+    request_body.content.footer = Some(InteractiveFooter::new(""));
 
     assert!(request_body.validate().is_err());
 }
@@ -955,21 +946,21 @@ fn send_interactive_buttons_request_content_no_footer_text() {
 fn send_interactive_buttons_request_content_long_footer_text() {
     let mut request_body = get_dummy_send_interactive_buttons_request_body();
 
-    request_body.content.footer = Some(InteractiveFooter::new("t".repeat(61usize)));
+    request_body.content.footer = Some(InteractiveFooter::new(&"t".repeat(61usize)));
 
     assert!(request_body.validate().is_err());
 }
 
 #[test]
 fn send_interactive_list_request_body_valid() {
-    let row = InteractiveRow::new("id1".to_string(), "title1".to_string());
+    let row = InteractiveRow::new("id1", "title1");
     let section = InteractiveListSection::new(vec![row]);
     let request_body = SendInteractiveListRequestBody::new(
-        "444444444444".to_string(),
-        "555555555555".to_string(),
+        "444444444444",
+        "555555555555",
         InteractiveListContent::new(
-            InteractiveBody::new("Hello".to_string()),
-            InteractiveListAction::new("Action Title".to_string(), vec![section]),
+            InteractiveBody::new("Hello"),
+            InteractiveListAction::new("Action Title", vec![section]),
         ),
     );
 
@@ -1033,50 +1024,17 @@ fn send_interactive_list_request_content_many_sections() {
     let mut request_body = get_dummy_send_interactive_list_request_body();
 
     request_body.content.action.sections = vec![
-        InteractiveListSection::new(vec![InteractiveRow::new(
-            "id1".to_string(),
-            "title1".to_string(),
-        )]),
-        InteractiveListSection::new(vec![InteractiveRow::new(
-            "id2".to_string(),
-            "title2".to_string(),
-        )]),
-        InteractiveListSection::new(vec![InteractiveRow::new(
-            "id3".to_string(),
-            "title3".to_string(),
-        )]),
-        InteractiveListSection::new(vec![InteractiveRow::new(
-            "id4".to_string(),
-            "title4".to_string(),
-        )]),
-        InteractiveListSection::new(vec![InteractiveRow::new(
-            "id5".to_string(),
-            "title5".to_string(),
-        )]),
-        InteractiveListSection::new(vec![InteractiveRow::new(
-            "id6".to_string(),
-            "title6".to_string(),
-        )]),
-        InteractiveListSection::new(vec![InteractiveRow::new(
-            "id7".to_string(),
-            "title7".to_string(),
-        )]),
-        InteractiveListSection::new(vec![InteractiveRow::new(
-            "id8".to_string(),
-            "title8".to_string(),
-        )]),
-        InteractiveListSection::new(vec![InteractiveRow::new(
-            "id9".to_string(),
-            "title9".to_string(),
-        )]),
-        InteractiveListSection::new(vec![InteractiveRow::new(
-            "id10".to_string(),
-            "title10".to_string(),
-        )]),
-        InteractiveListSection::new(vec![InteractiveRow::new(
-            "id11".to_string(),
-            "title11".to_string(),
-        )]),
+        InteractiveListSection::new(vec![InteractiveRow::new("id1", "title1")]),
+        InteractiveListSection::new(vec![InteractiveRow::new("id2", "title2")]),
+        InteractiveListSection::new(vec![InteractiveRow::new("id3", "title3")]),
+        InteractiveListSection::new(vec![InteractiveRow::new("id4", "title4")]),
+        InteractiveListSection::new(vec![InteractiveRow::new("id5", "title5")]),
+        InteractiveListSection::new(vec![InteractiveRow::new("id6", "title6")]),
+        InteractiveListSection::new(vec![InteractiveRow::new("id7", "title7")]),
+        InteractiveListSection::new(vec![InteractiveRow::new("id8", "title8")]),
+        InteractiveListSection::new(vec![InteractiveRow::new("id9", "title9")]),
+        InteractiveListSection::new(vec![InteractiveRow::new("id10", "title10")]),
+        InteractiveListSection::new(vec![InteractiveRow::new("id11", "title11")]),
     ];
 
     assert!(request_body.validate().is_err());
@@ -1140,7 +1098,7 @@ fn send_interactive_list_request_content_long_row_description() {
 fn send_interactive_list_request_content_no_footer_text() {
     let mut request_body = get_dummy_send_interactive_list_request_body();
 
-    request_body.content.footer = Some(InteractiveFooter::new("".to_string()));
+    request_body.content.footer = Some(InteractiveFooter::new(""));
 
     assert!(request_body.validate().is_err());
 }
@@ -1149,7 +1107,7 @@ fn send_interactive_list_request_content_no_footer_text() {
 fn send_interactive_list_request_content_long_footer_text() {
     let mut request_body = get_dummy_send_interactive_list_request_body();
 
-    request_body.content.footer = Some(InteractiveFooter::new("t".repeat(61usize)));
+    request_body.content.footer = Some(InteractiveFooter::new(&"t".repeat(61usize)));
 
     assert!(request_body.validate().is_err());
 }
@@ -1157,12 +1115,9 @@ fn send_interactive_list_request_content_long_footer_text() {
 #[test]
 fn send_interactive_product_request_valid() {
     let request_body = SendInteractiveProductRequestBody::new(
-        "555555555555".to_string(),
-        "444444444444".to_string(),
-        InteractiveProductContent::new(InteractiveProductAction::new(
-            "1".to_string(),
-            "2".to_string(),
-        )),
+        "555555555555",
+        "444444444444",
+        InteractiveProductContent::new(InteractiveProductAction::new("1", "2")),
     );
 
     assert!(request_body.validate().is_ok());
@@ -1197,24 +1152,24 @@ fn send_interactive_product_request_content_no_product_retailer_id() {
 fn send_interactive_product_request_content_no_footer_text() {
     let mut request_body = get_dummy_send_interactive_product_request_body();
 
-    request_body.content.footer = Some(InteractiveFooter::new("".to_string()));
+    request_body.content.footer = Some(InteractiveFooter::new(""));
 
     assert!(request_body.validate().is_err());
 }
 
 #[test]
 fn send_interactive_multiproduct_request_body_valid() {
-    let body = InteractiveBody::new("body text".to_string());
+    let body = InteractiveBody::new("body text");
 
     let section = InteractiveMultiproductSection::new(vec!["1".to_string(), "2".to_string()]);
 
-    let action = InteractiveMultiproductAction::new("1".to_string(), vec![section]);
+    let action = InteractiveMultiproductAction::new("1", vec![section]);
 
     let request_body = SendInteractiveMultiproductRequestBody::new(
-        "555555555555".to_string(),
-        "444444444444".to_string(),
+        "555555555555",
+        "444444444444",
         InteractiveMultiproductContent::new(
-            InteractiveMultiproductHeader::new_text_header("header text".to_string()),
+            InteractiveMultiproductHeader::new_text_header("header text"),
             body,
             action,
         ),
@@ -1234,7 +1189,7 @@ fn send_interactive_multiproduct_request_body_full_valid() {
 fn send_interactive_multiproduct_request_body_content_no_body_text() {
     let mut request_body = get_dummy_send_interactive_multiproduct_request_body();
 
-    request_body.content.body = InteractiveBody::new("".to_string());
+    request_body.content.body = InteractiveBody::new("");
 
     assert!(request_body.validate().is_err());
 }
@@ -1243,7 +1198,7 @@ fn send_interactive_multiproduct_request_body_content_no_body_text() {
 fn send_interactive_multiproduct_request_body_content_long_body_text() {
     let mut request_body = get_dummy_send_interactive_multiproduct_request_body();
 
-    request_body.content.body = InteractiveBody::new("t".repeat(1025usize));
+    request_body.content.body = InteractiveBody::new(&"t".repeat(1025usize));
 
     assert!(request_body.validate().is_err());
 }
@@ -1299,9 +1254,9 @@ fn send_interactive_multiproduct_request_body_content_action_section_long_title(
 
 #[test]
 fn create_template_request_body_valid() {
-    let structure = TemplateStructure::new(TemplateBody::new("hello".to_string()));
+    let structure = TemplateStructure::new(TemplateBody::new("hello"));
     let request_body = CreateTemplateRequestBody::new(
-        "rust_sdk_test_template".to_string(),
+        "rust_sdk_test_template",
         TemplateLanguage::EnUs,
         TemplateCategory::Marketing,
         structure,
@@ -1339,7 +1294,7 @@ fn create_template_request_body_structure_body_no_text() {
 fn create_template_request_body_structure_long_footer_text() {
     let mut request_body = get_dummy_create_template_request_body();
 
-    request_body.structure.footer = Some(TemplateFooter::new("t".repeat(61usize)));
+    request_body.structure.footer = Some(TemplateFooter::new(&"t".repeat(61usize)));
 
     assert!(request_body.validate().is_err());
 }
@@ -1349,10 +1304,10 @@ fn create_template_request_body_structure_many_buttons() {
     let mut request_body = get_dummy_create_template_request_body();
 
     request_body.structure.buttons = Some(vec![
-        TemplateButton::new_quick_reply("1".to_string()),
-        TemplateButton::new_quick_reply("1".to_string()),
-        TemplateButton::new_quick_reply("1".to_string()),
-        TemplateButton::new_quick_reply("1".to_string()),
+        TemplateButton::new_quick_reply("1"),
+        TemplateButton::new_quick_reply("1"),
+        TemplateButton::new_quick_reply("1"),
+        TemplateButton::new_quick_reply("1"),
     ]);
 
     assert!(request_body.validate().is_err());

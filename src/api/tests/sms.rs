@@ -34,7 +34,7 @@ async fn test_preview_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = PreviewRequestBody::new(DUMMY_TEXT.to_string());
+    let request_body = PreviewRequestBody::new(DUMMY_TEXT);
 
     let response = client.preview(request_body).await.unwrap();
 
@@ -47,8 +47,8 @@ async fn test_preview_valid() {
 async fn test_preview_bad_request() {
     let client = SmsClient::with_configuration(get_test_configuration(DUMMY_BASE_URL));
 
-    let mut request_body = PreviewRequestBody::new(DUMMY_TEXT.to_string());
-    request_body.language_code = Some("XX".to_string());
+    let mut request_body = PreviewRequestBody::new(DUMMY_TEXT);
+    request_body.language_code = Some("XX".into());
 
     let error = client.preview(request_body).await.unwrap_err();
 
@@ -85,7 +85,7 @@ fn test_blocking_preview_valid() {
     let client =
         BlockingSmsClient::with_configuration(get_test_configuration(&mock_server.base_url()));
 
-    let request_body = PreviewRequestBody::new(DUMMY_TEXT.to_string());
+    let request_body = PreviewRequestBody::new(DUMMY_TEXT);
 
     let response = client.preview(request_body).unwrap();
 
@@ -118,7 +118,7 @@ async fn test_preview_server_error() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = PreviewRequestBody::new(DUMMY_TEXT.to_string());
+    let request_body = PreviewRequestBody::new(DUMMY_TEXT);
 
     let error = client.preview(request_body).await.unwrap_err();
     if let SdkError::ApiRequestError(api_error) = error {
@@ -281,7 +281,7 @@ async fn test_send_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let message = Message::new(vec![Destination::new("123456789101".to_string())]);
+    let message = Message::new(vec![Destination::new("123456789101")]);
     let request_body = SendRequestBody::new(vec![message]);
 
     let response = client.send(request_body).await.unwrap();
@@ -332,7 +332,7 @@ async fn test_send_binary_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let message = BinaryMessage::new(vec![Destination::new("123456789101".to_string())]);
+    let message = BinaryMessage::new(vec![Destination::new("123456789101")]);
     let request_body = SendBinaryRequestBody::new(vec![message]);
 
     let response = client.send_binary(request_body).await.unwrap();
@@ -373,8 +373,8 @@ async fn test_send_over_query_parameters_valid() {
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
     let query_parameters = SendOverQueryParametersQueryParameters::new(
-        "username".to_string(),
-        "password".to_string(),
+        "username",
+        "password",
         vec!["41793026727".to_string()],
     );
 
@@ -406,7 +406,7 @@ async fn test_get_scheduled_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let query_parameters = GetScheduledQueryParameters::new("BULK-ID-123-xyz".to_string());
+    let query_parameters = GetScheduledQueryParameters::new("BULK-ID-123-xyz");
 
     let response = client.get_scheduled(query_parameters).await.unwrap();
 
@@ -418,7 +418,7 @@ async fn test_get_scheduled_valid() {
 async fn test_get_scheduled_empty_bulk_id() {
     let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
 
-    let query_parameters = GetScheduledQueryParameters::new("".to_string());
+    let query_parameters = GetScheduledQueryParameters::new("");
 
     assert!(client.get_scheduled(query_parameters).await.is_err());
 }
@@ -442,8 +442,8 @@ async fn test_reschedule_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let query_parameters = RescheduleQueryParameters::new("BULK-ID-123-xyz".to_string());
-    let request_body = RescheduleRequestBody::new("2021-08-25T16:00:00.000+0000".to_string());
+    let query_parameters = RescheduleQueryParameters::new("BULK-ID-123-xyz");
+    let request_body = RescheduleRequestBody::new("2021-08-25T16:00:00.000+0000");
 
     let response = client
         .reschedule(query_parameters, request_body)
@@ -459,8 +459,8 @@ async fn test_reschedule_valid() {
 async fn test_reschedule_empty_bulk_id() {
     let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
 
-    let query_parameters = RescheduleQueryParameters::new("".to_string());
-    let request_body = RescheduleRequestBody::new("2021-08-25T16:00:00.000+0000".to_string());
+    let query_parameters = RescheduleQueryParameters::new("");
+    let request_body = RescheduleRequestBody::new("2021-08-25T16:00:00.000+0000");
 
     assert!(client
         .reschedule(query_parameters, request_body)
@@ -472,8 +472,8 @@ async fn test_reschedule_empty_bulk_id() {
 async fn test_reschedule_empty_send_at() {
     let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
 
-    let query_parameters = RescheduleQueryParameters::new("BULK-ID-123-xyz".to_string());
-    let request_body = RescheduleRequestBody::new("".to_string());
+    let query_parameters = RescheduleQueryParameters::new("BULK-ID-123-xyz");
+    let request_body = RescheduleRequestBody::new("");
 
     assert!(client
         .reschedule(query_parameters, request_body)
@@ -500,7 +500,7 @@ async fn test_get_scheduled_status_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let query_parameters = GetScheduledStatusQueryParameters::new("BULK-ID-123-xyz".to_string());
+    let query_parameters = GetScheduledStatusQueryParameters::new("BULK-ID-123-xyz");
 
     let response = client.get_scheduled_status(query_parameters).await.unwrap();
 
@@ -513,7 +513,7 @@ async fn test_get_scheduled_status_valid() {
 async fn test_get_scheduled_status_empty_bulk_id() {
     let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
 
-    let query_parameters = GetScheduledStatusQueryParameters::new("".to_string());
+    let query_parameters = GetScheduledStatusQueryParameters::new("");
 
     assert!(client.get_scheduled_status(query_parameters).await.is_err());
 }
@@ -537,7 +537,7 @@ async fn test_update_scheduled_status_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let query_parameters = UpdateScheduledStatusQueryParameters::new("BULK-ID-123-xyz".to_string());
+    let query_parameters = UpdateScheduledStatusQueryParameters::new("BULK-ID-123-xyz");
     let request_body = UpdateScheduledStatusRequestBody::new(PAUSED);
 
     let response = client
@@ -554,7 +554,7 @@ async fn test_update_scheduled_status_valid() {
 async fn test_update_scheduled_status_empty_bulk_id() {
     let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
 
-    let query_parameters = UpdateScheduledStatusQueryParameters::new("".to_string());
+    let query_parameters = UpdateScheduledStatusQueryParameters::new("");
     let request_body = UpdateScheduledStatusRequestBody::new(PAUSED);
 
     assert!(client
@@ -774,7 +774,7 @@ async fn test_create_tfa_application_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = CreateTfaApplicationRequestBody::new("Application name".to_string());
+    let request_body = CreateTfaApplicationRequestBody::new("Application name");
 
     let response = client.create_tfa_application(request_body).await.unwrap();
 
@@ -786,7 +786,7 @@ async fn test_create_tfa_application_valid() {
 async fn test_create_tfa_application_no_name() {
     let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
 
-    let request_body = CreateTfaApplicationRequestBody::new("".to_string());
+    let request_body = CreateTfaApplicationRequestBody::new("");
 
     assert!(client.create_tfa_application(request_body).await.is_err());
 }
@@ -853,7 +853,7 @@ async fn test_update_tfa_application_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = UpdateTfaApplicationRequestBody::new("Application name 2".to_string());
+    let request_body = UpdateTfaApplicationRequestBody::new("Application name 2");
 
     let response = client
         .update_tfa_application("1234567", request_body)
@@ -926,11 +926,8 @@ async fn test_create_tfa_message_template_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = CreateTfaMessageTemplateRequestBody::new(
-        "Your pin is {{pin}}".to_string(),
-        PinType::Alphanumeric,
-        4,
-    );
+    let request_body =
+        CreateTfaMessageTemplateRequestBody::new("Your pin is {{pin}}", PinType::Alphanumeric, 4);
     let application_id = "HJ675435E3A6EA43432G5F37A635KJ8B";
 
     let response = client
@@ -946,8 +943,7 @@ async fn test_create_tfa_message_template_valid() {
 async fn test_create_tfa_message_template_empty_message_text() {
     let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
 
-    let request_body =
-        CreateTfaMessageTemplateRequestBody::new("".to_string(), PinType::Alphanumeric, 4);
+    let request_body = CreateTfaMessageTemplateRequestBody::new("", PinType::Alphanumeric, 4);
 
     assert!(client
         .create_tfa_message_template("some-app-id", request_body)
@@ -1023,11 +1019,8 @@ async fn test_update_tfa_message_template_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = UpdateTfaMessageTemplateRequestBody::new(
-        "Your pin is {{pin}}".to_string(),
-        PinType::Alphanumeric,
-        6,
-    );
+    let request_body =
+        UpdateTfaMessageTemplateRequestBody::new("Your pin is {{pin}}", PinType::Alphanumeric, 6);
 
     let response = client
         .update_tfa_message_template(
@@ -1065,9 +1058,9 @@ async fn test_send_pin_over_sms_valid() {
 
     let query_parameters = SendPinOverSmsQueryParameters::default();
     let request_body = SendPinOverSmsRequestBody::new(
-        "HJ675435E3A6EA43432G5F37A635KJ8B".to_string(),
-        "16A8B5FE2BCD6CA716A2D780CB3F3390".to_string(),
-        "5555555555".to_string(),
+        "HJ675435E3A6EA43432G5F37A635KJ8B",
+        "16A8B5FE2BCD6CA716A2D780CB3F3390",
+        "5555555555",
     );
 
     let response = client
@@ -1087,11 +1080,8 @@ async fn test_send_pin_over_sms_empty_app_id() {
     let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
 
     let query_parameters = SendPinOverSmsQueryParameters::default();
-    let request_body = SendPinOverSmsRequestBody::new(
-        "".to_string(),
-        "16A8B5FE2BCD6CA716A2D780CB3F3390".to_string(),
-        "5555555555".to_string(),
-    );
+    let request_body =
+        SendPinOverSmsRequestBody::new("", "16A8B5FE2BCD6CA716A2D780CB3F3390", "5555555555");
 
     assert!(client
         .send_pin_over_sms(query_parameters, request_body)
@@ -1158,9 +1148,9 @@ async fn test_send_pin_over_voice_valid() {
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
     let request_body = SendPinOverVoiceRequestBody::new(
-        "HJ675435E3A6EA43432G5F37A635KJ8B".to_string(),
-        "16A8B5FE2BCD6CA716A2D780CB3F3390".to_string(),
-        "5555555555".to_string(),
+        "HJ675435E3A6EA43432G5F37A635KJ8B",
+        "16A8B5FE2BCD6CA716A2D780CB3F3390",
+        "5555555555",
     );
 
     let response = client.send_pin_over_voice(request_body).await.unwrap();
@@ -1176,11 +1166,8 @@ async fn test_send_pin_over_voice_valid() {
 async fn test_send_pin_over_voice_empty_app_id() {
     let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
 
-    let request_body = SendPinOverVoiceRequestBody::new(
-        "".to_string(),
-        "16A8B5FE2BCD6CA716A2D780CB3F3390".to_string(),
-        "5555555555".to_string(),
-    );
+    let request_body =
+        SendPinOverVoiceRequestBody::new("", "16A8B5FE2BCD6CA716A2D780CB3F3390", "5555555555");
 
     assert!(client.send_pin_over_voice(request_body).await.is_err());
 }
@@ -1246,7 +1233,7 @@ async fn test_verify_phone_number_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let request_body = VerifyPhoneNumberRequestBody::new("123456".to_string());
+    let request_body = VerifyPhoneNumberRequestBody::new("123456");
 
     let response = client
         .verify_phone_number("9C817C6F8AF3D48F9FE553282AFA2B67", request_body)
@@ -1264,7 +1251,7 @@ async fn test_verify_phone_number_valid() {
 async fn test_verify_phone_number_no_pin() {
     let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
 
-    let request_body = VerifyPhoneNumberRequestBody::new("".to_string());
+    let request_body = VerifyPhoneNumberRequestBody::new("");
 
     assert!(client
         .verify_phone_number("some-pin-id", request_body)
@@ -1300,7 +1287,7 @@ async fn test_get_tfa_verification_status_valid() {
 
     let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
 
-    let query_parameters = GetTfaVerificationStatusQueryParameters::new("41793026727".to_string());
+    let query_parameters = GetTfaVerificationStatusQueryParameters::new("41793026727");
 
     let response = client
         .get_tfa_verification_status("16A8B5FE2BCD6CA716A2D780CB3F3390", query_parameters)
@@ -1315,7 +1302,7 @@ async fn test_get_tfa_verification_status_valid() {
 async fn test_get_tfa_verification_status_empty_msisdn() {
     let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
 
-    let query_parameters = GetTfaVerificationStatusQueryParameters::new("".to_string());
+    let query_parameters = GetTfaVerificationStatusQueryParameters::new("");
 
     assert!(client
         .get_tfa_verification_status("some-app-id", query_parameters)

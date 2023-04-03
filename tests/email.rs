@@ -108,8 +108,7 @@ async fn get_scheduled_status() {
 #[ignore]
 #[tokio::test]
 async fn update_scheduled_status() {
-    let query_params =
-        UpdateScheduledStatusQueryParameters::new("test-bulk-id-rust-003");
+    let query_params = UpdateScheduledStatusQueryParameters::new("test-bulk-id-rust-003");
     let request_body = UpdateScheduledStatusRequestBody::new(BulkStatus::CANCELED);
 
     let response = get_test_email_client()

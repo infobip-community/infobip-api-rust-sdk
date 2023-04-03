@@ -259,7 +259,9 @@ pub struct GetBulksQueryParameters {
 
 impl GetBulksQueryParameters {
     pub fn new(bulk_id: &str) -> Self {
-        GetBulksQueryParameters { bulk_id: bulk_id.into() }
+        GetBulksQueryParameters {
+            bulk_id: bulk_id.into(),
+        }
     }
 }
 
@@ -294,7 +296,9 @@ pub struct RescheduleRequestBody {
 
 impl RescheduleRequestBody {
     pub fn new(send_at: &str) -> Self {
-        RescheduleRequestBody { send_at: send_at.into() }
+        RescheduleRequestBody {
+            send_at: send_at.into(),
+        }
     }
 }
 

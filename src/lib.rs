@@ -45,7 +45,7 @@
 //!
 //!     // Create a message.
 //!     let mut message = Message::new(
-//!         vec![Destination::new("123456789012".to_string())]
+//!         vec![Destination::new("123456789012")]
 //!     );
 //!     message.text = Some("Your message text".to_string());
 //!
@@ -76,7 +76,7 @@
 //! ```rust
 //! # use infobip_sdk::model::sms::{Destination, Message};
 //! let mut message = Message::new(
-//!    vec![Destination::new("123456789012".to_string())]
+//!    vec![Destination::new("123456789012")]
 //! );
 //! message.text = Some("Your message text".to_string());
 //! ```

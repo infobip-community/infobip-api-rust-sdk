@@ -92,7 +92,7 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let mut request_body = PreviewRequestBody::new("Some text to preview".to_string());
+    /// let mut request_body = PreviewRequestBody::new("Some text to preview");
     /// request_body.transliteration = Some("GREEK".to_string());
     ///
     /// let response = sms_client.preview(request_body).await?;
@@ -211,7 +211,7 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let mut message = Message::new(vec![Destination::new("555555555555".to_string())]);
+    /// let mut message = Message::new(vec![Destination::new("555555555555")]);
     /// message.text = Some("Hello Rustacean!".to_string());
     /// message.from = Some("Infobip".to_string());
     ///
@@ -263,8 +263,8 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let mut message = BinaryMessage::new(vec![Destination::new("555555555555".to_string())]);
-    /// message.binary = Some(BinaryData::new("0f c2 4a bf 34 13 ba".to_string()));
+    /// let mut message = BinaryMessage::new(vec![Destination::new("555555555555")]);
+    /// message.binary = Some(BinaryData::new("0f c2 4a bf 34 13 ba"));
     ///
     /// let request_body = SendBinaryRequestBody::new(vec![message]);
     ///
@@ -315,7 +315,7 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = GetScheduledQueryParameters::new("dummy-bulk-id".to_string());
+    /// let query_parameters = GetScheduledQueryParameters::new("dummy-bulk-id");
     ///
     /// let response = sms_client.get_scheduled(query_parameters).await?;
     ///
@@ -510,8 +510,8 @@ impl SmsClient {
     ///
     /// let destinations = vec!["31612345678".to_string(), "31698765432".to_string()];
     /// let query_parameters = SendOverQueryParametersQueryParameters::new(
-    ///     "username".to_string(),
-    ///     "password".to_string(),
+    ///     "username",
+    ///     "password",
     ///     destinations
     /// );
     ///
@@ -631,8 +631,8 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = RescheduleQueryParameters::new("some-bulk-id".to_string());
-    /// let request_body = RescheduleRequestBody::new("2020-01-01T00:00:00".to_string());
+    /// let query_parameters = RescheduleQueryParameters::new("some-bulk-id");
+    /// let request_body = RescheduleRequestBody::new("2020-01-01T00:00:00");
     ///
     /// let response = sms_client.reschedule(query_parameters, request_body).await?;
     ///
@@ -686,7 +686,7 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = GetScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+    /// let query_parameters = GetScheduledStatusQueryParameters::new("some-bulk-id");
     ///
     /// let response = sms_client.get_scheduled_status(query_parameters).await?;
     ///
@@ -739,7 +739,7 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = UpdateScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+    /// let query_parameters = UpdateScheduledStatusQueryParameters::new("some-bulk-id");
     /// let request_body = UpdateScheduledStatusRequestBody::new(ScheduledStatus::CANCELED);
     ///
     /// let response = sms_client.update_scheduled_status(query_parameters, request_body).await?;
@@ -835,7 +835,7 @@ impl SmsClient {
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
-    /// let request_body = CreateTfaApplicationRequestBody::new("some-name".to_string());
+    /// let request_body = CreateTfaApplicationRequestBody::new("some-name");
     ///
     /// let response = client.create_tfa_application(request_body).await?;
     ///

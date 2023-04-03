@@ -33,10 +33,10 @@ pub struct PreviewRequestBody {
 }
 
 impl PreviewRequestBody {
-    pub fn new(text: String) -> PreviewRequestBody {
+    pub fn new(text: &str) -> PreviewRequestBody {
         PreviewRequestBody {
             language_code: None,
-            text,
+            text: text.into(),
             transliteration: None,
         }
     }
@@ -52,9 +52,9 @@ pub struct Language {
 }
 
 impl Language {
-    pub fn new(language_code: String) -> Language {
+    pub fn new(language_code: &str) -> Language {
         Language {
-            language_code: Some(language_code),
+            language_code: Some(language_code.into()),
         }
     }
 }
@@ -431,10 +431,10 @@ pub struct Destination {
 }
 
 impl Destination {
-    pub fn new(to: String) -> Destination {
+    pub fn new(to: &str) -> Destination {
         Destination {
             message_id: None,
-            to,
+            to: to.into(),
         }
     }
 }
@@ -453,10 +453,10 @@ pub struct IndiaDlt {
 }
 
 impl IndiaDlt {
-    pub fn new(principal_entity_id: String) -> IndiaDlt {
+    pub fn new(principal_entity_id: &str) -> IndiaDlt {
         IndiaDlt {
             content_template_id: None,
-            principal_entity_id,
+            principal_entity_id: principal_entity_id.into(),
         }
     }
 }
@@ -475,10 +475,10 @@ pub struct TurkeyIys {
 }
 
 impl TurkeyIys {
-    pub fn new(recipient_type: String) -> TurkeyIys {
+    pub fn new(recipient_type: &str) -> TurkeyIys {
         TurkeyIys {
             brand_code: None,
-            recipient_type,
+            recipient_type: recipient_type.into(),
         }
     }
 }
@@ -643,11 +643,11 @@ pub struct BinaryData {
 }
 
 impl BinaryData {
-    pub fn new(hex: String) -> BinaryData {
+    pub fn new(hex: &str) -> BinaryData {
         BinaryData {
             data_coding: None,
             esm_class: None,
-            hex,
+            hex: hex.into(),
         }
     }
 }
@@ -857,8 +857,10 @@ pub struct GetScheduledQueryParameters {
 }
 
 impl GetScheduledQueryParameters {
-    pub fn new(bulk_id: String) -> GetScheduledQueryParameters {
-        GetScheduledQueryParameters { bulk_id }
+    pub fn new(bulk_id: &str) -> GetScheduledQueryParameters {
+        GetScheduledQueryParameters {
+            bulk_id: bulk_id.into(),
+        }
     }
 }
 
@@ -1157,13 +1159,13 @@ pub struct SendOverQueryParametersQueryParameters {
 
 impl SendOverQueryParametersQueryParameters {
     pub fn new(
-        username: String,
-        password: String,
+        username: &str,
+        password: &str,
         to: Vec<String>,
     ) -> SendOverQueryParametersQueryParameters {
         SendOverQueryParametersQueryParameters {
-            username,
-            password,
+            username: username.into(),
+            password: password.into(),
             bulk_id: None,
             from: None,
             to,
@@ -1201,8 +1203,10 @@ pub struct RescheduleRequestBody {
 }
 
 impl RescheduleRequestBody {
-    pub fn new(send_at: String) -> RescheduleRequestBody {
-        RescheduleRequestBody { send_at }
+    pub fn new(send_at: &str) -> RescheduleRequestBody {
+        RescheduleRequestBody {
+            send_at: send_at.into(),
+        }
     }
 }
 
@@ -1310,12 +1314,12 @@ pub type CreateTfaApplicationRequestBody = TfaApplication;
 pub type CreateTfaApplicationResponseBody = TfaApplication;
 
 impl CreateTfaApplicationRequestBody {
-    pub fn new(name: String) -> CreateTfaApplicationRequestBody {
+    pub fn new(name: &str) -> CreateTfaApplicationRequestBody {
         CreateTfaApplicationRequestBody {
             application_id: None,
             configuration: None,
             enabled: None,
-            name,
+            name: name.into(),
         }
     }
 }
@@ -1443,12 +1447,12 @@ pub struct TfaMessageTemplate {
 }
 
 impl TfaMessageTemplate {
-    pub fn new(message_text: String, pin_type: PinType, pin_length: i32) -> TfaMessageTemplate {
+    pub fn new(message_text: &str, pin_type: PinType, pin_length: i32) -> TfaMessageTemplate {
         TfaMessageTemplate {
             application_id: None,
             language: None,
             message_id: None,
-            message_text,
+            message_text: message_text.into(),
             pin_length,
             pin_placeholder: None,
             pin_type,
@@ -1515,13 +1519,13 @@ pub struct SendPinOverSmsRequestBody {
 }
 
 impl SendPinOverSmsRequestBody {
-    pub fn new(application_id: String, message_id: String, to: String) -> Self {
+    pub fn new(application_id: &str, message_id: &str, to: &str) -> Self {
         Self {
-            application_id,
+            application_id: application_id.into(),
             from: None,
-            message_id,
+            message_id: message_id.into(),
             placeholders: None,
-            to,
+            to: to.into(),
         }
     }
 }
@@ -1592,8 +1596,8 @@ pub struct VerifyPhoneNumberRequestBody {
 }
 
 impl VerifyPhoneNumberRequestBody {
-    pub fn new(pin: String) -> Self {
-        Self { pin }
+    pub fn new(pin: &str) -> Self {
+        Self { pin: pin.into() }
     }
 }
 
@@ -1632,9 +1636,9 @@ pub struct GetTfaVerificationStatusQueryParameters {
 }
 
 impl GetTfaVerificationStatusQueryParameters {
-    pub fn new(msisdn: String) -> Self {
+    pub fn new(msisdn: &str) -> Self {
         Self {
-            msisdn,
+            msisdn: msisdn.into(),
             verified: None,
             sent: None,
         }
