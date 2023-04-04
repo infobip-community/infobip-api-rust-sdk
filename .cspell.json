@@ -3,8 +3,26 @@
   "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/master/cspell.schema.json",
   "language": "en",
   "words": [
+    "DTMF",
+    "ENROUTE",
+    "Istarska",
+    "MULTIPRODUCT",
+    "Multiproduct",
+    "Structs",
+    "Vodnjan",
+    "aabe",
+    "bpgk",
+    "dtmf",
+    "httpmock",
+    "ibsso",
+    "ijkl",
     "infobip",
-    "ibsso"
+    "msisdn",
+    "norun",
+    "reqwest",
+    "xihiy",
+    "yirml",
+    "áéíø"
   ],
   "flagWords": [],
   "patterns": [
