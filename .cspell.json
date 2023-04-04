@@ -12,6 +12,7 @@
     "Vodnjan",
     "aabe",
     "bpgk",
+    "chrono",
     "dtmf",
     "httpmock",
     "ibsso",
@@ -20,6 +21,8 @@
     "msisdn",
     "norun",
     "reqwest",
+    "rustc",
+    "thiserror",
     "xihiy",
     "yirml",
     "áéíø"
