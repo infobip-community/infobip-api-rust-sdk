@@ -597,7 +597,7 @@ impl InteractiveBody {
 pub enum InteractiveButton {
     #[serde(rename = "REPLY")]
     ReplyButton {
-        /// Unique identifier of the button containing no leading nor trailing whitespaces.
+        /// Unique identifier of the button containing no leading nor trailing white spaces.
         #[serde(rename = "id")]
         id: String,
 

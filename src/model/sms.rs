@@ -1268,21 +1268,21 @@ pub struct TfaApplicationConfiguration {
     #[serde(rename = "pinTimeToLive", skip_serializing_if = "Option::is_none")]
     pub pin_time_to_live: Option<String>,
 
-    /// Overall number of requests over a specififed time period for generating a PIN and sending an SMS using a single application. Required format: `{attempts}/{timeLength}{timeUnit}`. `attempts` is mandatory and `timeLength` is optional with a default value of 1. `timeUnit` is one of: `ms`, `s`, `m`, `h` or `d` representing milliseconds, seconds, minutes, hours, and days respectively. Must not exceed one year, although much lower value is recommended.
+    /// Overall number of requests over a specified time period for generating a PIN and sending an SMS using a single application. Required format: `{attempts}/{timeLength}{timeUnit}`. `attempts` is mandatory and `timeLength` is optional with a default value of 1. `timeUnit` is one of: `ms`, `s`, `m`, `h` or `d` representing milliseconds, seconds, minutes, hours, and days respectively. Must not exceed one year, although much lower value is recommended.
     #[serde(
         rename = "sendPinPerApplicationLimit",
         skip_serializing_if = "Option::is_none"
     )]
     pub send_pin_per_application_limit: Option<String>,
 
-    /// Number of requests over a specififed time period for generating a PIN and sending an SMS to one phone number (MSISDN). Required format: `{attempts}/{timeLength}{timeUnit}`. `attempts` is mandatory and `timeLength` is optional with a default value of 1. `timeUnit` is one of: `ms`, `s`, `m`, `h` or `d` representing milliseconds, seconds, minutes, hours, and days respectively. Must not exceed one year, although much lower value is recommended.
+    /// Number of requests over a specified time period for generating a PIN and sending an SMS to one phone number (MSISDN). Required format: `{attempts}/{timeLength}{timeUnit}`. `attempts` is mandatory and `timeLength` is optional with a default value of 1. `timeUnit` is one of: `ms`, `s`, `m`, `h` or `d` representing milliseconds, seconds, minutes, hours, and days respectively. Must not exceed one year, although much lower value is recommended.
     #[serde(
         rename = "sendPinPerPhoneNumberLimit",
         skip_serializing_if = "Option::is_none"
     )]
     pub send_pin_per_phone_number_limit: Option<String>,
 
-    /// The number of PIN verification requests over a specififed time period from one phone number (MSISDN). Required format: `{attempts}/{timeLength}{timeUnit}`. `attempts` is mandatory and `timeLength` is optional with a default value of 1. `timeUnit` is one of: `ms`, `s`, `m`, `h` or `d` representing milliseconds, seconds, minutes, hours, and days respectively. Must not exceed one day, although much lower value is recommended.
+    /// The number of PIN verification requests over a specified time period from one phone number (MSISDN). Required format: `{attempts}/{timeLength}{timeUnit}`. `attempts` is mandatory and `timeLength` is optional with a default value of 1. `timeUnit` is one of: `ms`, `s`, `m`, `h` or `d` representing milliseconds, seconds, minutes, hours, and days respectively. Must not exceed one day, although much lower value is recommended.
     #[serde(rename = "verifyPinLimit", skip_serializing_if = "Option::is_none")]
     pub verify_pin_limit: Option<String>,
 }

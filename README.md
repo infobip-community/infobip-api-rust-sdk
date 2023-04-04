@@ -1,10 +1,10 @@
 # Infobip API Rust SDK
 
 ![Workflow](https://github.com/infobip-community/infobip-api-rust-sdk/actions/workflows/rust.yml/badge.svg)
-[![Licence](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-MIT)
-[![Licence](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-APACHE)
+[![License](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-MIT)
+[![License](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-APACHE)
 [![Crates.io](https://img.shields.io/crates/v/infobip_sdk)](https://crates.io/crates/infobip_sdk)
-![Crate downlads](https://img.shields.io/crates/d/rust_sdk)
+![Crate downloads](https://img.shields.io/crates/d/rust_sdk)
 
 Client SDK to use the Infobip API with pure Rust.
 
@@ -29,17 +29,16 @@ Then you can use your API Key and custom base URL to call the endpoints. You can
 do that, set the `IB_API_KEY` and `IB_BASE_URL` variables.
 
 ## 📦 Installation
-To install the library, run the following command from your project:
+To install the library, run the following command under your project's root directory:
 ```bash
 cargo add infobip_sdk
 ```
-
-Alternatively you can add the dependency to your project's `Cargo.toml`
+Alternatively, you can add the dependency to your project's `Cargo.toml`
 ```toml
 [dependencies]
 infobip_sdk = "<version>"
 ```
-Replace `<version>` with the latest (or desired) release of the library. For example `0.4.0`.
+Replace `<version>` with the latest (or desired) release of the library. For example `0.5.0`.
 
 ## 🚀 Usage
 To use the library, import the client and channel-specific models. Then create a client and
@@ -59,7 +58,7 @@ async fn main() {
 
     // Create a message.
     let mut message = Message::new(
-        vec![Destination::new("123456789012".to_string())]
+        vec![Destination::new("123456789012")]
     );
     message.text = Some("Your message text".to_string());
 
@@ -89,7 +88,7 @@ provided `new()` functions, with `serde_json::from_str()`, or with the true cons
 For example, to build a `Message` instance, you can do this:
 ```rust
 let mut message = Message::new(
-   vec![Destination::new("123456789012".to_string())]
+   vec![Destination::new("123456789012")]
 );
 message.text = Some("Your message text".to_string());
 ```
@@ -143,7 +142,7 @@ model.
 You can speed up compile time by turning only the needed channels as library features.
 For example, to only build SMS, add the dependency like this:
 ```toml
-infobip_sdk = { version = "0.3", features = ["sms"] }
+infobip_sdk = { version = "0.5", features = ["sms"] }
 ```
 You can see the complete list of features in the Cargo.toml of the project. Feature names
 follow channel names.
