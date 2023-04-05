@@ -2,8 +2,10 @@
 use std::collections::HashMap;
 use std::fmt;
 
+use cargo_metadata::MetadataCommand;
 use reqwest;
 use reqwest::{RequestBuilder, Response, StatusCode};
+use rustc_version::version;
 use serde::Deserialize;
 use serde_derive::Serialize;
 use thiserror::Error;
@@ -37,6 +39,12 @@ pub enum SdkError {
 
     #[error("IO error")]
     Io(#[from] std::io::Error),
+
+    #[error("Rust version error")]
+    RustVersion(#[from] rustc_version::Error),
+
+    #[error("Cargo metadata error")]
+    CargoMetadata(#[from] cargo_metadata::Error),
 }
 
 /// Holds the status code and error details when a 4xx or 5xx response is received.
@@ -130,6 +138,39 @@ fn add_auth(mut builder: RequestBuilder, configuration: &Configuration) -> Reque
     builder
 }
 
+fn get_user_agent() -> Result<String, SdkError> {
+    let rust_version = version()?;
+    let cmd = MetadataCommand::new();
+    let package_version = cmd
+        .exec()?
+        .packages
+        .into_iter()
+        .find(|p| p.name == "infobip_sdk")
+        .unwrap()
+        .version;
+
+    Ok(format!(
+        "@infobip/rust-sdk/{} rust/{}",
+        package_version, rust_version
+    ))
+}
+
+// Adds user agent to the request builder. Synchronous version.
+fn add_user_agent(mut builder: RequestBuilder) -> Result<RequestBuilder, SdkError> {
+    builder = builder.header("User-Agent", get_user_agent()?);
+
+    Ok(builder)
+}
+
+// Adds user agent to the request builder. Synchronous version.
+fn add_user_agent_blocking(
+    mut builder: reqwest::blocking::RequestBuilder,
+) -> Result<reqwest::blocking::RequestBuilder, SdkError> {
+    builder = builder.header("User-Agent", get_user_agent()?);
+
+    Ok(builder)
+}
+
 // Blocking version of add_auth, uses blocking request builder.
 fn add_auth_blocking(
     mut builder: reqwest::blocking::RequestBuilder,
@@ -167,6 +208,7 @@ async fn send_no_body_request(
     let mut builder = client.request(method, url).query(&query_parameters);
 
     builder = add_auth(builder, configuration);
+    builder = add_user_agent(builder)?;
 
     Ok(builder.send().await?)
 }
@@ -188,6 +230,7 @@ async fn send_valid_json_request<T: Validate + serde::Serialize>(
         .query(&query_parameters);
 
     builder = add_auth(builder, configuration);
+    builder = add_user_agent(builder)?;
 
     Ok(builder.send().await?)
 }
@@ -203,6 +246,7 @@ async fn send_multipart_request(
     let mut builder = client.request(method, url);
 
     builder = add_auth(builder, configuration);
+    builder = add_user_agent(builder)?;
 
     Ok(builder.multipart(form).send().await?)
 }
@@ -220,6 +264,7 @@ fn send_blocking_valid_json_request<T: Validate + serde::Serialize>(
     let mut builder = client.request(method, url);
 
     builder = add_auth_blocking(builder, configuration);
+    builder = add_user_agent_blocking(builder)?;
 
     Ok(builder.json(&request_body).send()?)
 }

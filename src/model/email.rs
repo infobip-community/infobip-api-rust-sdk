@@ -141,10 +141,10 @@ pub struct SendRequestBody {
 }
 
 impl SendRequestBody {
-    pub fn new(to: String) -> Self {
+    pub fn new(to: &str) -> Self {
         SendRequestBody {
             from: None,
-            to,
+            to: to.into(),
             cc: None,
             bcc: None,
             subject: None,
@@ -258,8 +258,10 @@ pub struct GetBulksQueryParameters {
 }
 
 impl GetBulksQueryParameters {
-    pub fn new(bulk_id: String) -> Self {
-        GetBulksQueryParameters { bulk_id }
+    pub fn new(bulk_id: &str) -> Self {
+        GetBulksQueryParameters {
+            bulk_id: bulk_id.into(),
+        }
     }
 }
 
@@ -293,8 +295,10 @@ pub struct RescheduleRequestBody {
 }
 
 impl RescheduleRequestBody {
-    pub fn new(send_at: String) -> Self {
-        RescheduleRequestBody { send_at }
+    pub fn new(send_at: &str) -> Self {
+        RescheduleRequestBody {
+            send_at: send_at.into(),
+        }
     }
 }
 
@@ -558,8 +562,8 @@ pub struct ValidateAddressRequestBody {
 }
 
 impl ValidateAddressRequestBody {
-    pub fn new(to: String) -> Self {
-        ValidateAddressRequestBody { to }
+    pub fn new(to: &str) -> Self {
+        ValidateAddressRequestBody { to: to.into() }
     }
 }
 
@@ -746,9 +750,9 @@ pub struct AddDomainRequestBody {
 }
 
 impl AddDomainRequestBody {
-    pub fn new(domain_name: String) -> Self {
+    pub fn new(domain_name: &str) -> Self {
         AddDomainRequestBody {
-            domain_name,
+            domain_name: domain_name.into(),
             dkim_key_length: None,
         }
     }

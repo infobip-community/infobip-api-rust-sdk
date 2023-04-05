@@ -91,9 +91,9 @@ impl WhatsappClient {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendTextRequestBody::new(
-    ///     "44444444444".to_string(),
-    ///     "55555555555".to_string(),
-    ///     TextContent::new("Hello, Rustacean!".to_string())
+    ///     "44444444444",
+    ///     "55555555555",
+    ///     TextContent::new("Hello, Rustacean!")
     /// );
     ///
     /// let response = wa_client.send_text(request_body).await.unwrap();
@@ -139,9 +139,9 @@ impl WhatsappClient {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendDocumentRequestBody::new(
-    ///     "44444444444".to_string(),
-    ///     "55555555555".to_string(),
-    ///     DocumentContent::new("https://url.to/document.pdf".to_string())
+    ///     "44444444444",
+    ///     "55555555555",
+    ///     DocumentContent::new("https://url.to/document.pdf")
     /// );
     ///
     /// let response = wa_client.send_document(request_body).await.unwrap();
@@ -192,9 +192,9 @@ impl WhatsappClient {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendImageRequestBody::new(
-    ///     "44444444444".to_string(),
-    ///     "55555555555".to_string(),
-    ///     ImageContent::new("https://url.to/image.jpg".to_string())
+    ///     "44444444444",
+    ///     "55555555555",
+    ///     ImageContent::new("https://url.to/image.jpg")
     /// );
     ///
     /// let response = wa_client.send_image(request_body).await.unwrap();
@@ -240,9 +240,9 @@ impl WhatsappClient {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendAudioRequestBody::new(
-    ///     "44444444444".to_string(),
-    ///     "55555555555".to_string(),
-    ///     AudioContent::new("https://url.to/audio.mp3".to_string())
+    ///     "44444444444",
+    ///     "55555555555",
+    ///     AudioContent::new("https://url.to/audio.mp3")
     /// );
     ///
     /// let response = wa_client.send_audio(request_body).await.unwrap();
@@ -288,9 +288,9 @@ impl WhatsappClient {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendVideoRequestBody::new(
-    ///     "44444444444".to_string(),
-    ///     "55555555555".to_string(),
-    ///     VideoContent::new("https://url.to/video.mp4".to_string())
+    ///     "44444444444",
+    ///     "55555555555",
+    ///     VideoContent::new("https://url.to/video.mp4")
     /// );
     ///
     /// let response = wa_client.send_video(request_body).await.unwrap();
@@ -336,9 +336,9 @@ impl WhatsappClient {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendStickerRequestBody::new(
-    ///     "44444444444".to_string(),
-    ///     "55555555555".to_string(),
-    ///     StickerContent::new("https://url.to/sticker.webp".to_string())
+    ///     "44444444444",
+    ///     "55555555555",
+    ///     StickerContent::new("https://url.to/sticker.webp")
     /// );
     ///
     /// let response = wa_client.send_sticker(request_body).await.unwrap();
@@ -389,8 +389,8 @@ impl WhatsappClient {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendLocationRequestBody::new(
-    ///     "44444444444".to_string(),
-    ///     "55555555555".to_string(),
+    ///     "44444444444",
+    ///     "55555555555",
     ///     LocationContent::new(0.0, 0.0)
     /// );
     ///
@@ -441,10 +441,10 @@ impl WhatsappClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let contact = Contact::new(ContactName::new("John".to_string(), "Doe".to_string()));
+    /// let contact = Contact::new(ContactName::new("John", "Doe"));
     /// let request_body = SendContactRequestBody::new(
-    ///     "44444444444".to_string(),
-    ///     "55555555555".to_string(),
+    ///     "44444444444",
+    ///     "55555555555",
     ///     ContactContent::new(vec![contact])
     /// );
     ///
@@ -501,12 +501,12 @@ impl WhatsappClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let button = InteractiveButton::new_reply_button("1".to_string(), "button1".to_string());
-    /// let body = InteractiveBody::new("Hello World".to_string());
+    /// let button = InteractiveButton::new_reply_button("1", "button1");
+    /// let body = InteractiveBody::new("Hello World");
     /// let action = InteractiveButtonsAction::new(vec![button]);
     /// let request_body = SendInteractiveButtonsRequestBody::new(
-    ///     "44444444444".to_string(),
-    ///     "55555555555".to_string(),
+    ///     "44444444444",
+    ///     "55555555555",
     ///     InteractiveButtonsContent::new(body, action)
     /// );
     ///
@@ -563,13 +563,13 @@ impl WhatsappClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let body = InteractiveBody::new("Hello World".to_string());
-    /// let row = InteractiveRow::new("1".to_string(), "row1".to_string());
+    /// let body = InteractiveBody::new("Hello World");
+    /// let row = InteractiveRow::new("1", "row1");
     /// let section = InteractiveListSection::new(vec![row]);
-    /// let action = InteractiveListAction::new("list_title".to_string(), vec![section]);
+    /// let action = InteractiveListAction::new("list_title", vec![section]);
     /// let request_body = SendInteractiveListRequestBody::new(
-    ///     "44444444444".to_string(),
-    ///     "55555555555".to_string(),
+    ///     "44444444444",
+    ///     "55555555555",
     ///     InteractiveListContent::new(body, action)
     /// );
     ///
@@ -621,10 +621,10 @@ impl WhatsappClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let action = InteractiveProductAction::new("1".to_string(), "2".to_string());
+    /// let action = InteractiveProductAction::new("1", "2");
     /// let request_body = SendInteractiveProductRequestBody::new(
-    ///     "44444444444".to_string(),
-    ///     "55555555555".to_string(),
+    ///     "44444444444",
+    ///     "55555555555",
     ///      InteractiveProductContent::new(action)
     /// );
     ///
@@ -681,13 +681,13 @@ impl WhatsappClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let header = InteractiveMultiproductHeader::new_text_header("header1".to_string());
-    /// let body = InteractiveBody::new("Hello World".to_string());
+    /// let header = InteractiveMultiproductHeader::new_text_header("header1");
+    /// let body = InteractiveBody::new("Hello World");
     /// let section = InteractiveMultiproductSection::new(vec!["1".to_string(), "2".to_string()]);
-    /// let action = InteractiveMultiproductAction::new("1".to_string(), vec![section]);
+    /// let action = InteractiveMultiproductAction::new("1", vec![section]);
     /// let request_body = SendInteractiveMultiproductRequestBody::new(
-    ///     "44444444444".to_string(),
-    ///     "55555555555".to_string(),
+    ///     "44444444444",
+    ///     "55555555555",
     ///     InteractiveMultiproductContent::new(header, body, action)
     /// );
     ///
@@ -743,16 +743,16 @@ impl WhatsappClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let structure = TemplateStructure::new(TemplateBody::new("Hello World".to_string()));
+    /// let structure = TemplateStructure::new(TemplateBody::new("Hello World"));
     /// let request_body = CreateTemplateRequestBody::new(
-    ///     "template_name".to_string(),
+    ///     "template_name",
     ///     TemplateLanguage::EnUs,
     ///     TemplateCategory::Marketing,
     ///     structure,
     /// );
     ///
     /// let response = wa_client.create_template(
-    ///     "1234567891011".to_string(),
+    ///     "1234567891011",
     ///     request_body)
     /// .await.unwrap();
     ///
@@ -762,10 +762,10 @@ impl WhatsappClient {
     /// ```
     pub async fn create_template(
         &self,
-        sender: String,
+        sender: &str,
         request_body: CreateTemplateRequestBody,
     ) -> Result<SdkResponse<CreateTemplateResponseBody>, SdkError> {
-        let path = PATH_CREATE_TEMPLATE.replace("{sender}", &sender);
+        let path = PATH_CREATE_TEMPLATE.replace("{sender}", sender);
 
         let response = self
             .send_request(request_body, HashMap::new(), Method::POST, path.as_str())
@@ -795,7 +795,7 @@ impl WhatsappClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let response = wa_client.get_templates("12345789101112".to_string()).await.unwrap();
+    /// let response = wa_client.get_templates("12345789101112").await.unwrap();
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
@@ -803,9 +803,9 @@ impl WhatsappClient {
     /// ```
     pub async fn get_templates(
         &self,
-        sender: String,
+        sender: &str,
     ) -> Result<SdkResponse<GetTemplatesResponseBody>, SdkError> {
-        let path = PATH_GET_TEMPLATES.replace("{sender}", &sender);
+        let path = PATH_GET_TEMPLATES.replace("{sender}", sender);
 
         let response = send_no_body_request(
             &self.client,
@@ -850,8 +850,8 @@ impl WhatsappClient {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let status = wa_client.delete_template(
-    ///     "1234567891011".to_string(),
-    ///     "template_name".to_string()
+    ///     "1234567891011",
+    ///     "template_name"
     /// )
     /// .await.unwrap();
     ///
@@ -861,12 +861,12 @@ impl WhatsappClient {
     /// ```
     pub async fn delete_template(
         &self,
-        sender: String,
-        template_name: String,
+        sender: &str,
+        template_name: &str,
     ) -> Result<reqwest::StatusCode, SdkError> {
         let path = PATH_DELETE_TEMPLATE
-            .replace("{sender}", &sender)
-            .replace("{templateName}", &template_name);
+            .replace("{sender}", sender)
+            .replace("{templateName}", template_name);
 
         let response = send_no_body_request(
             &self.client,
@@ -912,10 +912,10 @@ impl WhatsappClient {
     ///
     /// let body = TemplateBodyContent::new(vec!["placeholder1".to_string()]);
     /// let data = TemplateData::new(body);
-    /// let content = TemplateContent::new("template_name".to_string(), data, TemplateLanguage::EnUs.to_string());
+    /// let content = TemplateContent::new("template_name", data, &TemplateLanguage::EnUs.to_string());
     /// let message = FailoverMessage::new(
-    ///     "1234567891011".to_string(),
-    ///     "1234567891012".to_string(),
+    ///     "1234567891011",
+    ///     "1234567891012",
     ///     content,
     /// );
     /// let request_body = SendTemplateRequestBody::new(vec![message]);

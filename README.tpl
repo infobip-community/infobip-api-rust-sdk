@@ -1,10 +1,10 @@
 # Infobip API Rust SDK
 
 ![Workflow](https://github.com/infobip-community/infobip-api-rust-sdk/actions/workflows/rust.yml/badge.svg)
-[![Licence](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-MIT)
-[![Licence](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-APACHE)
+[![License](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-MIT)
+[![License](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-APACHE)
 [![Crates.io](https://img.shields.io/crates/v/infobip_sdk)](https://crates.io/crates/infobip_sdk)
-![Crate downlads](https://img.shields.io/crates/d/rust_sdk)
+![Crate downloads](https://img.shields.io/crates/d/rust_sdk)
 
 {{readme}}
 

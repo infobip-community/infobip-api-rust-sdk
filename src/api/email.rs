@@ -159,9 +159,9 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let mut request_body = SendRequestBody::new("someone@domain.com".to_string());
+    /// let mut request_body = SendRequestBody::new("someone@domain.com");
     /// request_body.from = Some("someone@company.com".to_string());
     /// request_body.subject = Some("Test subject".to_string());
     /// request_body.text = Some("Hello world!".to_string());
@@ -213,9 +213,9 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = GetBulksQueryParameters::new("some-bulk-id".to_string());
+    /// let query_parameters = GetBulksQueryParameters::new("some-bulk-id");
     ///
     /// let response = client.get_bulks(query_parameters).await?;
     ///
@@ -264,10 +264,10 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_params = RescheduleQueryParameters::new("test-bulk-id-rust-003".to_string());
-    /// let request_body = RescheduleRequestBody::new("2022-10-05T17:29:52Z".to_string());
+    /// let query_params = RescheduleQueryParameters::new("test-bulk-id-rust-003");
+    /// let request_body = RescheduleRequestBody::new("2022-10-05T17:29:52Z");
     ///
     /// let response = client.reschedule(query_params, request_body).await?;
     ///
@@ -318,9 +318,9 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_params = GetScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+    /// let query_params = GetScheduledStatusQueryParameters::new("some-bulk-id");
     ///
     /// let response = client.get_scheduled_status(query_params).await?;
     ///
@@ -369,9 +369,9 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_params = UpdateScheduledStatusQueryParameters::new("some-bulk-id".to_string());
+    /// let query_params = UpdateScheduledStatusQueryParameters::new("some-bulk-id");
     /// let request_body = UpdateScheduledStatusRequestBody::new(BulkStatus::CANCELED);
     ///
     /// let response = client.update_scheduled_status(query_params, request_body).await?;
@@ -423,7 +423,7 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let query_params = GetDeliveryReportsQueryParameters::default();
     ///
@@ -484,7 +484,7 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let query_params = GetLogsQueryParameters::default();
     ///
@@ -559,9 +559,9 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let request_body = ValidateAddressRequestBody::new("someone@somewhere.com".to_string());
+    /// let request_body = ValidateAddressRequestBody::new("someone@somewhere.com");
     ///
     /// let response = client.validate_address(request_body).await?;
     ///
@@ -608,7 +608,7 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let query_params = GetDomainsQueryParameters::default();
     ///
@@ -666,9 +666,9 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let request_body = AddDomainRequestBody::new("example.com".to_string());
+    /// let request_body = AddDomainRequestBody::new("example.com");
     ///
     /// let response = client.add_domain(request_body).await?;
     ///
@@ -714,9 +714,9 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let response = client.get_domain("example.com".to_string()).await?;
+    /// let response = client.get_domain("example.com").await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
@@ -724,9 +724,9 @@ impl EmailClient {
     /// ```
     pub async fn get_domain(
         &self,
-        domain_name: String,
+        domain_name: &str,
     ) -> Result<SdkResponse<GetDomainResponseBody>, SdkError> {
-        let path = PATH_GET_DOMAIN.replace("{domainName}", domain_name.as_str());
+        let path = PATH_GET_DOMAIN.replace("{domainName}", domain_name);
 
         let response = send_no_body_request(
             &self.client,
@@ -760,19 +760,16 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let status = client.delete_domain("example.com".to_string()).await?;
+    /// let status = client.delete_domain("example.com").await?;
     ///
     /// assert_eq!(status, StatusCode::NO_CONTENT);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn delete_domain(
-        &self,
-        domain_name: String,
-    ) -> Result<reqwest::StatusCode, SdkError> {
-        let path = PATH_DELETE_DOMAIN.replace("{domainName}", domain_name.as_str());
+    pub async fn delete_domain(&self, domain_name: &str) -> Result<reqwest::StatusCode, SdkError> {
+        let path = PATH_DELETE_DOMAIN.replace("{domainName}", domain_name);
 
         let response = send_no_body_request(
             &self.client,
@@ -805,12 +802,12 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let mut request_body = UpdateTrackingRequestBody::default();
     /// request_body.clicks = Some(true);
     ///
-    /// let response = client.update_tracking("domain.com".to_string(), request_body).await?;
+    /// let response = client.update_tracking("domain.com", request_body).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
@@ -818,10 +815,10 @@ impl EmailClient {
     /// ```
     pub async fn update_tracking(
         &self,
-        domain_name: String,
+        domain_name: &str,
         request_body: UpdateTrackingRequestBody,
     ) -> Result<SdkResponse<UpdateTrackingResponseBody>, SdkError> {
-        let path = PATH_UPDATE_TRACKING.replace("{domainName}", domain_name.as_str());
+        let path = PATH_UPDATE_TRACKING.replace("{domainName}", domain_name);
 
         let response = send_valid_json_request(
             &self.client,
@@ -856,19 +853,16 @@ impl EmailClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let client = EmailClient::with_configuration(Configuration::from_dotenv_api_key()?);
+    /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let status = client.verify_domain("example.com".to_string()).await?;
+    /// let status = client.verify_domain("example.com").await?;
     ///
     /// assert_eq!(status, StatusCode::ACCEPTED);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn verify_domain(
-        &self,
-        domain_name: String,
-    ) -> Result<reqwest::StatusCode, SdkError> {
-        let path = PATH_VERIFY_DOMAIN.replace("{domainName}", domain_name.as_str());
+    pub async fn verify_domain(&self, domain_name: &str) -> Result<reqwest::StatusCode, SdkError> {
+        let path = PATH_VERIFY_DOMAIN.replace("{domainName}", domain_name);
 
         let response = send_no_body_request(
             &self.client,

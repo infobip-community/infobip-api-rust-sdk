@@ -6,6 +6,7 @@
 
 use chrono::DateTime;
 use reqwest::StatusCode;
+use std::env;
 
 use infobip_sdk::api::email::EmailClient;
 use infobip_sdk::configuration;
@@ -14,23 +15,23 @@ use infobip_sdk::model::email::*;
 
 fn get_test_email_client() -> EmailClient {
     EmailClient::with_configuration(
-        configuration::Configuration::from_dotenv_api_key()
+        configuration::Configuration::from_env_api_key()
             .expect("failed to build default test client"),
     )
 }
 
 fn get_test_from() -> String {
-    dotenv::var("IB_TEST_EMAIL_FROM").expect("failed to load test email from")
+    env::var("IB_TEST_EMAIL_FROM").expect("failed to load test email from")
 }
 
 fn get_test_to() -> String {
-    dotenv::var("IB_TEST_EMAIL_TO").expect("failed to load test email to")
+    env::var("IB_TEST_EMAIL_TO").expect("failed to load test email to")
 }
 
 #[ignore]
 #[tokio::test]
 async fn send() {
-    let mut request_body = SendRequestBody::new(get_test_to());
+    let mut request_body = SendRequestBody::new(&get_test_to());
     request_body.from = Some(get_test_from());
     request_body.subject = Some("Test subject".to_string());
     request_body.text = Some("Hello world!".to_string());
@@ -45,7 +46,7 @@ async fn send() {
 #[ignore]
 #[tokio::test]
 async fn send_bulk() {
-    let mut request_body = SendRequestBody::new(get_test_to());
+    let mut request_body = SendRequestBody::new(&get_test_to());
     request_body.from = Some(get_test_from());
     request_body.subject = Some("Test subject".to_string());
     request_body.text = Some("Hello world!".to_string());
@@ -61,7 +62,7 @@ async fn send_bulk() {
 #[ignore]
 #[tokio::test]
 async fn get_bulks() {
-    let query_params = GetBulksQueryParameters::new("test-bulk-id-rust-003".to_string());
+    let query_params = GetBulksQueryParameters::new("test-bulk-id-rust-003");
 
     let response = get_test_email_client()
         .get_bulks(query_params)
@@ -74,9 +75,9 @@ async fn get_bulks() {
 #[ignore]
 #[tokio::test]
 async fn reschedule() {
-    let query_params = RescheduleQueryParameters::new("test-bulk-id-rust-003".to_string());
-    let send_at = "2022-10-05T17:29:52Z".to_string();
-    let expected_send_at = DateTime::parse_from_rfc3339(&send_at)
+    let query_params = RescheduleQueryParameters::new("test-bulk-id-rust-003");
+    let send_at = "2022-10-05T17:29:52Z";
+    let expected_send_at = DateTime::parse_from_rfc3339(send_at)
         .unwrap()
         .timestamp_millis();
 
@@ -94,7 +95,7 @@ async fn reschedule() {
 #[ignore]
 #[tokio::test]
 async fn get_scheduled_status() {
-    let query_params = GetScheduledStatusQueryParameters::new("test-bulk-id-rust-003".to_string());
+    let query_params = GetScheduledStatusQueryParameters::new("test-bulk-id-rust-003");
 
     let response = get_test_email_client()
         .get_scheduled_status(query_params)
@@ -107,8 +108,7 @@ async fn get_scheduled_status() {
 #[ignore]
 #[tokio::test]
 async fn update_scheduled_status() {
-    let query_params =
-        UpdateScheduledStatusQueryParameters::new("test-bulk-id-rust-003".to_string());
+    let query_params = UpdateScheduledStatusQueryParameters::new("test-bulk-id-rust-003");
     let request_body = UpdateScheduledStatusRequestBody::new(BulkStatus::CANCELED);
 
     let response = get_test_email_client()
@@ -149,7 +149,7 @@ async fn get_logs() {
 #[ignore]
 #[tokio::test]
 async fn validate_address() {
-    let query_params = ValidateAddressRequestBody::new("someone@infobip.com".to_string());
+    let query_params = ValidateAddressRequestBody::new("someone@infobip.com");
 
     let response = get_test_email_client()
         .validate_address(query_params)
@@ -176,7 +176,7 @@ async fn get_domains() {
 #[ignore]
 #[tokio::test]
 async fn add_domain() {
-    let mut request_body = AddDomainRequestBody::new("test-domain-rust-001.com".to_string());
+    let mut request_body = AddDomainRequestBody::new("test-domain-rust-001.com");
     request_body.dkim_key_length = Some(L1024);
 
     let response = get_test_email_client()
@@ -192,7 +192,7 @@ async fn add_domain() {
 #[tokio::test]
 async fn get_domain() {
     let response = get_test_email_client()
-        .get_domain("test-domain-rust-001.com".to_string())
+        .get_domain("test-domain-rust-001.com")
         .await
         .unwrap();
 
@@ -204,7 +204,7 @@ async fn get_domain() {
 #[tokio::test]
 async fn delete_domain() {
     let status = get_test_email_client()
-        .delete_domain("test-domain-rust-001.com".to_string())
+        .delete_domain("test-domain-rust-001.com")
         .await
         .unwrap();
 
@@ -218,7 +218,7 @@ async fn update_tracking() {
     request_body.opens = Some(false);
 
     let response = get_test_email_client()
-        .update_tracking("test-domain-rust-001.com".to_string(), request_body)
+        .update_tracking("test-domain-rust-001.com", request_body)
         .await
         .unwrap();
 
@@ -230,7 +230,7 @@ async fn update_tracking() {
 #[tokio::test]
 async fn verify_domain() {
     let status = get_test_email_client()
-        .verify_domain("test-domain-rust-001.com".to_string())
+        .verify_domain("test-domain-rust-001.com")
         .await
         .unwrap();
 

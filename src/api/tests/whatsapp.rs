@@ -4,11 +4,7 @@ use crate::api::SdkError::ApiRequestError;
 use crate::model::whatsapp::*;
 
 fn get_dummy_send_text_request_body() -> SendTextRequestBody {
-    SendTextRequestBody::new(
-        "44444444444".to_string(),
-        "55555555555".to_string(),
-        TextContent::new("some text".to_string()),
-    )
+    SendTextRequestBody::new("44444444444", "55555555555", TextContent::new("some text"))
 }
 
 #[tokio::test]
@@ -62,11 +58,8 @@ async fn send_text_valid() {
 
 #[tokio::test]
 async fn send_text_api_error() {
-    let request_body = SendTextRequestBody::new(
-        "44444444444".to_string(),
-        "55555555555".to_string(),
-        TextContent::new("some text".to_string()),
-    );
+    let request_body =
+        SendTextRequestBody::new("44444444444", "55555555555", TextContent::new("some text"));
 
     let expected_response = r#"
         {
@@ -107,7 +100,7 @@ async fn send_text_api_error() {
                     .service_exception
                     .message_id
                     .unwrap(),
-                "BAD_REQUEST".to_string()
+                "BAD_REQUEST"
             );
         }
         _ => {
@@ -155,7 +148,7 @@ async fn send_text_api_error_401() {
                     .service_exception
                     .message_id
                     .unwrap(),
-                "UNAUTHORIZED".to_string()
+                "UNAUTHORIZED"
             );
         }
         _ => {
@@ -203,7 +196,7 @@ async fn send_text_api_error_429() {
                     .service_exception
                     .message_id
                     .unwrap(),
-                "TOO_MANY_REQUESTS".to_string()
+                "TOO_MANY_REQUESTS"
             );
         }
         _ => {
@@ -802,7 +795,7 @@ async fn get_templates_valid() {
         }
     "#;
 
-    let sender = "441134960000".to_string();
+    let sender = "441134960000";
     let path = PATH_GET_TEMPLATES.replace("{sender}", &sender);
 
     let server = mock_json_endpoint(
@@ -892,7 +885,7 @@ async fn create_template_valid() {
         }
     "#;
 
-    let sender = "441134960000".to_string();
+    let sender = "441134960000";
     let path = PATH_CREATE_TEMPLATE.replace("{sender}", &sender);
 
     let server = mock_json_endpoint(
@@ -916,11 +909,11 @@ async fn create_template_valid() {
 
 #[tokio::test]
 async fn delete_template_valid() {
-    let template_name = "media_template_with_buttons".to_string();
-    let sender = "441134960000".to_string();
+    let template_name = "media_template_with_buttons";
+    let sender = "441134960000";
     let path = PATH_DELETE_TEMPLATE
-        .replace("{sender}", &sender)
-        .replace("{templateName}", &template_name);
+        .replace("{sender}", sender)
+        .replace("{templateName}", template_name);
 
     let server = mock_json_endpoint(
         httpmock::Method::DELETE,
