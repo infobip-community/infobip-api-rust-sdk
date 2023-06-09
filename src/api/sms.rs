@@ -871,7 +871,7 @@ impl SmsClient {
 
     /// Get a single 2FA application to see its configuration details.
     /// # Example
-    /// ```norun
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use reqwest::StatusCode;
@@ -917,7 +917,7 @@ impl SmsClient {
 
     /// Change configuration options for your existing 2FA application.
     /// # Example
-    /// ```norun
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::UpdateTfaApplicationRequestBody;
@@ -928,7 +928,7 @@ impl SmsClient {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
-    /// let request_body = UpdateTfaApplicationRequestBody::new("some-new-name".to_string());
+    /// let request_body = UpdateTfaApplicationRequestBody::new("some-new-name");
     /// let response = client.update_tfa_application(application_id, request_body).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
@@ -967,7 +967,7 @@ impl SmsClient {
 
     /// Get all message templates in a 2FA application.
     /// # Example
-    /// ```norun
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use reqwest::StatusCode;
@@ -1013,7 +1013,7 @@ impl SmsClient {
 
     /// Create one or more message templates where your PIN will be dynamically included when you send the PIN message.
     /// # Example
-    /// ```norun
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::CreateTfaMessageTemplateRequestBody;
@@ -1021,10 +1021,11 @@ impl SmsClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// use infobip_sdk::model::sms::PinType::Numeric;
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
-    /// let request_body = CreateTfaMessageTemplateRequestBody::new("some-name".to_string(), "some-content".to_string());
+    /// let request_body = CreateTfaMessageTemplateRequestBody::new("some-name", Numeric, 4);
     /// let response = client.create_tfa_message_template(application_id, request_body).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
@@ -1063,7 +1064,7 @@ impl SmsClient {
 
     /// Get a single 2FA message template from an application to see its configuration details.
     /// # Example
-    /// ```norun
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use reqwest::StatusCode;
@@ -1113,7 +1114,7 @@ impl SmsClient {
 
     /// Change configuration options for your existing 2FA application message template.
     /// # Example
-    /// ```norun
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::UpdateTfaMessageTemplateRequestBody;
@@ -1121,11 +1122,12 @@ impl SmsClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    /// use infobip_sdk::model::sms::PinType::Numeric;
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
     /// let template_id = "02CC3CAAFD733136AA15DFAC720A0C42";
-    /// let request_body = UpdateTfaMessageTemplateRequestBody::new("some-name".to_string(), "some-content".to_string());
+    /// let request_body = UpdateTfaMessageTemplateRequestBody::new("some-text", Numeric, 4);
     ///
     /// let response = client.update_tfa_message_template(application_id, template_id, request_body).await?;
     ///
@@ -1168,7 +1170,7 @@ impl SmsClient {
 
     /// Send a PIN code over SMS using a previously created message template.
     /// # Example
-    /// ```norun
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::SendPinOverSmsQueryParameters;
@@ -1180,7 +1182,7 @@ impl SmsClient {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let query_parameters = SendPinOverSmsQueryParameters::default();
-    /// let request_body = SendPinOverSmsRequestBody::new("some-application-id".to_string(), "some-template-id".to_string(), "555555555555".to_string());
+    /// let request_body = SendPinOverSmsRequestBody::new("some-application-id", "some-template-id", "555555555555");
     ///
     /// let response = client.send_pin_over_sms(query_parameters, request_body).await?;
     ///
@@ -1224,7 +1226,7 @@ impl SmsClient {
 
     /// Resend the same (previously sent) PIN code over SMS.
     /// # Example
-    /// ```norun
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::ResendPinOverSmsRequestBody;
@@ -1275,7 +1277,7 @@ impl SmsClient {
 
     /// Send a PIN code over Voice using previously created message template.
     /// # Example
-    /// ```norun
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::SendPinOverVoiceRequestBody;
@@ -1285,7 +1287,7 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// request_body = SendPinOverVoiceRequestBody::new("some-application-id".to_string(), "some-template-id".to_string(), "555555555555".to_string());
+    /// let request_body = SendPinOverVoiceRequestBody::new("some-application-id", "some-template-id", "555555555555");
     ///
     /// let response = client.send_pin_over_voice(request_body).await?;
     ///
@@ -1373,7 +1375,7 @@ impl SmsClient {
 
     /// Verify a phone number to confirm successful 2FA authentication.
     /// # Example
-    /// ```norun
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::VerifyPhoneNumberRequestBody;
@@ -1385,7 +1387,7 @@ impl SmsClient {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let pin_id = "02CC3CAAFD733136AA15DFAC720A0C42";
-    /// let request_body = VerifyPhoneNumberRequestBody::new("123456".to_string());
+    /// let request_body = VerifyPhoneNumberRequestBody::new("123456");
     /// let response = client.verify_phone_number(pin_id, request_body).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
@@ -1424,7 +1426,7 @@ impl SmsClient {
 
     /// Check if a phone number is already verified for a specific 2FA application.
     /// # Example
-    /// ```norun
+    /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::sms::{GetTfaVerificationStatusQueryParameters,
@@ -1435,7 +1437,7 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = GetTfaVerificationStatusQueryParameters::new("555555555555".to_string());
+    /// let query_parameters = GetTfaVerificationStatusQueryParameters::new("555555555555");
     /// let response = client.get_tfa_verification_status("some-application-id", query_parameters).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
