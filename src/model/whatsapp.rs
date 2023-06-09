@@ -1096,6 +1096,10 @@ pub enum TemplateCategory {
     Transactional,
     #[serde(rename = "OTP")]
     Otp,
+    #[serde(rename = "AUTHENTICATION")]
+    Authentication,
+    #[serde(rename = "UTILITY")]
+    Utility,
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
