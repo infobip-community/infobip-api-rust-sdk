@@ -135,8 +135,8 @@ async fn build_form(request_body: SendRequestBody) -> io::Result<Form> {
 /// Main asynchronous client for the Infobip Email channel.
 #[derive(Clone, Debug)]
 pub struct EmailClient {
-    configuration: Configuration,
-    client: reqwest::Client,
+    pub configuration: Configuration,
+    pub http_client: reqwest::Client,
 }
 
 impl EmailClient {
@@ -144,7 +144,7 @@ impl EmailClient {
     pub fn with_configuration(configuration: Configuration) -> Self {
         EmailClient {
             configuration,
-            client: reqwest::Client::new(),
+            http_client: reqwest::Client::new(),
         }
     }
 
@@ -181,7 +181,7 @@ impl EmailClient {
         let form = build_form(request_body).await?;
 
         let response = send_multipart_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             form,
             reqwest::Method::POST,
@@ -232,7 +232,7 @@ impl EmailClient {
         let parameters_map = HashMap::from([("bulkId".to_string(), query_parameters.bulk_id)]);
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             parameters_map,
             reqwest::Method::GET,
@@ -285,7 +285,7 @@ impl EmailClient {
         let parameters_map = HashMap::from([("bulkId".to_string(), query_parameters.bulk_id)]);
 
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             parameters_map,
@@ -337,7 +337,7 @@ impl EmailClient {
         let parameters_map = HashMap::from([("bulkId".to_string(), query_parameters.bulk_id)]);
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             parameters_map,
             reqwest::Method::GET,
@@ -390,7 +390,7 @@ impl EmailClient {
         let parameters_map = HashMap::from([("bulkId".to_string(), query_parameters.bulk_id)]);
 
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             parameters_map,
@@ -451,7 +451,7 @@ impl EmailClient {
         }
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             parameters_map,
             reqwest::Method::GET,
@@ -527,7 +527,7 @@ impl EmailClient {
         }
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             parameters_map,
             reqwest::Method::GET,
@@ -574,7 +574,7 @@ impl EmailClient {
         request_body: ValidateAddressRequestBody,
     ) -> Result<SdkResponse<ValidateAddressResponseBody>, SdkError> {
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -633,7 +633,7 @@ impl EmailClient {
         }
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             parameters_map,
             reqwest::Method::GET,
@@ -681,7 +681,7 @@ impl EmailClient {
         request_body: AddDomainRequestBody,
     ) -> Result<SdkResponse<AddDomainResponseBody>, SdkError> {
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -729,7 +729,7 @@ impl EmailClient {
         let path = PATH_GET_DOMAIN.replace("{domainName}", domain_name);
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             HashMap::new(),
             reqwest::Method::GET,
@@ -772,7 +772,7 @@ impl EmailClient {
         let path = PATH_DELETE_DOMAIN.replace("{domainName}", domain_name);
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             HashMap::new(),
             reqwest::Method::DELETE,
@@ -821,7 +821,7 @@ impl EmailClient {
         let path = PATH_UPDATE_TRACKING.replace("{domainName}", domain_name);
 
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -865,7 +865,7 @@ impl EmailClient {
         let path = PATH_VERIFY_DOMAIN.replace("{domainName}", domain_name);
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             HashMap::new(),
             reqwest::Method::POST,
