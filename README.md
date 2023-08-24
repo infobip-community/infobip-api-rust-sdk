@@ -1,10 +1,10 @@
 # Infobip API Rust SDK
 
 ![Workflow](https://github.com/infobip-community/infobip-api-rust-sdk/actions/workflows/rust.yml/badge.svg)
-[![License](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-MIT)
-[![License](https://img.shields.io/github/license/infobip-community/infobip-api-rust-sdk)](LICENSE-APACHE)
 [![Crates.io](https://img.shields.io/crates/v/infobip_sdk)](https://crates.io/crates/infobip_sdk)
-![Crate downloads](https://img.shields.io/crates/d/rust_sdk)
+![Crates.io Downloads](https://img.shields.io/crates/d/infobip_sdk)
+![Crates.io](https://img.shields.io/crates/l/infobip_sdk)
+![Minimum Rust Version](https://img.shields.io/badge/Rust-%3E%3D1.63-blue)
 
 Client SDK to use the Infobip API with pure Rust.
 
