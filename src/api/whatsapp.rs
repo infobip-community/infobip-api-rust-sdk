@@ -44,8 +44,8 @@ pub const PATH_SEND_VIDEO: &str = "/whatsapp/1/message/video";
 /// Main asynchronous client for the Infobip WhatsApp channel.
 #[derive(Clone, Debug)]
 pub struct WhatsappClient {
-    configuration: Configuration,
-    client: reqwest::Client,
+    pub configuration: Configuration,
+    pub http_client: reqwest::Client,
 }
 
 impl WhatsappClient {
@@ -53,7 +53,7 @@ impl WhatsappClient {
     pub fn with_configuration(configuration: Configuration) -> Self {
         WhatsappClient {
             configuration,
-            client: reqwest::Client::new(),
+            http_client: reqwest::Client::new(),
         }
     }
 
@@ -65,7 +65,7 @@ impl WhatsappClient {
         path: &str,
     ) -> Result<Response, SdkError> {
         send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             parameters,
@@ -808,7 +808,7 @@ impl WhatsappClient {
         let path = PATH_GET_TEMPLATES.replace("{sender}", sender);
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             HashMap::new(),
             Method::GET,
@@ -869,7 +869,7 @@ impl WhatsappClient {
             .replace("{templateName}", template_name);
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             HashMap::new(),
             Method::DELETE,

@@ -64,8 +64,8 @@ pub const PATH_GET_TFA_VERIFICATION_STATUS: &str = "/2fa/2/applications/{appId}/
 /// Main asynchronous client for the Infobip SMS channel.
 #[derive(Clone, Debug)]
 pub struct SmsClient {
-    configuration: Configuration,
-    client: reqwest::Client,
+    pub configuration: Configuration,
+    pub http_client: reqwest::Client,
 }
 
 impl SmsClient {
@@ -73,7 +73,7 @@ impl SmsClient {
     pub fn with_configuration(configuration: Configuration) -> Self {
         SmsClient {
             configuration,
-            client: reqwest::Client::new(),
+            http_client: reqwest::Client::new(),
         }
     }
 
@@ -106,7 +106,7 @@ impl SmsClient {
         request_body: PreviewRequestBody,
     ) -> Result<SdkResponse<PreviewResponseBody>, SdkError> {
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -172,7 +172,7 @@ impl SmsClient {
         }
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             parameters_map,
             reqwest::Method::GET,
@@ -228,7 +228,7 @@ impl SmsClient {
         request_body: SendRequestBody,
     ) -> Result<SdkResponse<SendResponseBody>, SdkError> {
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -279,7 +279,7 @@ impl SmsClient {
         request_body: SendBinaryRequestBody,
     ) -> Result<SdkResponse<SendBinaryResponseBody>, SdkError> {
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -333,7 +333,7 @@ impl SmsClient {
             HashMap::<String, String>::from([("bulkId".to_string(), query_parameters.bulk_id)]);
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             parameters_map,
             reqwest::Method::GET,
@@ -416,7 +416,7 @@ impl SmsClient {
         }
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             parameters_map,
             reqwest::Method::GET,
@@ -473,7 +473,7 @@ impl SmsClient {
         }
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             parameters_map,
             reqwest::Method::GET,
@@ -596,7 +596,7 @@ impl SmsClient {
         }
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             parameters_map,
             reqwest::Method::GET,
@@ -651,7 +651,7 @@ impl SmsClient {
             HashMap::<String, String>::from([("bulkId".to_string(), query_parameters.bulk_id)]);
 
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             parameters_map,
@@ -704,7 +704,7 @@ impl SmsClient {
             HashMap::<String, String>::from([("bulkId".to_string(), query_parameters.bulk_id)]);
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             parameters_map,
             reqwest::Method::GET,
@@ -759,7 +759,7 @@ impl SmsClient {
             HashMap::<String, String>::from([("bulkId".to_string(), query_parameters.bulk_id)]);
 
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             parameters_map,
@@ -802,7 +802,7 @@ impl SmsClient {
         &self,
     ) -> Result<SdkResponse<GetTfaApplicationsResponseBody>, SdkError> {
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             HashMap::new(),
             reqwest::Method::GET,
@@ -847,7 +847,7 @@ impl SmsClient {
         request_body: CreateTfaApplicationRequestBody,
     ) -> Result<SdkResponse<CreateTfaApplicationResponseBody>, SdkError> {
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -894,7 +894,7 @@ impl SmsClient {
         let path = &PATH_GET_TFA_APPLICATION.replace("{appId}", application_id);
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             HashMap::new(),
             reqwest::Method::GET,
@@ -943,7 +943,7 @@ impl SmsClient {
         let path = &PATH_UPDATE_TFA_APPLICATION.replace("{appId}", application_id);
 
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -990,7 +990,7 @@ impl SmsClient {
         let path = &PATH_GET_TFA_MESSAGE_TEMPLATES.replace("{appId}", application_id);
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             HashMap::new(),
             reqwest::Method::GET,
@@ -1040,7 +1040,7 @@ impl SmsClient {
         let path = &PATH_CREATE_TFA_MESSAGE_TEMPLATE.replace("{appId}", application_id);
 
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -1091,7 +1091,7 @@ impl SmsClient {
             .replace("{msgId}", template_id);
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             HashMap::new(),
             reqwest::Method::GET,
@@ -1146,7 +1146,7 @@ impl SmsClient {
             .replace("{msgId}", template_id);
 
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -1202,7 +1202,7 @@ impl SmsClient {
         }
 
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             parameters_map,
@@ -1253,7 +1253,7 @@ impl SmsClient {
         let path = &PATH_RESEND_PIN_OVER_SMS.replace("{pinId}", pin_id);
 
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -1300,7 +1300,7 @@ impl SmsClient {
         request_body: SendPinOverVoiceRequestBody,
     ) -> Result<SdkResponse<SendPinOverVoiceResponseBody>, SdkError> {
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -1351,7 +1351,7 @@ impl SmsClient {
         let path = &PATH_RESEND_PIN_OVER_VOICE.replace("{pinId}", pin_id);
 
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -1402,7 +1402,7 @@ impl SmsClient {
         let path = &PATH_VERIFY_PHONE_NUMBER.replace("{pinId}", pin_id);
 
         let response = send_valid_json_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             request_body,
             HashMap::new(),
@@ -1462,7 +1462,7 @@ impl SmsClient {
         }
 
         let response = send_no_body_request(
-            &self.client,
+            &self.http_client,
             &self.configuration,
             HashMap::new(),
             reqwest::Method::GET,
