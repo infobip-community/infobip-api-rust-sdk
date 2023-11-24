@@ -74,11 +74,15 @@ async fn build_form(request_body: SendRequestBody) -> io::Result<Form> {
     if let Some(template_id) = request_body.template_id {
         form = form.text("templateId", template_id.to_string());
     }
-    if let Some(attachment) = request_body.attachment {
-        form = form.part("attachment", get_file_part(attachment).await?);
+    if let Some(attachments) = request_body.attachments {
+        for attachment in attachments {
+            form = form.part("attachment", get_file_part(attachment).await?);
+        }
     }
-    if let Some(inline_image) = request_body.inline_image {
-        form = form.part("inlineImage", get_file_part(inline_image).await?);
+    if let Some(inline_images) = request_body.inline_images {
+        for inline_image in inline_images {
+            form = form.part("inlineImage", get_file_part(inline_image).await?);
+        }
     }
     if let Some(intermediate_report) = request_body.intermediate_report {
         form = form.text("intermediateReport", intermediate_report.to_string());
@@ -165,6 +169,7 @@ impl EmailClient {
     /// request_body.from = Some("someone@company.com".to_string());
     /// request_body.subject = Some("Test subject".to_string());
     /// request_body.text = Some("Hello world!".to_string());
+    /// request_body.attachments = Some(vec!["path/to/attachment".to_string()]);
     ///
     /// let response = client.send(request_body).await?;
     ///

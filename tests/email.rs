@@ -35,7 +35,7 @@ async fn send() {
     request_body.from = Some(get_test_from());
     request_body.subject = Some("Test subject".to_string());
     request_body.text = Some("Hello world!".to_string());
-    request_body.attachment = Some("tests/image.png".to_string());
+    request_body.attachments = Some(vec!["tests/image.png".to_string()]);
 
     let response = get_test_email_client().send(request_body).await.unwrap();
 

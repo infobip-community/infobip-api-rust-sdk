@@ -49,12 +49,12 @@ pub struct SendRequestBody {
 
     /// File attachment.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub attachment: Option<String>,
+    pub attachments: Option<Vec<String>>,
 
     /// Allows for inserting an image file inside the HTML code of the email by using
     /// `cid:FILENAME` instead of providing an external link to the image.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub inline_image: Option<String>,
+    pub inline_images: Option<Vec<String>>,
 
     /// The real-time Intermediate delivery report that will be sent on your callback server.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -152,8 +152,8 @@ impl SendRequestBody {
             html: None,
             amp_html: None,
             template_id: None,
-            attachment: None,
-            inline_image: None,
+            attachments: None,
+            inline_images: None,
             intermediate_report: None,
             notify_url: None,
             notify_content_type: None,

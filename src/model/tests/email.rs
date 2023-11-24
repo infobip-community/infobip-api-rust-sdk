@@ -12,8 +12,8 @@ pub fn get_dummy_send_email_request_body() -> SendRequestBody {
     request.html = Some("<p>Some text</p>".to_string());
     request.amp_html = Some("<p>Some text</p>".to_string());
     request.template_id = Some(2);
-    request.attachment = Some("../../../tests/image.png".to_string());
-    request.inline_image = Some("../../../tests/image.png".to_string());
+    request.attachments = Some(vec!["../../../tests/image.png".to_string()]);
+    request.inline_images = Some(vec!["../../../tests/image.png".to_string()]);
     request.notify_url = Some("https://some.url".to_string());
     request.intermediate_report = Some(true);
     request.notify_content_type = Some("application/json".to_string());
