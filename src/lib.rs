@@ -48,10 +48,11 @@
 //!     );
 //!
 //!     // Create a message.
-//!     let mut message = Message::new(
-//!         vec![Destination::new("123456789012")]
-//!     );
-//!     message.text = Some("Your message text".to_string());
+//!     let message = Message {
+//!         destinations: Some(vec![Destination::new("491702384590")]),
+//!         text: Some("Foobar!".to_string()),
+//!         ..Default::default()
+//!     };
 //!
 //!     // Create the SendRequestBody instance.
 //!     let request_body = SendRequestBody::new(vec![message]);

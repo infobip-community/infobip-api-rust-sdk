@@ -6,7 +6,7 @@
 ![Crates.io](https://img.shields.io/crates/l/infobip_sdk)
 ![Minimum Rust Version](https://img.shields.io/badge/Rust-%3E%3D1.63-blue)
 
-Client SDK to use the Infobip API with pure Rust.
+Client SDK to use the [Infobip API](https://www.infobip.com/docs/api/) with pure Rust.
 
 This crate enables you to use multiple Infobip communication channels, like SMS, 2FA,
 WhatsApp, Email, etc. It abstracts the needed HTTP calls, models and validates payloads and
@@ -15,6 +15,7 @@ models errors. The module structure is divided by communication channel.
 ---
 
 ## 📡 Supported Channels
+
 Currently, we support the following channels:
 - [SMS + 2FA](https://www.infobip.com/docs/api/channels/sms)
 - [WhatsApp](https://www.infobip.com/docs/api/channels/whatsapp)
@@ -23,26 +24,34 @@ Currently, we support the following channels:
 More channels to be added in the near future!
 
 ## 🔐 Authentication
+
 To use the library, you'll need to set up an [Infobip account](https://www.infobip.com/signup).
 Then you can use your API Key and custom base URL to call the endpoints. You can use the
 `Configuration::from_env_api_key()` method to load the configuration from the environment. To
 do that, set the `IB_API_KEY` and `IB_BASE_URL` variables.
 
 ## 📦 Installation
+
 To install the library, run the following command under your project's root directory:
+
 ```bash
 cargo add infobip_sdk
 ```
+
 Alternatively, you can add the dependency to your project's `Cargo.toml`
+
 ```toml
 [dependencies]
 infobip_sdk = "<version>"
 ```
+
 Replace `<version>` with the latest (or desired) release of the library. For example `0.5.0`.
 
 ## 🚀 Usage
+
 To use the library, import the client and channel-specific models. Then create a client and
 call the associated functions. For example, to send an SMS, you can do this:
+
 ```rust
 use infobip_sdk::model::sms::{Destination, Message, SendRequestBody};
 use infobip_sdk::api::sms::SmsClient;
@@ -57,10 +66,11 @@ async fn main() {
     );
 
     // Create a message.
-    let mut message = Message::new(
-        vec![Destination::new("123456789012")]
-    );
-    message.text = Some("Your message text".to_string());
+    let message = Message{
+        destinations: Some(vec![Destination::new("123456789012")]),
+        text: Some("Your message text".to_string()),
+        ..Default::default()
+    };
 
     // Create the SendRequestBody instance.
     let request_body = SendRequestBody::new(vec![message]);
@@ -75,6 +85,7 @@ async fn main() {
 ```
 
 ## 👀 Examples
+
 The best way to learn how to use the library is to look at the official
 [docs.rs documentation](https://docs.rs/infobip_sdk/), which has simple examples on how to use
 every endpoint. You can also look at integration tests under the [tests](./tests) directory,
@@ -82,17 +93,22 @@ which work similarly to how you would use them in a real scenario.
 
 ## 🗒 Notes
 
-### Building payload models
+### Building Payload Models
+
 Structs that represent the models have public fields, so you can either build them with the
 provided `new()` functions, with `serde_json::from_str()`, or with the true constructor.
 For example, to build a `Message` instance, you can do this:
+
 ```rust
-let mut message = Message::new(
-   vec![Destination::new("123456789012")]
-);
-message.text = Some("Your message text".to_string());
+let message = Message{
+    destinations: Some(vec![Destination::new("123456789012")]),
+    text: Some("Your message text".to_string()),
+    ..Default::default()
+}
 ```
+
 or this:
+
 ```rust
 let message: Message = serde_json::from_str(
     r#"
@@ -108,42 +124,37 @@ let message: Message = serde_json::from_str(
 )
 .unwrap();
 ```
+
 or this:
+
 ```rust
 let destination = Destination {
     message_id: None,
     to: "41793026727".to_string()
 };
+
 let message = Message {
-    callback_data: None,
-    delivery_time_window: None,
     destinations: Some(vec![destination]),
-    flash: None,
-    from: None,
-    intermediate_report: None,
-    language: None,
-    notify_content_type: None,
-    notify_url: None,
-    regional: None,
-    send_at: None,
-    text: None,
-    transliteration: None,
-    validity_period: None
+    ..Default::default()
 };
 ```
 
-### Model validation
+### Model Validation
+
 Some models have mandatory fields. Optional fields are wrapped in `Option` Enums. Models also
 have additional checks to make sure that fields have valid values, when possible. Validation
 is done automatically when calling an endpoint, or you can call the `.validate()` method of the
 model.
 
-### Using features
+### Using Features
+
 You can speed up compile time by turning only the needed channels as library features.
 For example, to only build SMS, add the dependency like this:
+
 ```toml
 infobip_sdk = { version = "0.5", features = ["sms"] }
 ```
+
 You can see the complete list of features in the Cargo.toml of the project. Feature names
 follow channel names.
 

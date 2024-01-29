@@ -514,7 +514,7 @@ impl Default for RegionalOptions {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct Message {
     /// Additional data that can be used for identifying, managing, or monitoring a message.
