@@ -1,17 +1,12 @@
 //! Endpoint functions and base response and error types
-use std::collections::HashMap;
-use std::fmt;
-
-use cargo_metadata::MetadataCommand;
+use crate::configuration::{ApiKey, Configuration};
 use reqwest;
 use reqwest::{RequestBuilder, Response, StatusCode};
-use rustc_version::version;
 use serde::Deserialize;
 use serde_derive::Serialize;
+use std::{collections::HashMap, fmt};
 use thiserror::Error;
 use validator::Validate;
-
-use crate::configuration::{ApiKey, Configuration};
 
 #[cfg(feature = "email")]
 pub mod email;
@@ -39,12 +34,6 @@ pub enum SdkError {
 
     #[error("IO error")]
     Io(#[from] std::io::Error),
-
-    #[error("Rust version error")]
-    RustVersion(#[from] rustc_version::Error),
-
-    #[error("Cargo metadata error")]
-    CargoMetadata(#[from] cargo_metadata::Error),
 }
 
 /// Holds the status code and error details when a 4xx or 5xx response is received.
@@ -112,7 +101,7 @@ pub struct SdkResponse<T> {
     pub status: StatusCode,
 }
 
-fn get_api_key_authorization_value(api_key: &ApiKey) -> String {
+fn api_key_authorization_value(api_key: &ApiKey) -> String {
     let key = api_key.key.to_owned();
     let prefix = api_key
         .prefix
@@ -125,7 +114,7 @@ fn get_api_key_authorization_value(api_key: &ApiKey) -> String {
 // Async version of add_auth, uses async request builder.
 fn add_auth(mut builder: RequestBuilder, configuration: &Configuration) -> RequestBuilder {
     if let Some(api_key) = &configuration.api_key() {
-        builder = builder.header("Authorization", get_api_key_authorization_value(api_key));
+        builder = builder.header("Authorization", api_key_authorization_value(api_key));
     } else if let Some(basic_auth) = &configuration.basic_auth() {
         builder = builder.basic_auth(
             basic_auth.username.to_owned(),
@@ -138,37 +127,21 @@ fn add_auth(mut builder: RequestBuilder, configuration: &Configuration) -> Reque
     builder
 }
 
-fn get_user_agent() -> Result<String, SdkError> {
-    let rust_version = version()?;
-    let cmd = MetadataCommand::new();
-    let package_version = cmd
-        .exec()?
-        .packages
-        .into_iter()
-        .find(|p| p.name == "infobip_sdk")
-        .unwrap()
-        .version;
-
-    Ok(format!(
-        "@infobip/rust-sdk/{} rust/{}",
-        package_version, rust_version
-    ))
+#[inline]
+fn user_agent() -> &'static str {
+    include!("../../version.txt")
 }
 
 // Adds user agent to the request builder. Synchronous version.
-fn add_user_agent(mut builder: RequestBuilder) -> Result<RequestBuilder, SdkError> {
-    builder = builder.header("User-Agent", get_user_agent()?);
-
-    Ok(builder)
+fn add_user_agent(builder: RequestBuilder) -> RequestBuilder {
+    builder.header("User-Agent", user_agent())
 }
 
 // Adds user agent to the request builder. Synchronous version.
 fn add_user_agent_blocking(
-    mut builder: reqwest::blocking::RequestBuilder,
-) -> Result<reqwest::blocking::RequestBuilder, SdkError> {
-    builder = builder.header("User-Agent", get_user_agent()?);
-
-    Ok(builder)
+    builder: reqwest::blocking::RequestBuilder,
+) -> reqwest::blocking::RequestBuilder {
+    builder.header("User-Agent", user_agent())
 }
 
 // Blocking version of add_auth, uses blocking request builder.
@@ -177,7 +150,7 @@ fn add_auth_blocking(
     configuration: &Configuration,
 ) -> reqwest::blocking::RequestBuilder {
     if let Some(api_key) = &configuration.api_key() {
-        builder = builder.header("Authorization", get_api_key_authorization_value(api_key));
+        builder = builder.header("Authorization", api_key_authorization_value(api_key));
     } else if let Some(basic_auth) = &configuration.basic_auth() {
         builder = builder.basic_auth(
             basic_auth.username.to_owned(),
@@ -208,7 +181,7 @@ async fn send_no_body_request(
     let mut builder = client.request(method, url).query(&query_parameters);
 
     builder = add_auth(builder, configuration);
-    builder = add_user_agent(builder)?;
+    builder = add_user_agent(builder);
 
     Ok(builder.send().await?)
 }
@@ -230,7 +203,7 @@ async fn send_valid_json_request<T: Validate + serde::Serialize>(
         .query(&query_parameters);
 
     builder = add_auth(builder, configuration);
-    builder = add_user_agent(builder)?;
+    builder = add_user_agent(builder);
 
     Ok(builder.send().await?)
 }
@@ -246,7 +219,7 @@ async fn send_multipart_request(
     let mut builder = client.request(method, url);
 
     builder = add_auth(builder, configuration);
-    builder = add_user_agent(builder)?;
+    builder = add_user_agent(builder);
 
     Ok(builder.multipart(form).send().await?)
 }
@@ -264,7 +237,7 @@ fn send_blocking_valid_json_request<T: Validate + serde::Serialize>(
     let mut builder = client.request(method, url);
 
     builder = add_auth_blocking(builder, configuration);
-    builder = add_user_agent_blocking(builder)?;
+    builder = add_user_agent_blocking(builder);
 
     Ok(builder.json(&request_body).send()?)
 }
