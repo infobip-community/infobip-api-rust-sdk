@@ -4,20 +4,16 @@ description = "Client SDK to use the Infobip API with pure Rust."
 documentation = "https://www.infobip.com/docs/api"
 edition = "2021"
 homepage = "https://www.infobip.com/"
-license = "MIT OR Apache-2.0"
+license = "Apache-2.0 OR MIT"
 name = "infobip_sdk"
 repository = "https://github.com/infobip-community/infobip-api-rust-sdk"
 version = "0.6.0"
 rust-version = "1.63"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-cargo_metadata = "0.18"
 lazy_static = "1.4"
 regex = "1.9"
 reqwest = { version = "0.11", features = ["blocking", "json", "multipart"] }
-rustc_version = "0.4"
 serde = { version = "1.0", features = ["derive"] }
 serde_derive = "1.0"
 serde_json = "1.0"
@@ -26,8 +22,11 @@ tokio = { version = "1.32", features = ["full"] }
 validator = { version = "0.16", features = ["derive"] }
 
 [dev-dependencies]
-httpmock = "0.6"
+httpmock = "0.7"
 chrono = "0.4"
+
+[build-dependencies]
+rustc_version = "0.4"
 
 [features]
 default = ["sms", "whatsapp", "email"]
