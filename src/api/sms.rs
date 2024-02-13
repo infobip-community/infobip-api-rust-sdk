@@ -211,9 +211,11 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let mut message = Message::new(vec![Destination::new("555555555555")]);
-    /// message.text = Some("Hello Rustacean!".to_string());
-    /// message.from = Some("Infobip".to_string());
+    /// let message = Message {
+    ///     destinations: Some(vec![Destination::new("555555555555")])),
+    ///     text: Some("Hello Rustacean!".into()),
+    ///     from: Some("Infobip".into()),
+    /// };
     ///
     /// let request_body = SendRequestBody::new(vec![message]);
     ///
@@ -263,8 +265,10 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let mut message = BinaryMessage::new(vec![Destination::new("555555555555")]);
-    /// message.binary = Some(BinaryData::new("0f c2 4a bf 34 13 ba"));
+    /// let message = BinaryMessage {
+    ///     destinations: Some(vec![Destination::new("555555555555")])),
+    ///     binary = Some(BinaryData::new("0f c2 4a bf 34 13 ba")),
+    /// }
     ///
     /// let request_body = SendBinaryRequestBody::new(vec![message]);
     ///
