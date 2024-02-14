@@ -212,7 +212,7 @@ impl SmsClient {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let message = Message {
-    ///     destinations: Some(vec![Destination::new("555555555555")])),
+    ///     destinations: Some(vec![Destination::new("555555555555")]),
     ///     text: Some("Hello Rustacean!".into()),
     ///     from: Some("Infobip".into()),
     /// };
@@ -266,7 +266,7 @@ impl SmsClient {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let message = BinaryMessage {
-    ///     destinations: Some(vec![Destination::new("555555555555")])),
+    ///     destinations: Some(vec![Destination::new("555555555555")]),
     ///     binary = Some(BinaryData::new("0f c2 4a bf 34 13 ba")),
     /// }
     ///

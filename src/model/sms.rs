@@ -5,7 +5,7 @@ use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
 use validator::Validate;
 
-lazy_static! {
+lazy_static::lazy_static! {
     static ref LANGUAGE_CODES: Regex = Regex::new(r"^(TR|ES|PT|AUTODETECT)$").unwrap();
     static ref TRANSLITERATIONS: Regex = Regex::new(
         r"^(TURKISH|GREEK|CYRILLIC|SERBIAN_CYRILLIC|CENTRAL_EUROPEAN|BALTIC|NON_UNICODE)$"
