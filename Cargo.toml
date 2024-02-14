@@ -37,11 +37,6 @@ rustls-tls-webpki-roots = ["reqwest/rustls-tls-webpki-roots"]
 [dependencies]
 document-features = "0.2"
 lazy_static = "1"
-# We add `openssl` explicitly and mark it `vendored`.
-# If we don't do this people will have trouble cross-compiliong this crate
-# as `reqwest` pulls in `openssl-sys` which requires a resp. toolchain to be
-# installed.
-openssl = { version = "0.10", features = ["vendored"] }
 regex = "1"
 reqwest = { version = "0.11", default-features = false, features = ["blocking", "json", "multipart"] }
 serde = { version = "1", features = ["derive"] }
