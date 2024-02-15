@@ -89,16 +89,19 @@
 //!
 //! ```rust
 //! # use infobip_sdk::model::sms::{Destination, Message};
-//! let message: Message = serde_json::json!(
-//!     {
-//!        "destinations": [
+//! let message: Message = serde_json::from_str(
+//!     r#"
+//!         {
+//!           "destinations": [
 //!             {
 //!               "to": "123456789012"
 //!             }
-//!        ],
-//!        "text": "Your message text"
-//!     }
-//! );
+//!           ],
+//!           "text": "Your message text"
+//!         }
+//!     "#,
+//! )
+//! .unwrap();
 //! ```
 //!
 //! or this:
@@ -132,7 +135,7 @@
 //! [dependencies.infobip_sdk]
 //! version = "0.6.0"
 //! default-features = false
-//! features = [ "rustls-tls", "email", "sms", "whatsapp"]
+//! features = ["rustls-tls", "email", "sms", "whatsapp"]
 //! ```
 
 pub mod api;

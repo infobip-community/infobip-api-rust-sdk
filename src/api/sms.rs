@@ -215,6 +215,7 @@ impl SmsClient {
     ///     destinations: Some(vec![Destination::new("555555555555")]),
     ///     text: Some("Hello Rustacean!".into()),
     ///     from: Some("Infobip".into()),
+    ///     ..Default::default()
     /// };
     ///
     /// let request_body = SendRequestBody::new(vec![message]);
@@ -267,8 +268,9 @@ impl SmsClient {
     ///
     /// let message = BinaryMessage {
     ///     destinations: Some(vec![Destination::new("555555555555")]),
-    ///     binary = Some(BinaryData::new("0f c2 4a bf 34 13 ba")),
-    /// }
+    ///     binary: Some(BinaryData::new("0f c2 4a bf 34 13 ba")),
+    ///     ..Default::default()
+    /// };
     ///
     /// let request_body = SendBinaryRequestBody::new(vec![message]);
     ///

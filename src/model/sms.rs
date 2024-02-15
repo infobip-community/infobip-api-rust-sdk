@@ -652,7 +652,7 @@ impl BinaryData {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct BinaryMessage {
     #[validate]
