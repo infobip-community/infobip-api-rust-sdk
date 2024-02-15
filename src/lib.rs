@@ -129,7 +129,7 @@
 //! E.g., to choose a different TLS implementation provided by the `rustls` crate:
 //!
 //! ```toml
-//! [depdendencies.infobip_sdk]
+//! [dependencies.infobip_sdk]
 //! version = "0.6.0"
 //! default-features = false
 //! features = [ "rustls-tls", "email", "sms", "whatsapp"]

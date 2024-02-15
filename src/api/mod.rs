@@ -138,7 +138,7 @@ fn add_user_agent(builder: RequestBuilder) -> RequestBuilder {
 }
 
 // Adds user agent to the request builder. Synchronous version.
-#[cfg(feature="sms")]
+#[cfg(feature = "sms")]
 fn add_user_agent_blocking(
     builder: reqwest::blocking::RequestBuilder,
 ) -> reqwest::blocking::RequestBuilder {
@@ -146,7 +146,7 @@ fn add_user_agent_blocking(
 }
 
 // Blocking version of add_auth, uses blocking request builder.
-#[cfg(feature="sms")]
+#[cfg(feature = "sms")]
 fn add_auth_blocking(
     mut builder: reqwest::blocking::RequestBuilder,
     configuration: &Configuration,
@@ -210,7 +210,7 @@ async fn send_valid_json_request<T: Validate + serde::Serialize>(
     Ok(builder.send().await?)
 }
 
-#[cfg(feature="email")]
+#[cfg(feature = "email")]
 async fn send_multipart_request(
     client: &reqwest::Client,
     configuration: &Configuration,
@@ -227,7 +227,7 @@ async fn send_multipart_request(
     Ok(builder.multipart(form).send().await?)
 }
 
-#[cfg(feature="sms")]
+#[cfg(feature = "sms")]
 fn send_blocking_valid_json_request<T: Validate + serde::Serialize>(
     client: &reqwest::blocking::Client,
     configuration: &Configuration,
