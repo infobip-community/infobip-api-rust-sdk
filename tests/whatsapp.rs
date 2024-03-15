@@ -8,14 +8,14 @@ use std::env;
 
 use reqwest::StatusCode;
 
-use infobip_sdk::api::whatsapp::WhatsappClient;
+use infobip_sdk::api::whatsapp::WhatsAppClient;
 use infobip_sdk::configuration;
 use infobip_sdk::model::whatsapp::*;
 
 const DUMMY_TEXT: &str = "Dummy text for tests. Some special chars: áéíø";
 
-fn test_wa_client() -> WhatsappClient {
-    WhatsappClient::with_configuration(
+fn test_wa_client() -> WhatsAppClient {
+    WhatsAppClient::with_configuration(
         configuration::Configuration::from_env_api_key()
             .expect("failed to build default test client"),
     )

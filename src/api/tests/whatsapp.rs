@@ -48,7 +48,7 @@ async fn send_text_valid() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let response = wa_client.send_text(request_body).await.unwrap();
 
@@ -86,7 +86,7 @@ async fn send_text_api_error() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let sdk_error = wa_client.send_text(request_body).await.err().unwrap();
 
@@ -130,7 +130,7 @@ async fn send_text_api_error_401() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let sdk_error = wa_client
         .send_text(dummy_send_text_request_body())
@@ -178,7 +178,7 @@ async fn send_text_api_error_429() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let sdk_error = wa_client
         .send_text(dummy_send_text_request_body())
@@ -248,7 +248,7 @@ async fn send_document_valid() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let response = wa_client.send_document(request_body).await.unwrap();
 
@@ -298,7 +298,7 @@ async fn send_image_valid() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let response = wa_client.send_image(request_body).await.unwrap();
 
@@ -347,7 +347,7 @@ async fn send_audio_valid() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let response = wa_client.send_audio(request_body).await.unwrap();
 
@@ -397,7 +397,7 @@ async fn send_video_valid() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let response = wa_client.send_video(request_body).await.unwrap();
 
@@ -446,7 +446,7 @@ async fn send_sticker_valid() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let response = wa_client.send_sticker(request_body).await.unwrap();
 
@@ -498,7 +498,7 @@ async fn send_location_valid() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let response = wa_client.send_location(request_body).await.unwrap();
 
@@ -678,7 +678,7 @@ async fn send_contact_valid() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let response = wa_client.send_contact(request_body).await.unwrap();
 
@@ -746,7 +746,7 @@ async fn send_template_valid() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let response = wa_client.send_template(request_body).await.unwrap();
 
@@ -806,7 +806,7 @@ async fn templates_valid() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let response = wa_client.templates(sender).await.unwrap();
 
@@ -896,7 +896,7 @@ async fn create_template_valid() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let response = wa_client
         .create_template(sender, request_body)
@@ -923,7 +923,7 @@ async fn delete_template_valid() {
     )
     .await;
 
-    let wa_client = WhatsappClient::with_configuration(test_configuration(&server.base_url()));
+    let wa_client = WhatsAppClient::with_configuration(test_configuration(&server.base_url()));
 
     let status = wa_client
         .delete_template(sender, template_name)
