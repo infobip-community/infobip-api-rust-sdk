@@ -49,9 +49,7 @@ async fn preview_sms() {
 fn preview_sms_blocking() {
     let request_body = PreviewRequestBody::new(DUMMY_TEXT);
 
-    let response = test_blocking_sms_client()
-        .preview(request_body)
-        .unwrap();
+    let response = test_blocking_sms_client().preview(request_body).unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     assert!(!response.body.previews.unwrap().is_empty());
@@ -190,10 +188,7 @@ async fn send_binary_sms() {
     let mut request_body = SendBinaryRequestBody::new(vec![message]);
     request_body.bulk_id = Some("test-bulk-id-5319".to_string());
 
-    let response = test_sms_client()
-        .send_binary(request_body)
-        .await
-        .unwrap();
+    let response = test_sms_client().send_binary(request_body).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     assert_eq!(response.body.messages.unwrap().len(), 1usize);
@@ -203,10 +198,7 @@ async fn send_binary_sms() {
 #[tokio::test]
 async fn logs() {
     let query_parameters = GetLogsQueryParameters::new();
-    let response = test_sms_client()
-        .logs(query_parameters)
-        .await
-        .unwrap();
+    let response = test_sms_client().logs(query_parameters).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
 }

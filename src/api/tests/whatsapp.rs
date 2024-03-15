@@ -1,4 +1,4 @@
-use crate::api::tests::{test_configuration, mock_json_endpoint};
+use crate::api::tests::{mock_json_endpoint, test_configuration};
 use crate::api::whatsapp::*;
 use crate::api::SdkError::ApiRequestError;
 use crate::model::whatsapp::*;

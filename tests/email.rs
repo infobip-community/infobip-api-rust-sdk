@@ -64,10 +64,7 @@ async fn send_bulk() {
 async fn bulks() {
     let query_params = GetBulksQueryParameters::new("test-bulk-id-rust-003");
 
-    let response = get_test_email_client()
-        .bulks(query_params)
-        .await
-        .unwrap();
+    let response = get_test_email_client().bulks(query_params).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
 }
@@ -137,10 +134,7 @@ async fn delivery_reports() {
 async fn logs() {
     let query_params = GetLogsQueryParameters::default();
 
-    let response = get_test_email_client()
-        .logs(query_params)
-        .await
-        .unwrap();
+    let response = get_test_email_client().logs(query_params).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     println!("{}", serde_json::to_string_pretty(&response.body).unwrap());
@@ -164,10 +158,7 @@ async fn validate_address() {
 async fn domains() {
     let query_params = GetDomainsQueryParameters::default();
 
-    let response = get_test_email_client()
-        .domains(query_params)
-        .await
-        .unwrap();
+    let response = get_test_email_client().domains(query_params).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     println!("{}", serde_json::to_string_pretty(&response.body).unwrap());

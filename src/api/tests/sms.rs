@@ -1,6 +1,6 @@
 use crate::api::{
     sms::*,
-    tests::{test_configuration, mock_blocking_json_endpoint, mock_json_endpoint, DUMMY_TEXT},
+    tests::{mock_blocking_json_endpoint, mock_json_endpoint, test_configuration, DUMMY_TEXT},
     SdkError,
 };
 use crate::model::sms::{ScheduledStatus::Paused, *};
@@ -81,8 +81,7 @@ fn test_blocking_preview_valid() {
         reqwest::StatusCode::OK,
     );
 
-    let client =
-        BlockingSmsClient::with_configuration(test_configuration(&mock_server.base_url()));
+    let client = BlockingSmsClient::with_configuration(test_configuration(&mock_server.base_url()));
 
     let request_body = PreviewRequestBody::new(DUMMY_TEXT);
 
@@ -229,10 +228,7 @@ async fn test_delivery_reports_bad_parameters() {
     let mut query_parameters = GetDeliveryReportsQueryParameters::new();
     query_parameters.limit = Some(10000);
 
-    let error = client
-        .delivery_reports(query_parameters)
-        .await
-        .unwrap_err();
+    let error = client.delivery_reports(query_parameters).await.unwrap_err();
     if let SdkError::Validation(validation_error) = error {
         assert!(!validation_error.errors().is_empty());
     }

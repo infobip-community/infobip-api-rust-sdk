@@ -286,8 +286,7 @@ fn dummy_send_interactive_product_request_body() -> SendInteractiveProductReques
     }
 }
 
-fn dummy_send_interactive_multiproduct_request_body() -> SendInteractiveMultiproductRequestBody
-{
+fn dummy_send_interactive_multiproduct_request_body() -> SendInteractiveMultiproductRequestBody {
     let section = InteractiveMultiproductSection {
         title: Some("title".to_string()),
         product_retailer_ids: vec!["1".to_string(), "2".to_string()],

@@ -55,10 +55,7 @@ async fn send_document() {
         ),
     );
 
-    let response = test_wa_client()
-        .send_document(request_body)
-        .await
-        .unwrap();
+    let response = test_wa_client().send_document(request_body).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     assert!(!response.body.message_id.unwrap().is_empty());
@@ -118,10 +115,7 @@ async fn send_sticker() {
         StickerContent::new("https://www.gstatic.com/webp/gallery/1.webp"),
     );
 
-    let response = test_wa_client()
-        .send_sticker(request_body)
-        .await
-        .unwrap();
+    let response = test_wa_client().send_sticker(request_body).await.unwrap();
     assert_eq!(response.status, StatusCode::OK);
     assert!(!response.body.message_id.unwrap().is_empty());
 }
@@ -135,10 +129,7 @@ async fn send_location() {
         LocationContent::new(0.0, 0.0),
     );
 
-    let response = test_wa_client()
-        .send_location(request_body)
-        .await
-        .unwrap();
+    let response = test_wa_client().send_location(request_body).await.unwrap();
     assert_eq!(response.status, StatusCode::OK);
     assert!(!response.body.message_id.unwrap().is_empty());
 }
@@ -153,10 +144,7 @@ async fn send_contact() {
         ContactContent::new(vec![contact]),
     );
 
-    let response = test_wa_client()
-        .send_contact(request_body)
-        .await
-        .unwrap();
+    let response = test_wa_client().send_contact(request_body).await.unwrap();
     assert_eq!(response.status, StatusCode::OK);
     assert!(!response.body.message_id.unwrap().is_empty());
 }
@@ -308,10 +296,7 @@ async fn send_template() {
 
     let request_body = SendTemplateRequestBody::new(vec![message]);
 
-    let response = test_wa_client()
-        .send_template(request_body)
-        .await
-        .unwrap();
+    let response = test_wa_client().send_template(request_body).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     assert!(!response.body.messages.unwrap().is_empty());

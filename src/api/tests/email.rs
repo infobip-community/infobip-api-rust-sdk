@@ -1,5 +1,5 @@
 use crate::api::email::*;
-use crate::api::tests::{test_configuration, mock_json_endpoint};
+use crate::api::tests::{mock_json_endpoint, test_configuration};
 use crate::api::SdkError;
 use crate::model::email::*;
 
