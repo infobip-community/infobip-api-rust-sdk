@@ -30,7 +30,7 @@ fn sms_preview_request_body_invalid_transliteration() {
 }
 
 #[test]
-fn get_delivery_reports_query_parameters_valid() {
+fn delivery_reports_query_parameters_valid() {
     let mut parameters = GetDeliveryReportsQueryParameters::new();
     parameters.limit = Some(10);
 
@@ -38,7 +38,7 @@ fn get_delivery_reports_query_parameters_valid() {
 }
 
 #[test]
-fn get_delivery_reports_query_parameters_big_limit() {
+fn delivery_reports_query_parameters_big_limit() {
     let mut parameters = GetDeliveryReportsQueryParameters::new();
     parameters.limit = Some(10000);
 
@@ -144,7 +144,7 @@ fn send_request_body_zero_speed_limit_amount() {
 fn send_request_body_speed_limit_time_unit() {
     let message = Message::new(vec![Destination::new("123456789012")]);
     let mut speed_limit = SpeedLimit::new(5);
-    speed_limit.time_unit = Some(TimeUnit::DAY);
+    speed_limit.time_unit = Some(TimeUnit::Day);
 
     let mut request_body = SendRequestBody::new(vec![message]);
     request_body.sending_speed_limit = Some(speed_limit);
@@ -157,7 +157,7 @@ fn send_request_body_speed_limit_time_unit() {
 #[test]
 fn send_request_body_with_delivery_time_window() {
     let delivery_time_window =
-        DeliveryTimeWindow::new(vec![DeliveryDay::MONDAY, DeliveryDay::TUESDAY]);
+        DeliveryTimeWindow::new(vec![DeliveryDay::Monday, DeliveryDay::Tuesday]);
 
     let mut message = Message::new(vec![Destination::new("123456789012")]);
     message.delivery_time_window = Some(delivery_time_window);
@@ -183,7 +183,7 @@ fn send_request_body_delivery_time_window_no_days() {
 
 #[test]
 fn send_request_body_delivery_time_window_to_hour() {
-    let mut delivery_time_window = DeliveryTimeWindow::new(vec![DeliveryDay::MONDAY]);
+    let mut delivery_time_window = DeliveryTimeWindow::new(vec![DeliveryDay::Monday]);
     delivery_time_window.to = Some(DeliveryTime::new(23, 59));
 
     let mut message = Message::new(vec![Destination::new("123456789012")]);
@@ -196,7 +196,7 @@ fn send_request_body_delivery_time_window_to_hour() {
 
 #[test]
 fn send_request_body_delivery_time_window_bad_to_hour() {
-    let mut delivery_time_window = DeliveryTimeWindow::new(vec![DeliveryDay::MONDAY]);
+    let mut delivery_time_window = DeliveryTimeWindow::new(vec![DeliveryDay::Monday]);
     delivery_time_window.to = Some(DeliveryTime::new(24, 0));
 
     let mut message = Message::new(vec![Destination::new("123456789012")]);
@@ -209,7 +209,7 @@ fn send_request_body_delivery_time_window_bad_to_hour() {
 
 #[test]
 fn send_request_body_delivery_time_window_bad_to_minute() {
-    let mut delivery_time_window = DeliveryTimeWindow::new(vec![DeliveryDay::MONDAY]);
+    let mut delivery_time_window = DeliveryTimeWindow::new(vec![DeliveryDay::Monday]);
     delivery_time_window.to = Some(DeliveryTime::new(23, 60));
 
     let mut message = Message::new(vec![Destination::new("123456789012")]);
@@ -222,7 +222,7 @@ fn send_request_body_delivery_time_window_bad_to_minute() {
 
 #[test]
 fn send_request_body_delivery_time_window_from_hour() {
-    let mut delivery_time_window = DeliveryTimeWindow::new(vec![DeliveryDay::MONDAY]);
+    let mut delivery_time_window = DeliveryTimeWindow::new(vec![DeliveryDay::Monday]);
     delivery_time_window.from = Some(DeliveryTime::new(23, 59));
 
     let mut message = Message::new(vec![Destination::new("123456789012")]);
@@ -235,7 +235,7 @@ fn send_request_body_delivery_time_window_from_hour() {
 
 #[test]
 fn send_request_body_delivery_time_window_bad_from_hour() {
-    let mut delivery_time_window = DeliveryTimeWindow::new(vec![DeliveryDay::MONDAY]);
+    let mut delivery_time_window = DeliveryTimeWindow::new(vec![DeliveryDay::Monday]);
     delivery_time_window.from = Some(DeliveryTime::new(24, 0));
 
     let mut message = Message::new(vec![Destination::new("123456789012")]);
@@ -248,7 +248,7 @@ fn send_request_body_delivery_time_window_bad_from_hour() {
 
 #[test]
 fn send_request_body_delivery_time_window_bad_from_minute() {
-    let mut delivery_time_window = DeliveryTimeWindow::new(vec![DeliveryDay::MONDAY]);
+    let mut delivery_time_window = DeliveryTimeWindow::new(vec![DeliveryDay::Monday]);
     delivery_time_window.from = Some(DeliveryTime::new(23, 60));
 
     let mut message = Message::new(vec![Destination::new("123456789012")]);
@@ -304,21 +304,21 @@ fn reschedule_request_body_empty_send_at() {
 }
 
 #[test]
-fn get_scheduled_query_parameters_valid() {
+fn scheduled_query_parameters_valid() {
     let query_parameters = GetScheduledQueryParameters::new("some_bulk_id");
 
     assert!(query_parameters.validate().is_ok());
 }
 
 #[test]
-fn get_scheduled_query_parameters_empty_bulk_id() {
+fn scheduled_query_parameters_empty_bulk_id() {
     let query_parameters = GetScheduledQueryParameters::new("");
 
     assert!(query_parameters.validate().is_err());
 }
 
 #[test]
-fn get_inbound_reports_query_parameters_valid() {
+fn inbound_reports_query_parameters_valid() {
     let mut query_parameters = GetInboundReportsQueryParameters::new();
     query_parameters.limit = Some(10);
 
@@ -326,7 +326,7 @@ fn get_inbound_reports_query_parameters_valid() {
 }
 
 #[test]
-fn get_inbound_reports_query_parameters_big_limit() {
+fn inbound_reports_query_parameters_big_limit() {
     let mut query_parameters = GetInboundReportsQueryParameters::new();
     query_parameters.limit = Some(10001);
 

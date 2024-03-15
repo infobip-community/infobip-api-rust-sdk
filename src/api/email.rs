@@ -39,7 +39,7 @@ pub const PATH_UPDATE_TRACKING: &str = "/email/1/domains/{domainName}/tracking";
 pub const PATH_VALIDATE: &str = "/email/2/validation";
 pub const PATH_VERIFY_DOMAIN: &str = "/email/1/domains/{domainName}/verify";
 
-async fn get_file_part(file_name: String) -> io::Result<Part> {
+async fn file_part(file_name: String) -> io::Result<Part> {
     let mut file = tokio::fs::File::open(file_name.clone()).await?;
     let mut buffer = Vec::new();
     let count = file.read_to_end(&mut buffer).await?;
@@ -76,12 +76,12 @@ async fn build_form(request_body: SendRequestBody) -> io::Result<Form> {
     }
     if let Some(attachments) = request_body.attachments {
         for attachment in attachments {
-            form = form.part("attachment", get_file_part(attachment).await?);
+            form = form.part("attachment", file_part(attachment).await?);
         }
     }
     if let Some(inline_images) = request_body.inline_images {
         for inline_image in inline_images {
-            form = form.part("inlineImage", get_file_part(inline_image).await?);
+            form = form.part("inlineImage", file_part(inline_image).await?);
         }
     }
     if let Some(intermediate_report) = request_body.intermediate_report {
@@ -222,13 +222,13 @@ impl EmailClient {
     ///
     /// let query_parameters = GetBulksQueryParameters::new("some-bulk-id");
     ///
-    /// let response = client.get_bulks(query_parameters).await?;
+    /// let response = client.bulks(query_parameters).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_bulks(
+    pub async fn bulks(
         &self,
         query_parameters: GetBulksQueryParameters,
     ) -> Result<SdkResponse<GetBulksResponseBody>, SdkError> {
@@ -327,13 +327,13 @@ impl EmailClient {
     ///
     /// let query_params = GetScheduledStatusQueryParameters::new("some-bulk-id");
     ///
-    /// let response = client.get_scheduled_status(query_params).await?;
+    /// let response = client.scheduled_status(query_params).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_scheduled_status(
+    pub async fn scheduled_status(
         &self,
         query_parameters: GetScheduledStatusQueryParameters,
     ) -> Result<SdkResponse<GetScheduledStatusResponseBody>, SdkError> {
@@ -377,7 +377,7 @@ impl EmailClient {
     /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let query_params = UpdateScheduledStatusQueryParameters::new("some-bulk-id");
-    /// let request_body = UpdateScheduledStatusRequestBody::new(BulkStatus::CANCELED);
+    /// let request_body = UpdateScheduledStatusRequestBody::new(BulkStatus::Canceled);
     ///
     /// let response = client.update_scheduled_status(query_params, request_body).await?;
     ///
@@ -432,13 +432,13 @@ impl EmailClient {
     ///
     /// let query_params = GetDeliveryReportsQueryParameters::default();
     ///
-    /// let response = client.get_delivery_reports(query_params).await?;
+    /// let response = client.delivery_reports(query_params).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_delivery_reports(
+    pub async fn delivery_reports(
         &self,
         query_parameters: GetDeliveryReportsQueryParameters,
     ) -> Result<SdkResponse<GetDeliveryReportsResponseBody>, SdkError> {
@@ -493,13 +493,13 @@ impl EmailClient {
     ///
     /// let query_params = GetLogsQueryParameters::default();
     ///
-    /// let response = client.get_logs(query_params).await?;
+    /// let response = client.logs(query_params).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_logs(
+    pub async fn logs(
         &self,
         query_parameters: GetLogsQueryParameters,
     ) -> Result<SdkResponse<GetLogsResponseBody>, SdkError> {
@@ -617,13 +617,13 @@ impl EmailClient {
     ///
     /// let query_params = GetDomainsQueryParameters::default();
     ///
-    /// let response = client.get_domains(query_params).await?;
+    /// let response = client.domains(query_params).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_domains(
+    pub async fn domains(
         &self,
         query_parameters: GetDomainsQueryParameters,
     ) -> Result<SdkResponse<GetDomainsResponseBody>, SdkError> {
@@ -721,13 +721,13 @@ impl EmailClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let response = client.get_domain("example.com").await?;
+    /// let response = client.domain("example.com").await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_domain(
+    pub async fn domain(
         &self,
         domain_name: &str,
     ) -> Result<SdkResponse<GetDomainResponseBody>, SdkError> {
