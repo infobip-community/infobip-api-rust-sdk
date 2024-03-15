@@ -2,7 +2,7 @@ use validator::Validate;
 
 use crate::model::whatsapp::*;
 
-fn get_dummy_send_template_request_body() -> SendTemplateRequestBody {
+fn dummy_send_template_request_body() -> SendTemplateRequestBody {
     let body_content = TemplateBodyContent {
         placeholders: vec!["value1".to_string(), "value2".to_string()],
     };
@@ -38,7 +38,7 @@ fn get_dummy_send_template_request_body() -> SendTemplateRequestBody {
     }
 }
 
-fn get_dummy_send_text_request_body() -> SendTextRequestBody {
+fn dummy_send_text_request_body() -> SendTextRequestBody {
     SendTextRequestBody {
         from: "555555555555".to_string(),
         to: "666666666666".to_string(),
@@ -52,7 +52,7 @@ fn get_dummy_send_text_request_body() -> SendTextRequestBody {
     }
 }
 
-fn get_dummy_send_document_request_body() -> SendDocumentRequestBody {
+fn dummy_send_document_request_body() -> SendDocumentRequestBody {
     SendDocumentRequestBody {
         from: "555555555555".to_string(),
         to: "666666666666".to_string(),
@@ -67,7 +67,7 @@ fn get_dummy_send_document_request_body() -> SendDocumentRequestBody {
     }
 }
 
-fn get_dummy_send_image_request_body() -> SendImageRequestBody {
+fn dummy_send_image_request_body() -> SendImageRequestBody {
     SendImageRequestBody {
         from: "555555555555".to_string(),
         to: "666666666666".to_string(),
@@ -81,7 +81,7 @@ fn get_dummy_send_image_request_body() -> SendImageRequestBody {
     }
 }
 
-fn get_dummy_send_audio_request_body() -> SendAudioRequestBody {
+fn dummy_send_audio_request_body() -> SendAudioRequestBody {
     SendAudioRequestBody {
         from: "555555555555".to_string(),
         to: "666666666666".to_string(),
@@ -94,7 +94,7 @@ fn get_dummy_send_audio_request_body() -> SendAudioRequestBody {
     }
 }
 
-fn get_dummy_send_video_request_body() -> SendVideoRequestBody {
+fn dummy_send_video_request_body() -> SendVideoRequestBody {
     SendVideoRequestBody {
         from: "555555555555".to_string(),
         to: "666666666666".to_string(),
@@ -108,7 +108,7 @@ fn get_dummy_send_video_request_body() -> SendVideoRequestBody {
     }
 }
 
-fn get_dummy_send_sticker_request_body() -> SendStickerRequestBody {
+fn dummy_send_sticker_request_body() -> SendStickerRequestBody {
     SendStickerRequestBody {
         from: "555555555555".to_string(),
         to: "666666666666".to_string(),
@@ -121,7 +121,7 @@ fn get_dummy_send_sticker_request_body() -> SendStickerRequestBody {
     }
 }
 
-fn get_dummy_send_location_request_body() -> SendLocationRequestBody {
+fn dummy_send_location_request_body() -> SendLocationRequestBody {
     SendLocationRequestBody {
         from: "555555555555".to_string(),
         to: "666666666666".to_string(),
@@ -137,7 +137,7 @@ fn get_dummy_send_location_request_body() -> SendLocationRequestBody {
     }
 }
 
-fn get_dummy_send_contact_request_body() -> SendContactRequestBody {
+fn dummy_send_contact_request_body() -> SendContactRequestBody {
     let address = ContactAddress {
         street: Some("street".to_string()),
         city: Some("city".to_string()),
@@ -146,12 +146,12 @@ fn get_dummy_send_contact_request_body() -> SendContactRequestBody {
         country: Some("country".to_string()),
 
         country_code: Some("US".to_string()),
-        address_type: Some(AddressType::HOME),
+        address_type: Some(AddressType::Home),
     };
 
     let email = ContactEmail {
         email: Some("some@email.com".to_string()),
-        email_type: Some(EmailType::HOME),
+        email_type: Some(EmailType::Home),
     };
 
     let name = ContactName {
@@ -171,13 +171,13 @@ fn get_dummy_send_contact_request_body() -> SendContactRequestBody {
 
     let phone = ContactPhone {
         phone: Some("555555555555".to_string()),
-        phone_type: Some(PhoneType::HOME),
+        phone_type: Some(PhoneType::Home),
         wa_id: Some("wid1".to_string()),
     };
 
     let url = ContactUrl {
         url: Some("https://some.url".to_string()),
-        url_type: Some(UrlType::HOME),
+        url_type: Some(UrlType::Home),
     };
 
     let contact = Contact {
@@ -202,7 +202,7 @@ fn get_dummy_send_contact_request_body() -> SendContactRequestBody {
     }
 }
 
-fn get_dummy_send_interactive_buttons_request_body() -> SendInteractiveButtonsRequestBody {
+fn dummy_send_interactive_buttons_request_body() -> SendInteractiveButtonsRequestBody {
     SendInteractiveButtonsRequestBody {
         from: "555555555555".to_string(),
         to: "666666666666".to_string(),
@@ -230,7 +230,7 @@ fn get_dummy_send_interactive_buttons_request_body() -> SendInteractiveButtonsRe
     }
 }
 
-fn get_dummy_send_interactive_list_request_body() -> SendInteractiveListRequestBody {
+fn dummy_send_interactive_list_request_body() -> SendInteractiveListRequestBody {
     let section = InteractiveListSection {
         title: Some("section title".to_string()),
         rows: vec![InteractiveRow {
@@ -264,7 +264,7 @@ fn get_dummy_send_interactive_list_request_body() -> SendInteractiveListRequestB
     }
 }
 
-fn get_dummy_send_interactive_product_request_body() -> SendInteractiveProductRequestBody {
+fn dummy_send_interactive_product_request_body() -> SendInteractiveProductRequestBody {
     SendInteractiveProductRequestBody {
         from: "555555555555".to_string(),
         to: "666666666666".to_string(),
@@ -286,7 +286,7 @@ fn get_dummy_send_interactive_product_request_body() -> SendInteractiveProductRe
     }
 }
 
-fn get_dummy_send_interactive_multiproduct_request_body() -> SendInteractiveMultiproductRequestBody
+fn dummy_send_interactive_multiproduct_request_body() -> SendInteractiveMultiproductRequestBody
 {
     let section = InteractiveMultiproductSection {
         title: Some("title".to_string()),
@@ -316,7 +316,7 @@ fn get_dummy_send_interactive_multiproduct_request_body() -> SendInteractiveMult
     }
 }
 
-fn get_dummy_create_template_request_body() -> CreateTemplateRequestBody {
+fn dummy_create_template_request_body() -> CreateTemplateRequestBody {
     CreateTemplateRequestBody {
         name: "template name".to_string(),
         language: TemplateLanguage::Af,
@@ -336,7 +336,7 @@ fn get_dummy_create_template_request_body() -> CreateTemplateRequestBody {
             buttons: Some(vec![TemplateButton::QuickReply {
                 text: "reply text".to_string(),
             }]),
-            template_type: Some(TemplateType::TEXT),
+            template_type: Some(TemplateType::Text),
         },
     }
 }
@@ -349,7 +349,7 @@ fn send_template_request_body_valid() {
             "value1".to_string(),
             "value2".to_string(),
         ])),
-        &TemplateLanguage::EnUs.to_string(),
+        TemplateLanguage::EnUs,
     );
     let message = FailoverMessage::new("444444444444", "555555555555", content);
     let request_body = SendTemplateRequestBody::new(vec![message]);
@@ -359,7 +359,7 @@ fn send_template_request_body_valid() {
 
 #[test]
 fn send_template_request_body_full_valid() {
-    let request_body = get_dummy_send_template_request_body();
+    let request_body = dummy_send_template_request_body();
 
     assert!(request_body.validate().is_ok());
 }
@@ -373,7 +373,7 @@ fn send_template_request_body_no_messages() {
 
 #[test]
 fn send_template_request_body_message_no_from() {
-    let mut request_body = get_dummy_send_template_request_body();
+    let mut request_body = dummy_send_template_request_body();
 
     request_body.messages[0].from = "".to_string();
 
@@ -382,7 +382,7 @@ fn send_template_request_body_message_no_from() {
 
 #[test]
 fn send_template_request_body_long_from() {
-    let mut request_body = get_dummy_send_template_request_body();
+    let mut request_body = dummy_send_template_request_body();
 
     request_body.messages[0].from = "4".repeat(25usize);
 
@@ -391,7 +391,7 @@ fn send_template_request_body_long_from() {
 
 #[test]
 fn send_template_request_body_message_no_to() {
-    let mut request_body = get_dummy_send_template_request_body();
+    let mut request_body = dummy_send_template_request_body();
 
     request_body.messages[0].to = "".to_string();
 
@@ -400,7 +400,7 @@ fn send_template_request_body_message_no_to() {
 
 #[test]
 fn send_template_request_body_long_to() {
-    let mut request_body = get_dummy_send_template_request_body();
+    let mut request_body = dummy_send_template_request_body();
 
     request_body.messages[0].to = "5".repeat(25usize);
 
@@ -409,7 +409,7 @@ fn send_template_request_body_long_to() {
 
 #[test]
 fn send_template_request_body_message_long_id() {
-    let mut request_body = get_dummy_send_template_request_body();
+    let mut request_body = dummy_send_template_request_body();
 
     request_body.messages[0].message_id = Some("i".repeat(51usize));
 
@@ -418,7 +418,7 @@ fn send_template_request_body_message_long_id() {
 
 #[test]
 fn send_template_request_body_message_long_callback_data() {
-    let mut request_body = get_dummy_send_template_request_body();
+    let mut request_body = dummy_send_template_request_body();
 
     request_body.messages[0].callback_data = Some("c".repeat(4001usize));
 
@@ -427,7 +427,7 @@ fn send_template_request_body_message_long_callback_data() {
 
 #[test]
 fn send_template_request_body_message_invalid_notify_url() {
-    let mut request_body = get_dummy_send_template_request_body();
+    let mut request_body = dummy_send_template_request_body();
 
     request_body.messages[0].notify_url = Some("n".repeat(2049usize));
 
@@ -436,7 +436,7 @@ fn send_template_request_body_message_invalid_notify_url() {
 
 #[test]
 fn send_template_request_body_message_sms_fallback_no_from() {
-    let mut request_body = get_dummy_send_template_request_body();
+    let mut request_body = dummy_send_template_request_body();
 
     request_body.messages[0].sms_failover.as_mut().unwrap().from = "".to_string();
 
@@ -445,7 +445,7 @@ fn send_template_request_body_message_sms_fallback_no_from() {
 
 #[test]
 fn send_template_request_body_message_sms_fallback_long_from() {
-    let mut request_body = get_dummy_send_template_request_body();
+    let mut request_body = dummy_send_template_request_body();
 
     request_body.messages[0].sms_failover.as_mut().unwrap().from = "6".repeat(25usize);
 
@@ -454,7 +454,7 @@ fn send_template_request_body_message_sms_fallback_long_from() {
 
 #[test]
 fn send_template_request_body_message_sms_fallback_no_text() {
-    let mut request_body = get_dummy_send_template_request_body();
+    let mut request_body = dummy_send_template_request_body();
 
     request_body.messages[0].sms_failover.as_mut().unwrap().text = "".to_string();
 
@@ -463,7 +463,7 @@ fn send_template_request_body_message_sms_fallback_no_text() {
 
 #[test]
 fn send_template_request_body_message_sms_fallback_long_text() {
-    let mut request_body = get_dummy_send_template_request_body();
+    let mut request_body = dummy_send_template_request_body();
 
     request_body.messages[0].sms_failover.as_mut().unwrap().text = "t".repeat(4097usize);
 
@@ -472,7 +472,7 @@ fn send_template_request_body_message_sms_fallback_long_text() {
 
 #[test]
 fn send_template_request_body_message_content_no_template_name() {
-    let mut request_body = get_dummy_send_template_request_body();
+    let mut request_body = dummy_send_template_request_body();
 
     request_body.messages[0].content.template_name = "".to_string();
 
@@ -481,7 +481,7 @@ fn send_template_request_body_message_content_no_template_name() {
 
 #[test]
 fn send_template_request_body_message_content_long_template_name() {
-    let mut request_body = get_dummy_send_template_request_body();
+    let mut request_body = dummy_send_template_request_body();
 
     request_body.messages[0].content.template_name = "t".repeat(513usize);
 
@@ -501,14 +501,14 @@ fn send_text_request_body_valid() {
 
 #[test]
 fn send_text_request_full_valid() {
-    let request_body = get_dummy_send_text_request_body();
+    let request_body = dummy_send_text_request_body();
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn send_text_request_no_from() {
-    let mut request_body = get_dummy_send_text_request_body();
+    let mut request_body = dummy_send_text_request_body();
 
     request_body.from = "".to_string();
 
@@ -517,7 +517,7 @@ fn send_text_request_no_from() {
 
 #[test]
 fn send_text_request_long_from() {
-    let mut request_body = get_dummy_send_text_request_body();
+    let mut request_body = dummy_send_text_request_body();
 
     request_body.from = "7".repeat(25usize);
 
@@ -526,7 +526,7 @@ fn send_text_request_long_from() {
 
 #[test]
 fn send_text_request_no_to() {
-    let mut request_body = get_dummy_send_text_request_body();
+    let mut request_body = dummy_send_text_request_body();
 
     request_body.to = "".to_string();
 
@@ -535,7 +535,7 @@ fn send_text_request_no_to() {
 
 #[test]
 fn send_text_request_long_to() {
-    let mut request_body = get_dummy_send_text_request_body();
+    let mut request_body = dummy_send_text_request_body();
 
     request_body.to = "8".repeat(25usize);
 
@@ -544,7 +544,7 @@ fn send_text_request_long_to() {
 
 #[test]
 fn send_text_request_long_id() {
-    let mut request_body = get_dummy_send_text_request_body();
+    let mut request_body = dummy_send_text_request_body();
 
     request_body.message_id = Some("i".repeat(51usize));
 
@@ -553,7 +553,7 @@ fn send_text_request_long_id() {
 
 #[test]
 fn send_text_request_long_callback_data() {
-    let mut request_body = get_dummy_send_text_request_body();
+    let mut request_body = dummy_send_text_request_body();
 
     request_body.callback_data = Some("c".repeat(4001usize));
 
@@ -562,7 +562,7 @@ fn send_text_request_long_callback_data() {
 
 #[test]
 fn send_text_request_invalid_notify_url() {
-    let mut request_body = get_dummy_send_text_request_body();
+    let mut request_body = dummy_send_text_request_body();
 
     request_body.notify_url = Some("n".repeat(2049usize));
 
@@ -571,7 +571,7 @@ fn send_text_request_invalid_notify_url() {
 
 #[test]
 fn send_text_request_sms_content_no_text() {
-    let mut request_body = get_dummy_send_text_request_body();
+    let mut request_body = dummy_send_text_request_body();
 
     request_body.content.text = "".to_string();
 
@@ -580,7 +580,7 @@ fn send_text_request_sms_content_no_text() {
 
 #[test]
 fn send_text_request_sms_content_long_text() {
-    let mut request_body = get_dummy_send_text_request_body();
+    let mut request_body = dummy_send_text_request_body();
 
     request_body.content.text = "t".repeat(4097usize);
 
@@ -600,14 +600,14 @@ fn send_document_request_valid() {
 
 #[test]
 fn send_document_request_full_valid() {
-    let request_body = get_dummy_send_document_request_body();
+    let request_body = dummy_send_document_request_body();
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn send_document_request_content_no_media_url() {
-    let mut request_body = get_dummy_send_document_request_body();
+    let mut request_body = dummy_send_document_request_body();
 
     request_body.content.media_url = "".to_string();
 
@@ -616,7 +616,7 @@ fn send_document_request_content_no_media_url() {
 
 #[test]
 fn send_document_request_content_invalid_media_url() {
-    let mut request_body = get_dummy_send_document_request_body();
+    let mut request_body = dummy_send_document_request_body();
 
     request_body.content.media_url = "m".repeat(2049usize);
 
@@ -625,7 +625,7 @@ fn send_document_request_content_invalid_media_url() {
 
 #[test]
 fn send_document_request_content_long_caption() {
-    let mut request_body = get_dummy_send_document_request_body();
+    let mut request_body = dummy_send_document_request_body();
 
     request_body.content.caption = Some("c".repeat(3001usize));
 
@@ -634,7 +634,7 @@ fn send_document_request_content_long_caption() {
 
 #[test]
 fn send_document_request_content_long_file_name() {
-    let mut request_body = get_dummy_send_document_request_body();
+    let mut request_body = dummy_send_document_request_body();
 
     request_body.content.filename = Some("f".repeat(241usize));
 
@@ -654,14 +654,14 @@ fn send_image_request_body_valid() {
 
 #[test]
 fn send_image_request_full_valid() {
-    let request_body = get_dummy_send_image_request_body();
+    let request_body = dummy_send_image_request_body();
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn send_image_request_content_no_media_url() {
-    let mut request_body = get_dummy_send_image_request_body();
+    let mut request_body = dummy_send_image_request_body();
 
     request_body.content.media_url = "".to_string();
 
@@ -670,7 +670,7 @@ fn send_image_request_content_no_media_url() {
 
 #[test]
 fn send_image_request_content_invalid_media_url() {
-    let mut request_body = get_dummy_send_image_request_body();
+    let mut request_body = dummy_send_image_request_body();
 
     request_body.content.media_url = "m".repeat(2049usize);
 
@@ -679,7 +679,7 @@ fn send_image_request_content_invalid_media_url() {
 
 #[test]
 fn send_image_request_content_long_caption() {
-    let mut request_body = get_dummy_send_image_request_body();
+    let mut request_body = dummy_send_image_request_body();
 
     request_body.content.caption = Some("c".repeat(3001usize));
 
@@ -699,14 +699,14 @@ fn send_audio_request_body_valid() {
 
 #[test]
 fn send_audio_request_full_valid() {
-    let request_body = get_dummy_send_audio_request_body();
+    let request_body = dummy_send_audio_request_body();
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn send_audio_request_content_no_media_url() {
-    let mut request_body = get_dummy_send_audio_request_body();
+    let mut request_body = dummy_send_audio_request_body();
 
     request_body.content.media_url = "".to_string();
 
@@ -715,7 +715,7 @@ fn send_audio_request_content_no_media_url() {
 
 #[test]
 fn send_audio_request_content_invalid_media_url() {
-    let mut request_body = get_dummy_send_audio_request_body();
+    let mut request_body = dummy_send_audio_request_body();
 
     request_body.content.media_url = "m".repeat(2049usize);
 
@@ -735,14 +735,14 @@ fn send_video_request_body_valid() {
 
 #[test]
 fn send_video_request_full_valid() {
-    let request_body = get_dummy_send_video_request_body();
+    let request_body = dummy_send_video_request_body();
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn send_video_request_content_no_media_url() {
-    let mut request_body = get_dummy_send_video_request_body();
+    let mut request_body = dummy_send_video_request_body();
 
     request_body.content.media_url = "".to_string();
 
@@ -751,7 +751,7 @@ fn send_video_request_content_no_media_url() {
 
 #[test]
 fn send_video_request_content_invalid_media_url() {
-    let mut request_body = get_dummy_send_video_request_body();
+    let mut request_body = dummy_send_video_request_body();
 
     request_body.content.media_url = "m".repeat(2049usize);
 
@@ -760,7 +760,7 @@ fn send_video_request_content_invalid_media_url() {
 
 #[test]
 fn send_video_request_content_long_caption() {
-    let mut request_body = get_dummy_send_video_request_body();
+    let mut request_body = dummy_send_video_request_body();
 
     request_body.content.caption = Some("c".repeat(3001usize));
 
@@ -780,14 +780,14 @@ fn send_sticker_request_body_valid() {
 
 #[test]
 fn send_sticker_request_full_valid() {
-    let request_body = get_dummy_send_sticker_request_body();
+    let request_body = dummy_send_sticker_request_body();
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn send_sticker_request_content_no_media_url() {
-    let mut request_body = get_dummy_send_sticker_request_body();
+    let mut request_body = dummy_send_sticker_request_body();
 
     request_body.content.media_url = "".to_string();
 
@@ -796,7 +796,7 @@ fn send_sticker_request_content_no_media_url() {
 
 #[test]
 fn send_sticker_request_content_invalid_media_url() {
-    let mut request_body = get_dummy_send_sticker_request_body();
+    let mut request_body = dummy_send_sticker_request_body();
 
     request_body.content.media_url = "m".repeat(2049usize);
 
@@ -816,14 +816,14 @@ fn send_location_request_body_valid() {
 
 #[test]
 fn send_location_request_full_valid() {
-    let request_body = get_dummy_send_location_request_body();
+    let request_body = dummy_send_location_request_body();
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn send_location_request_content_invalid_latitude() {
-    let mut request_body = get_dummy_send_location_request_body();
+    let mut request_body = dummy_send_location_request_body();
 
     request_body.content.latitude = 91.0;
 
@@ -832,7 +832,7 @@ fn send_location_request_content_invalid_latitude() {
 
 #[test]
 fn send_location_request_content_invalid_longitude() {
-    let mut request_body = get_dummy_send_location_request_body();
+    let mut request_body = dummy_send_location_request_body();
 
     request_body.content.longitude = 181.0;
 
@@ -841,7 +841,7 @@ fn send_location_request_content_invalid_longitude() {
 
 #[test]
 fn send_location_request_content_long_address() {
-    let mut request_body = get_dummy_send_location_request_body();
+    let mut request_body = dummy_send_location_request_body();
 
     request_body.content.address = Some("a".repeat(1001usize));
 
@@ -850,7 +850,7 @@ fn send_location_request_content_long_address() {
 
 #[test]
 fn send_location_request_content_long_name() {
-    let mut request_body = get_dummy_send_location_request_body();
+    let mut request_body = dummy_send_location_request_body();
 
     request_body.content.name = Some("n".repeat(1001usize));
 
@@ -870,14 +870,14 @@ fn send_contact_request_body_valid() {
 
 #[test]
 fn send_contact_request_full_valid() {
-    let request_body = get_dummy_send_contact_request_body();
+    let request_body = dummy_send_contact_request_body();
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn send_contact_request_content_no_contacts() {
-    let mut request_body = get_dummy_send_contact_request_body();
+    let mut request_body = dummy_send_contact_request_body();
 
     request_body.content.contacts = vec![];
 
@@ -901,14 +901,14 @@ fn send_interactive_buttons_request_body_valid() {
 
 #[test]
 fn send_interactive_buttons_request_full_valid() {
-    let request_body = get_dummy_send_interactive_buttons_request_body();
+    let request_body = dummy_send_interactive_buttons_request_body();
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn send_interactive_buttons_request_content_no_body_text() {
-    let mut request_body = get_dummy_send_interactive_buttons_request_body();
+    let mut request_body = dummy_send_interactive_buttons_request_body();
 
     request_body.content.body.text = "".to_string();
 
@@ -917,7 +917,7 @@ fn send_interactive_buttons_request_content_no_body_text() {
 
 #[test]
 fn send_interactive_buttons_request_content_long_body_text() {
-    let mut request_body = get_dummy_send_interactive_buttons_request_body();
+    let mut request_body = dummy_send_interactive_buttons_request_body();
 
     request_body.content.body.text = "t".repeat(1025usize);
 
@@ -926,7 +926,7 @@ fn send_interactive_buttons_request_content_long_body_text() {
 
 #[test]
 fn send_interactive_buttons_request_content_no_buttons() {
-    let mut request_body = get_dummy_send_interactive_buttons_request_body();
+    let mut request_body = dummy_send_interactive_buttons_request_body();
 
     request_body.content.action.buttons = vec![];
 
@@ -935,7 +935,7 @@ fn send_interactive_buttons_request_content_no_buttons() {
 
 #[test]
 fn send_interactive_buttons_request_content_no_footer_text() {
-    let mut request_body = get_dummy_send_interactive_buttons_request_body();
+    let mut request_body = dummy_send_interactive_buttons_request_body();
 
     request_body.content.footer = Some(InteractiveFooter::new(""));
 
@@ -944,7 +944,7 @@ fn send_interactive_buttons_request_content_no_footer_text() {
 
 #[test]
 fn send_interactive_buttons_request_content_long_footer_text() {
-    let mut request_body = get_dummy_send_interactive_buttons_request_body();
+    let mut request_body = dummy_send_interactive_buttons_request_body();
 
     request_body.content.footer = Some(InteractiveFooter::new(&"t".repeat(61usize)));
 
@@ -969,14 +969,14 @@ fn send_interactive_list_request_body_valid() {
 
 #[test]
 fn send_interactive_list_request_full_valid() {
-    let request_body = get_dummy_send_interactive_list_request_body();
+    let request_body = dummy_send_interactive_list_request_body();
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn send_interactive_list_request_content_no_body_text() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.body.text = "".to_string();
 
@@ -985,7 +985,7 @@ fn send_interactive_list_request_content_no_body_text() {
 
 #[test]
 fn send_interactive_list_request_content_long_body_text() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.body.text = "t".repeat(1025usize);
 
@@ -994,7 +994,7 @@ fn send_interactive_list_request_content_long_body_text() {
 
 #[test]
 fn send_interactive_list_request_content_no_action_title() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.action.title = "".to_string();
 
@@ -1003,7 +1003,7 @@ fn send_interactive_list_request_content_no_action_title() {
 
 #[test]
 fn send_interactive_list_request_content_long_action_title() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.action.title = "t".repeat(61usize);
 
@@ -1012,7 +1012,7 @@ fn send_interactive_list_request_content_long_action_title() {
 
 #[test]
 fn send_interactive_list_request_content_no_sections() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.action.sections = vec![];
 
@@ -1021,7 +1021,7 @@ fn send_interactive_list_request_content_no_sections() {
 
 #[test]
 fn send_interactive_list_request_content_many_sections() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.action.sections = vec![
         InteractiveListSection::new(vec![InteractiveRow::new("id1", "title1")]),
@@ -1042,7 +1042,7 @@ fn send_interactive_list_request_content_many_sections() {
 
 #[test]
 fn send_interactive_list_request_content_no_rows() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.action.sections[0].rows = vec![];
 
@@ -1051,7 +1051,7 @@ fn send_interactive_list_request_content_no_rows() {
 
 #[test]
 fn send_interactive_list_request_content_no_row_id() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.action.sections[0].rows[0].id = "".to_string();
 
@@ -1060,7 +1060,7 @@ fn send_interactive_list_request_content_no_row_id() {
 
 #[test]
 fn send_interactive_list_request_content_long_row_id() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.action.sections[0].rows[0].id = "t".repeat(201usize);
 
@@ -1069,7 +1069,7 @@ fn send_interactive_list_request_content_long_row_id() {
 
 #[test]
 fn send_interactive_list_request_content_no_row_title() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.action.sections[0].rows[0].title = "".to_string();
 
@@ -1078,7 +1078,7 @@ fn send_interactive_list_request_content_no_row_title() {
 
 #[test]
 fn send_interactive_list_request_content_long_row_title() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.action.sections[0].rows[0].title = "t".repeat(25usize);
 
@@ -1087,7 +1087,7 @@ fn send_interactive_list_request_content_long_row_title() {
 
 #[test]
 fn send_interactive_list_request_content_long_row_description() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.action.sections[0].rows[0].description = Some("t".repeat(73usize));
 
@@ -1096,7 +1096,7 @@ fn send_interactive_list_request_content_long_row_description() {
 
 #[test]
 fn send_interactive_list_request_content_no_footer_text() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.footer = Some(InteractiveFooter::new(""));
 
@@ -1105,7 +1105,7 @@ fn send_interactive_list_request_content_no_footer_text() {
 
 #[test]
 fn send_interactive_list_request_content_long_footer_text() {
-    let mut request_body = get_dummy_send_interactive_list_request_body();
+    let mut request_body = dummy_send_interactive_list_request_body();
 
     request_body.content.footer = Some(InteractiveFooter::new(&"t".repeat(61usize)));
 
@@ -1125,14 +1125,14 @@ fn send_interactive_product_request_valid() {
 
 #[test]
 fn send_interactive_product_request_full_valid() {
-    let request_body = get_dummy_send_interactive_product_request_body();
+    let request_body = dummy_send_interactive_product_request_body();
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn send_interactive_product_request_content_no_catalog_id() {
-    let mut request_body = get_dummy_send_interactive_product_request_body();
+    let mut request_body = dummy_send_interactive_product_request_body();
 
     request_body.content.action.catalog_id = "".to_string();
 
@@ -1141,7 +1141,7 @@ fn send_interactive_product_request_content_no_catalog_id() {
 
 #[test]
 fn send_interactive_product_request_content_no_product_retailer_id() {
-    let mut request_body = get_dummy_send_interactive_product_request_body();
+    let mut request_body = dummy_send_interactive_product_request_body();
 
     request_body.content.action.product_retailer_id = "".to_string();
 
@@ -1150,7 +1150,7 @@ fn send_interactive_product_request_content_no_product_retailer_id() {
 
 #[test]
 fn send_interactive_product_request_content_no_footer_text() {
-    let mut request_body = get_dummy_send_interactive_product_request_body();
+    let mut request_body = dummy_send_interactive_product_request_body();
 
     request_body.content.footer = Some(InteractiveFooter::new(""));
 
@@ -1180,14 +1180,14 @@ fn send_interactive_multiproduct_request_body_valid() {
 
 #[test]
 fn send_interactive_multiproduct_request_body_full_valid() {
-    let request_body = get_dummy_send_interactive_multiproduct_request_body();
+    let request_body = dummy_send_interactive_multiproduct_request_body();
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn send_interactive_multiproduct_request_body_content_no_body_text() {
-    let mut request_body = get_dummy_send_interactive_multiproduct_request_body();
+    let mut request_body = dummy_send_interactive_multiproduct_request_body();
 
     request_body.content.body = InteractiveBody::new("");
 
@@ -1196,7 +1196,7 @@ fn send_interactive_multiproduct_request_body_content_no_body_text() {
 
 #[test]
 fn send_interactive_multiproduct_request_body_content_long_body_text() {
-    let mut request_body = get_dummy_send_interactive_multiproduct_request_body();
+    let mut request_body = dummy_send_interactive_multiproduct_request_body();
 
     request_body.content.body = InteractiveBody::new(&"t".repeat(1025usize));
 
@@ -1205,7 +1205,7 @@ fn send_interactive_multiproduct_request_body_content_long_body_text() {
 
 #[test]
 fn send_interactive_multiproduct_request_body_content_action_no_catalog_id() {
-    let mut request_body = get_dummy_send_interactive_multiproduct_request_body();
+    let mut request_body = dummy_send_interactive_multiproduct_request_body();
 
     request_body.content.action.catalog_id = "".to_string();
 
@@ -1214,7 +1214,7 @@ fn send_interactive_multiproduct_request_body_content_action_no_catalog_id() {
 
 #[test]
 fn send_interactive_multiproduct_request_body_content_action_no_sections() {
-    let mut request_body = get_dummy_send_interactive_multiproduct_request_body();
+    let mut request_body = dummy_send_interactive_multiproduct_request_body();
 
     request_body.content.action.sections = vec![];
 
@@ -1223,7 +1223,7 @@ fn send_interactive_multiproduct_request_body_content_action_no_sections() {
 
 #[test]
 fn send_interactive_multiproduct_request_body_content_action_many_sections() {
-    let mut request_body = get_dummy_send_interactive_multiproduct_request_body();
+    let mut request_body = dummy_send_interactive_multiproduct_request_body();
 
     request_body.content.action.sections = vec![
         InteractiveMultiproductSection::new(vec!["1".to_string(), "2".to_string()]),
@@ -1245,7 +1245,7 @@ fn send_interactive_multiproduct_request_body_content_action_many_sections() {
 
 #[test]
 fn send_interactive_multiproduct_request_body_content_action_section_long_title() {
-    let mut request_body = get_dummy_send_interactive_multiproduct_request_body();
+    let mut request_body = dummy_send_interactive_multiproduct_request_body();
 
     request_body.content.action.sections[0].title = Some("t".repeat(25usize));
 
@@ -1267,14 +1267,14 @@ fn create_template_request_body_valid() {
 
 #[test]
 fn create_template_request_body_full_valid() {
-    let request_body = get_dummy_create_template_request_body();
+    let request_body = dummy_create_template_request_body();
 
     assert!(request_body.validate().is_ok());
 }
 
 #[test]
 fn create_template_request_body_no_name() {
-    let mut request_body = get_dummy_create_template_request_body();
+    let mut request_body = dummy_create_template_request_body();
 
     request_body.name = "".to_string();
 
@@ -1283,7 +1283,7 @@ fn create_template_request_body_no_name() {
 
 #[test]
 fn create_template_request_body_structure_body_no_text() {
-    let mut request_body = get_dummy_create_template_request_body();
+    let mut request_body = dummy_create_template_request_body();
 
     request_body.structure.body.text = "".to_string();
 
@@ -1292,7 +1292,7 @@ fn create_template_request_body_structure_body_no_text() {
 
 #[test]
 fn create_template_request_body_structure_long_footer_text() {
-    let mut request_body = get_dummy_create_template_request_body();
+    let mut request_body = dummy_create_template_request_body();
 
     request_body.structure.footer = Some(TemplateFooter::new(&"t".repeat(61usize)));
 
@@ -1301,7 +1301,7 @@ fn create_template_request_body_structure_long_footer_text() {
 
 #[test]
 fn create_template_request_body_structure_many_buttons() {
-    let mut request_body = get_dummy_create_template_request_body();
+    let mut request_body = dummy_create_template_request_body();
 
     request_body.structure.buttons = Some(vec![
         TemplateButton::new_quick_reply("1"),

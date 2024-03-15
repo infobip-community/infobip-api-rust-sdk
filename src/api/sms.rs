@@ -149,12 +149,12 @@ impl SmsClient {
     ///
     /// let query_parameters = GetDeliveryReportsQueryParameters::new();
     ///
-    /// let response = sms_client.get_delivery_reports(query_parameters).await?;
+    /// let response = sms_client.delivery_reports(query_parameters).await?;
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_delivery_reports(
+    pub async fn delivery_reports(
         &self,
         query_parameters: GetDeliveryReportsQueryParameters,
     ) -> Result<SdkResponse<GetDeliveryReportsResponseBody>, SdkError> {
@@ -323,13 +323,13 @@ impl SmsClient {
     ///
     /// let query_parameters = GetScheduledQueryParameters::new("dummy-bulk-id");
     ///
-    /// let response = sms_client.get_scheduled(query_parameters).await?;
+    /// let response = sms_client.scheduled(query_parameters).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// }
     /// ```
-    pub async fn get_scheduled(
+    pub async fn scheduled(
         &self,
         query_parameters: GetScheduledQueryParameters,
     ) -> Result<SdkResponse<GetScheduledResponseBody>, SdkError> {
@@ -362,7 +362,7 @@ impl SmsClient {
 
     /// Use this method for displaying logs for example in the user interface. Available are the
     /// logs for the last 48 hours and you can only retrieve maximum of 1000 logs per call.
-    /// See `get_delivery_reports` if your use case is to verify message delivery.
+    /// See `delivery_reports` if your use case is to verify message delivery.
     ///
     /// # Example
     /// ```no_run
@@ -377,13 +377,13 @@ impl SmsClient {
     ///
     /// let query_parameters = GetLogsQueryParameters::new();
     ///
-    /// let response = sms_client.get_logs(query_parameters).await?;
+    /// let response = sms_client.logs(query_parameters).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_logs(
+    pub async fn logs(
         &self,
         query_parameters: GetLogsQueryParameters,
     ) -> Result<SdkResponse<GetLogsResponseBody>, SdkError> {
@@ -461,13 +461,13 @@ impl SmsClient {
     ///
     /// let query_parameters = GetInboundReportsQueryParameters::new();
     ///
-    /// let response = sms_client.get_inbound_reports(query_parameters).await?;
+    /// let response = sms_client.inbound_reports(query_parameters).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_inbound_reports(
+    pub async fn inbound_reports(
         &self,
         query_parameters: GetInboundReportsQueryParameters,
     ) -> Result<SdkResponse<GetInboundReportsResponseBody>, SdkError> {
@@ -694,13 +694,13 @@ impl SmsClient {
     ///
     /// let query_parameters = GetScheduledStatusQueryParameters::new("some-bulk-id");
     ///
-    /// let response = sms_client.get_scheduled_status(query_parameters).await?;
+    /// let response = sms_client.scheduled_status(query_parameters).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_scheduled_status(
+    pub async fn scheduled_status(
         &self,
         query_parameters: GetScheduledStatusQueryParameters,
     ) -> Result<SdkResponse<GetScheduledStatusResponseBody>, SdkError> {
@@ -746,7 +746,7 @@ impl SmsClient {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let query_parameters = UpdateScheduledStatusQueryParameters::new("some-bulk-id");
-    /// let request_body = UpdateScheduledStatusRequestBody::new(ScheduledStatus::CANCELED);
+    /// let request_body = UpdateScheduledStatusRequestBody::new(ScheduledStatus::Canceled);
     ///
     /// let response = sms_client.update_scheduled_status(query_parameters, request_body).await?;
     ///
@@ -799,12 +799,12 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let response = client.get_tfa_applications().await?;
+    /// let response = client.tfa_applications().await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
-    pub async fn get_tfa_applications(
+    pub async fn tfa_applications(
         &self,
     ) -> Result<SdkResponse<GetTfaApplicationsResponseBody>, SdkError> {
         let response = send_no_body_request(
@@ -887,13 +887,13 @@ impl SmsClient {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
-    /// let response = client.get_tfa_application(application_id).await?;
+    /// let response = client.tfa_application(application_id).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_tfa_application(
+    pub async fn tfa_application(
         &self,
         application_id: &str,
     ) -> Result<SdkResponse<GetTfaApplicationResponseBody>, SdkError> {
@@ -983,13 +983,13 @@ impl SmsClient {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
-    /// let response = client.get_tfa_message_templates(application_id).await?;
+    /// let response = client.tfa_message_templates(application_id).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_tfa_message_templates(
+    pub async fn tfa_message_templates(
         &self,
         application_id: &str,
     ) -> Result<SdkResponse<GetTfaMessageTemplatesResponseBody>, SdkError> {
@@ -1081,13 +1081,13 @@ impl SmsClient {
     ///
     /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
     /// let template_id = "02CC3CAAFD733136AA15DFAC720A0C42";
-    /// let response = client.get_tfa_message_template(application_id, template_id).await?;
+    /// let response = client.tfa_message_template(application_id, template_id).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_tfa_message_template(
+    pub async fn tfa_message_template(
         &self,
         application_id: &str,
         template_id: &str,
@@ -1444,13 +1444,13 @@ impl SmsClient {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let query_parameters = GetTfaVerificationStatusQueryParameters::new("555555555555");
-    /// let response = client.get_tfa_verification_status("some-application-id", query_parameters).await?;
+    /// let response = client.tfa_verification_status("some-application-id", query_parameters).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_tfa_verification_status(
+    pub async fn tfa_verification_status(
         &self,
         app_id: &str,
         query_parameters: GetTfaVerificationStatusQueryParameters,

@@ -1,10 +1,9 @@
-use crate::api::sms::*;
-use crate::api::tests::{
-    get_test_configuration, mock_blocking_json_endpoint, mock_json_endpoint, DUMMY_TEXT,
+use crate::api::{
+    sms::*,
+    tests::{test_configuration, mock_blocking_json_endpoint, mock_json_endpoint, DUMMY_TEXT},
+    SdkError,
 };
-use crate::api::SdkError;
-use crate::model::sms::ScheduledStatus::PAUSED;
-use crate::model::sms::*;
+use crate::model::sms::{ScheduledStatus::Paused, *};
 
 const DUMMY_BASE_URL: &str = "https://some.url";
 
@@ -32,7 +31,7 @@ async fn test_preview_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body = PreviewRequestBody::new(DUMMY_TEXT);
 
@@ -45,7 +44,7 @@ async fn test_preview_valid() {
 
 #[tokio::test]
 async fn test_preview_bad_request() {
-    let client = SmsClient::with_configuration(get_test_configuration(DUMMY_BASE_URL));
+    let client = SmsClient::with_configuration(test_configuration(DUMMY_BASE_URL));
 
     let mut request_body = PreviewRequestBody::new(DUMMY_TEXT);
     request_body.language_code = Some("XX".into());
@@ -83,7 +82,7 @@ fn test_blocking_preview_valid() {
     );
 
     let client =
-        BlockingSmsClient::with_configuration(get_test_configuration(&mock_server.base_url()));
+        BlockingSmsClient::with_configuration(test_configuration(&mock_server.base_url()));
 
     let request_body = PreviewRequestBody::new(DUMMY_TEXT);
 
@@ -116,7 +115,7 @@ async fn test_preview_server_error() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body = PreviewRequestBody::new(DUMMY_TEXT);
 
@@ -136,7 +135,7 @@ async fn test_preview_server_error() {
 }
 
 #[tokio::test]
-async fn test_get_delivery_reports_valid() {
+async fn test_delivery_reports_valid() {
     let expected_response = r#"
         {
           "results": [
@@ -207,12 +206,12 @@ async fn test_get_delivery_reports_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let mut query_parameters = GetDeliveryReportsQueryParameters::new();
     query_parameters.limit = Some(10);
 
-    let response = client.get_delivery_reports(query_parameters).await.unwrap();
+    let response = client.delivery_reports(query_parameters).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
     assert!(response.body.results.as_ref().unwrap().len() > 1);
@@ -224,14 +223,14 @@ async fn test_get_delivery_reports_valid() {
 }
 
 #[tokio::test]
-async fn test_get_delivery_reports_bad_parameters() {
-    let client = SmsClient::with_configuration(get_test_configuration(DUMMY_BASE_URL));
+async fn test_delivery_reports_bad_parameters() {
+    let client = SmsClient::with_configuration(test_configuration(DUMMY_BASE_URL));
 
     let mut query_parameters = GetDeliveryReportsQueryParameters::new();
     query_parameters.limit = Some(10000);
 
     let error = client
-        .get_delivery_reports(query_parameters)
+        .delivery_reports(query_parameters)
         .await
         .unwrap_err();
     if let SdkError::Validation(validation_error) = error {
@@ -279,7 +278,7 @@ async fn test_send_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let message = Message::new(vec![Destination::new("123456789101")]);
     let request_body = SendRequestBody::new(vec![message]);
@@ -330,7 +329,7 @@ async fn test_send_binary_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let message = BinaryMessage::new(vec![Destination::new("123456789101")]);
     let request_body = SendBinaryRequestBody::new(vec![message]);
@@ -370,7 +369,7 @@ async fn test_send_over_query_parameters_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let query_parameters = SendOverQueryParametersQueryParameters::new(
         "username",
@@ -388,7 +387,7 @@ async fn test_send_over_query_parameters_valid() {
 }
 
 #[tokio::test]
-async fn test_get_scheduled_valid() {
+async fn test_scheduled_valid() {
     let expected_response = r#"
         {
           "bulkId": "BULK-ID-123-xyz",
@@ -404,23 +403,23 @@ async fn test_get_scheduled_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let query_parameters = GetScheduledQueryParameters::new("BULK-ID-123-xyz");
 
-    let response = client.get_scheduled(query_parameters).await.unwrap();
+    let response = client.scheduled(query_parameters).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
     assert_eq!(response.body.bulk_id, "BULK-ID-123-xyz");
 }
 
 #[tokio::test]
-async fn test_get_scheduled_empty_bulk_id() {
-    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+async fn test_scheduled_empty_bulk_id() {
+    let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
     let query_parameters = GetScheduledQueryParameters::new("");
 
-    assert!(client.get_scheduled(query_parameters).await.is_err());
+    assert!(client.scheduled(query_parameters).await.is_err());
 }
 
 #[tokio::test]
@@ -440,7 +439,7 @@ async fn test_reschedule_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let query_parameters = RescheduleQueryParameters::new("BULK-ID-123-xyz");
     let request_body = RescheduleRequestBody::new("2021-08-25T16:00:00.000+0000");
@@ -457,7 +456,7 @@ async fn test_reschedule_valid() {
 
 #[tokio::test]
 async fn test_reschedule_empty_bulk_id() {
-    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+    let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
     let query_parameters = RescheduleQueryParameters::new("");
     let request_body = RescheduleRequestBody::new("2021-08-25T16:00:00.000+0000");
@@ -470,7 +469,7 @@ async fn test_reschedule_empty_bulk_id() {
 
 #[tokio::test]
 async fn test_reschedule_empty_send_at() {
-    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+    let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
     let query_parameters = RescheduleQueryParameters::new("BULK-ID-123-xyz");
     let request_body = RescheduleRequestBody::new("");
@@ -482,7 +481,7 @@ async fn test_reschedule_empty_send_at() {
 }
 
 #[tokio::test]
-async fn test_get_scheduled_status_valid() {
+async fn test_scheduled_status_valid() {
     let expected_response = r#"
     {
       "bulkId": "BULK-ID-123-xyz",
@@ -498,24 +497,24 @@ async fn test_get_scheduled_status_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let query_parameters = GetScheduledStatusQueryParameters::new("BULK-ID-123-xyz");
 
-    let response = client.get_scheduled_status(query_parameters).await.unwrap();
+    let response = client.scheduled_status(query_parameters).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
     assert_eq!(response.body.bulk_id.unwrap(), "BULK-ID-123-xyz");
-    assert_eq!(response.body.status.unwrap(), PAUSED);
+    assert_eq!(response.body.status.unwrap(), Paused);
 }
 
 #[tokio::test]
-async fn test_get_scheduled_status_empty_bulk_id() {
-    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+async fn test_scheduled_status_empty_bulk_id() {
+    let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
     let query_parameters = GetScheduledStatusQueryParameters::new("");
 
-    assert!(client.get_scheduled_status(query_parameters).await.is_err());
+    assert!(client.scheduled_status(query_parameters).await.is_err());
 }
 
 #[tokio::test]
@@ -535,10 +534,10 @@ async fn test_update_scheduled_status_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let query_parameters = UpdateScheduledStatusQueryParameters::new("BULK-ID-123-xyz");
-    let request_body = UpdateScheduledStatusRequestBody::new(PAUSED);
+    let request_body = UpdateScheduledStatusRequestBody::new(Paused);
 
     let response = client
         .update_scheduled_status(query_parameters, request_body)
@@ -547,15 +546,15 @@ async fn test_update_scheduled_status_valid() {
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
     assert_eq!(response.body.bulk_id.unwrap(), "BULK-ID-123-xyz");
-    assert_eq!(response.body.status.unwrap(), PAUSED);
+    assert_eq!(response.body.status.unwrap(), Paused);
 }
 
 #[tokio::test]
 async fn test_update_scheduled_status_empty_bulk_id() {
-    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+    let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
     let query_parameters = UpdateScheduledStatusQueryParameters::new("");
-    let request_body = UpdateScheduledStatusRequestBody::new(PAUSED);
+    let request_body = UpdateScheduledStatusRequestBody::new(Paused);
 
     assert!(client
         .update_scheduled_status(query_parameters, request_body)
@@ -564,7 +563,7 @@ async fn test_update_scheduled_status_empty_bulk_id() {
 }
 
 #[tokio::test]
-async fn test_get_inbound_reports_valid() {
+async fn test_inbound_reports_valid() {
     let expected_response = r#"
     {
       "results": [
@@ -597,28 +596,28 @@ async fn test_get_inbound_reports_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let query_parameters = GetInboundReportsQueryParameters::new();
 
-    let response = client.get_inbound_reports(query_parameters).await.unwrap();
+    let response = client.inbound_reports(query_parameters).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
     assert_eq!(response.body.message_count.unwrap(), 1);
 }
 
 #[tokio::test]
-async fn test_get_inbound_reports_big_limit() {
-    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+async fn test_inbound_reports_big_limit() {
+    let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
     let mut query_parameters = GetInboundReportsQueryParameters::new();
     query_parameters.limit = Some(1001);
 
-    assert!(client.get_inbound_reports(query_parameters).await.is_err());
+    assert!(client.inbound_reports(query_parameters).await.is_err());
 }
 
 #[tokio::test]
-async fn test_get_logs_valid() {
+async fn test_logs_valid() {
     let expected_response = r#"
     {
       "results": [
@@ -690,28 +689,28 @@ async fn test_get_logs_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let query_parameters = GetLogsQueryParameters::new();
 
-    let response = client.get_logs(query_parameters).await.unwrap();
+    let response = client.logs(query_parameters).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
     assert_eq!(response.body.results.unwrap().len(), 2usize);
 }
 
 #[tokio::test]
-async fn test_get_logs_big_limit() {
-    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+async fn test_logs_big_limit() {
+    let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
     let mut query_parameters = GetLogsQueryParameters::new();
     query_parameters.limit = Some(1001);
 
-    assert!(client.get_logs(query_parameters).await.is_err());
+    assert!(client.logs(query_parameters).await.is_err());
 }
 
 #[tokio::test]
-async fn test_get_tfa_applications_valid() {
+async fn test_tfa_applications_valid() {
     let expected_response = r#"
     [
         {
@@ -738,9 +737,9 @@ async fn test_get_tfa_applications_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
-    let response = client.get_tfa_applications().await.unwrap();
+    let response = client.tfa_applications().await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
     assert_eq!(response.body.len(), 1usize);
@@ -772,7 +771,7 @@ async fn test_create_tfa_application_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body = CreateTfaApplicationRequestBody::new("Application name");
 
@@ -784,7 +783,7 @@ async fn test_create_tfa_application_valid() {
 
 #[tokio::test]
 async fn test_create_tfa_application_no_name() {
-    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+    let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
     let request_body = CreateTfaApplicationRequestBody::new("");
 
@@ -792,7 +791,7 @@ async fn test_create_tfa_application_no_name() {
 }
 
 #[tokio::test]
-async fn test_get_tfa_application_valid() {
+async fn test_tfa_application_valid() {
     let expected_response = r#"
     {
       "applicationId": "1234567",
@@ -817,9 +816,9 @@ async fn test_get_tfa_application_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
-    let response = client.get_tfa_application("1234567").await.unwrap();
+    let response = client.tfa_application("1234567").await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
     assert_eq!(response.body.application_id.unwrap(), "1234567");
@@ -851,7 +850,7 @@ async fn test_update_tfa_application_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body = UpdateTfaApplicationRequestBody::new("Application name 2");
 
@@ -865,7 +864,7 @@ async fn test_update_tfa_application_valid() {
 }
 
 #[tokio::test]
-async fn test_get_tfa_message_templates_valid() {
+async fn test_tfa_message_templates_valid() {
     let expected_response = r#"
     [
       {
@@ -890,10 +889,10 @@ async fn test_get_tfa_message_templates_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let response = client
-        .get_tfa_message_templates("HJ675435E3A6EA43432G5F37A635KJ8B")
+        .tfa_message_templates("HJ675435E3A6EA43432G5F37A635KJ8B")
         .await
         .unwrap();
 
@@ -924,7 +923,7 @@ async fn test_create_tfa_message_template_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body =
         CreateTfaMessageTemplateRequestBody::new("Your pin is {{pin}}", PinType::Alphanumeric, 4);
@@ -941,7 +940,7 @@ async fn test_create_tfa_message_template_valid() {
 
 #[tokio::test]
 async fn test_create_tfa_message_template_empty_message_text() {
-    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+    let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
     let request_body = CreateTfaMessageTemplateRequestBody::new("", PinType::Alphanumeric, 4);
 
@@ -952,7 +951,7 @@ async fn test_create_tfa_message_template_empty_message_text() {
 }
 
 #[tokio::test]
-async fn test_get_tfa_message_template_valid() {
+async fn test_tfa_message_template_valid() {
     let expected_response = r#"
     {
       "pinPlaceholder": "{{pin}}",
@@ -977,10 +976,10 @@ async fn test_get_tfa_message_template_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let response = client
-        .get_tfa_message_template(
+        .tfa_message_template(
             "HJ675435E3A6EA43432G5F37A635KJ8B",
             "16A8B5FE2BCD6CA716A2D780CB3F3390",
         )
@@ -1017,7 +1016,7 @@ async fn test_update_tfa_message_template_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body =
         UpdateTfaMessageTemplateRequestBody::new("Your pin is {{pin}}", PinType::Alphanumeric, 6);
@@ -1054,7 +1053,7 @@ async fn test_send_pin_over_sms_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let query_parameters = SendPinOverSmsQueryParameters::default();
     let request_body = SendPinOverSmsRequestBody::new(
@@ -1077,7 +1076,7 @@ async fn test_send_pin_over_sms_valid() {
 
 #[tokio::test]
 async fn test_send_pin_over_sms_empty_app_id() {
-    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+    let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
     let query_parameters = SendPinOverSmsQueryParameters::default();
     let request_body =
@@ -1111,7 +1110,7 @@ async fn test_resend_pin_over_sms_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body = ResendPinOverSmsRequestBody::new();
 
@@ -1145,7 +1144,7 @@ async fn test_send_pin_over_voice_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body = SendPinOverVoiceRequestBody::new(
         "HJ675435E3A6EA43432G5F37A635KJ8B",
@@ -1164,7 +1163,7 @@ async fn test_send_pin_over_voice_valid() {
 
 #[tokio::test]
 async fn test_send_pin_over_voice_empty_app_id() {
-    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+    let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
     let request_body =
         SendPinOverVoiceRequestBody::new("", "16A8B5FE2BCD6CA716A2D780CB3F3390", "5555555555");
@@ -1193,7 +1192,7 @@ async fn test_resend_pin_over_voice_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body = ResendPinOverVoiceRequestBody::new();
 
@@ -1231,7 +1230,7 @@ async fn test_verify_phone_number_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body = VerifyPhoneNumberRequestBody::new("123456");
 
@@ -1249,7 +1248,7 @@ async fn test_verify_phone_number_valid() {
 
 #[tokio::test]
 async fn test_verify_phone_number_no_pin() {
-    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+    let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
     let request_body = VerifyPhoneNumberRequestBody::new("");
 
@@ -1260,7 +1259,7 @@ async fn test_verify_phone_number_no_pin() {
 }
 
 #[tokio::test]
-async fn test_get_tfa_verification_status_valid() {
+async fn test_tfa_verification_status_valid() {
     let expected_response = r#"
     {
       "verifications": [
@@ -1285,12 +1284,12 @@ async fn test_get_tfa_verification_status_valid() {
     )
     .await;
 
-    let client = SmsClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
     let query_parameters = GetTfaVerificationStatusQueryParameters::new("41793026727");
 
     let response = client
-        .get_tfa_verification_status("16A8B5FE2BCD6CA716A2D780CB3F3390", query_parameters)
+        .tfa_verification_status("16A8B5FE2BCD6CA716A2D780CB3F3390", query_parameters)
         .await
         .unwrap();
 
@@ -1299,13 +1298,13 @@ async fn test_get_tfa_verification_status_valid() {
 }
 
 #[tokio::test]
-async fn test_get_tfa_verification_status_empty_msisdn() {
-    let client = SmsClient::with_configuration(get_test_configuration("https://some.url"));
+async fn test_tfa_verification_status_empty_msisdn() {
+    let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
     let query_parameters = GetTfaVerificationStatusQueryParameters::new("");
 
     assert!(client
-        .get_tfa_verification_status("some-app-id", query_parameters)
+        .tfa_verification_status("some-app-id", query_parameters)
         .await
         .is_err());
 }

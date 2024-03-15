@@ -1,6 +1,5 @@
 //! Endpoint functions and base response and error types
 use crate::configuration::{ApiKey, Configuration};
-use reqwest;
 use reqwest::{RequestBuilder, Response, StatusCode};
 use serde::Deserialize;
 use serde_derive::Serialize;

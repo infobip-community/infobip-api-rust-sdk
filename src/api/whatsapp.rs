@@ -795,13 +795,13 @@ impl WhatsappClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let response = wa_client.get_templates("12345789101112").await.unwrap();
+    /// let response = wa_client.templates("12345789101112").await.unwrap();
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_templates(
+    pub async fn templates(
         &self,
         sender: &str,
     ) -> Result<SdkResponse<GetTemplatesResponseBody>, SdkError> {
@@ -912,7 +912,7 @@ impl WhatsappClient {
     ///
     /// let body = TemplateBodyContent::new(vec!["placeholder1".to_string()]);
     /// let data = TemplateData::new(body);
-    /// let content = TemplateContent::new("template_name", data, &TemplateLanguage::EnUs.to_string());
+    /// let content = TemplateContent::new("template_name", data, TemplateLanguage::EnUs);
     /// let message = FailoverMessage::new(
     ///     "1234567891011",
     ///     "1234567891012",

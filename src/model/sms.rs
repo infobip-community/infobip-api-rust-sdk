@@ -15,7 +15,7 @@ lazy_static::lazy_static! {
     static ref TURKEY_RECIPIENT_TYPES: Regex = Regex::new(r"^(TACIR|BIREYSEL)$").unwrap();
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct PreviewRequestBody {
     /// Code for language character set of a message text.
@@ -33,16 +33,15 @@ pub struct PreviewRequestBody {
 }
 
 impl PreviewRequestBody {
-    pub fn new(text: &str) -> PreviewRequestBody {
-        PreviewRequestBody {
-            language_code: None,
+    pub fn new(text: &str) -> Self {
+        Self {
             text: text.into(),
-            transliteration: None,
+            ..Default::default()
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct Language {
     /// Language code for the correct character set.
@@ -52,14 +51,14 @@ pub struct Language {
 }
 
 impl Language {
-    pub fn new(language_code: &str) -> Language {
-        Language {
+    pub fn new(language_code: &str) -> Self {
+        Self {
             language_code: Some(language_code.into()),
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PreviewLanguageConfiguration {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -70,7 +69,7 @@ pub struct PreviewLanguageConfiguration {
     pub transliteration: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Preview {
     /// Number of remaining characters in the last SMS part.
@@ -90,7 +89,7 @@ pub struct Preview {
     pub text_preview: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PreviewResponseBody {
     /// Text supplied in the request.
@@ -102,7 +101,7 @@ pub struct PreviewResponseBody {
     pub previews: Option<Vec<Preview>>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct GetDeliveryReportsQueryParameters {
     /// Unique ID assigned to the request if messaging multiple recipients or sending multiple
@@ -122,22 +121,12 @@ pub struct GetDeliveryReportsQueryParameters {
 }
 
 impl GetDeliveryReportsQueryParameters {
-    pub fn new() -> GetDeliveryReportsQueryParameters {
-        GetDeliveryReportsQueryParameters {
-            bulk_id: None,
-            message_id: None,
-            limit: None,
-        }
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 
-impl Default for GetDeliveryReportsQueryParameters {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Status {
     /// Action that should be taken to eliminate the error.
@@ -162,7 +151,7 @@ pub struct Status {
     pub name: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Price {
     /// The currency in which the price is expressed.
@@ -173,7 +162,7 @@ pub struct Price {
     pub price_per_message: Option<f64>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Error {
     /// Human-readable description of the error.
@@ -201,7 +190,7 @@ pub struct Error {
     pub permanent: Option<bool>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Report {
     /// Bulk ID.
@@ -256,14 +245,14 @@ pub struct Report {
     pub to: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetDeliveryReportsResponseBody {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub results: Option<Vec<Report>>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Tracking {
     /// Custom base url used for shortening links from SMS text in `URL` Conversion rate tracking
@@ -287,30 +276,20 @@ pub struct Tracking {
 }
 
 impl Tracking {
-    pub fn new() -> Tracking {
-        Tracking {
-            base_url: None,
-            process_key: None,
-            track: None,
-            tracking_type: None,
-        }
-    }
-}
-
-impl Default for Tracking {
-    fn default() -> Self {
-        Tracking::new()
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum TimeUnit {
-    MINUTE,
-    HOUR,
-    DAY,
+    Minute,
+    Hour,
+    Day,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 pub struct DeliveryTime {
     /// Hour when the time window opens when used in from property or closes when used into the
     /// property.
@@ -324,12 +303,12 @@ pub struct DeliveryTime {
 }
 
 impl DeliveryTime {
-    pub fn new(hour: i32, minute: i32) -> DeliveryTime {
-        DeliveryTime { hour, minute }
+    pub fn new(hour: i32, minute: i32) -> Self {
+        Self { hour, minute }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SpeedLimit {
     /// The number of messages to be sent per timeUnit. By default, the system sends messages as
@@ -344,15 +323,15 @@ pub struct SpeedLimit {
 }
 
 impl SpeedLimit {
-    pub fn new(amount: i32) -> SpeedLimit {
-        SpeedLimit {
+    pub fn new(amount: i32) -> Self {
+        Self {
             amount,
-            time_unit: None,
+            ..Default::default()
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UrlOptions {
     /// Enable shortening of the URLs within a message. Set this to `true`, if you want to set up other URL options.
@@ -377,17 +356,18 @@ pub struct UrlOptions {
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum DeliveryDay {
-    MONDAY,
-    TUESDAY,
-    WEDNESDAY,
-    THURSDAY,
-    FRIDAY,
-    SATURDAY,
-    SUNDAY,
+    Monday,
+    Tuesday,
+    Wednesday,
+    Thursday,
+    Friday,
+    Saturday,
+    Sunday,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 pub struct DeliveryTimeWindow {
     /// Days which are included in the delivery time window. Values are: `MONDAY`, `TUESDAY`,
     /// `WEDNESDAY`, `THURSDAY`, `FRIDAY`, `SATURDAY`, `SUNDAY`. At least one day must be stated.
@@ -408,16 +388,15 @@ pub struct DeliveryTimeWindow {
 }
 
 impl DeliveryTimeWindow {
-    pub fn new(days: Vec<DeliveryDay>) -> DeliveryTimeWindow {
-        DeliveryTimeWindow {
+    pub fn new(days: Vec<DeliveryDay>) -> Self {
+        Self {
             days,
-            from: None,
-            to: None,
+            ..Default::default()
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct Destination {
     /// The ID that uniquely identifies the message sent.
@@ -431,15 +410,15 @@ pub struct Destination {
 }
 
 impl Destination {
-    pub fn new(to: &str) -> Destination {
-        Destination {
-            message_id: None,
+    pub fn new(to: &str) -> Self {
+        Self {
             to: to.into(),
+            ..Default::default()
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct IndiaDlt {
     /// Id of your registered DTL content template that matches this message's text.
@@ -453,15 +432,15 @@ pub struct IndiaDlt {
 }
 
 impl IndiaDlt {
-    pub fn new(principal_entity_id: &str) -> IndiaDlt {
-        IndiaDlt {
-            content_template_id: None,
+    pub fn new(principal_entity_id: &str) -> Self {
+        Self {
             principal_entity_id: principal_entity_id.into(),
+            ..Default::default()
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct TurkeyIys {
     /// Brand code is an ID of the company based on a company VAT number. If not provided in
@@ -475,15 +454,15 @@ pub struct TurkeyIys {
 }
 
 impl TurkeyIys {
-    pub fn new(recipient_type: &str) -> TurkeyIys {
+    pub fn new(recipient_type: &str) -> Self {
         TurkeyIys {
-            brand_code: None,
             recipient_type: recipient_type.into(),
+            ..Default::default()
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct RegionalOptions {
     /// Distributed Ledger Technology (DLT) specific parameters required for sending SMS to phone
@@ -500,17 +479,8 @@ pub struct RegionalOptions {
 }
 
 impl RegionalOptions {
-    pub fn new() -> RegionalOptions {
-        RegionalOptions {
-            india_dlt: None,
-            turkey_iys: None,
-        }
-    }
-}
-
-impl Default for RegionalOptions {
-    fn default() -> Self {
-        Self::new()
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 
@@ -603,27 +573,15 @@ pub struct Message {
 }
 
 impl Message {
-    pub fn new(destinations: Vec<Destination>) -> Message {
-        Message {
-            callback_data: None,
-            delivery_time_window: None,
+    pub fn new(destinations: Vec<Destination>) -> Self {
+        Self {
             destinations: Some(destinations),
-            flash: None,
-            from: None,
-            intermediate_report: None,
-            language: None,
-            notify_content_type: None,
-            notify_url: None,
-            regional: None,
-            send_at: None,
-            text: None,
-            transliteration: None,
-            validity_period: None,
+            ..Default::default()
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct BinaryData {
     /// Binary content data coding. The default value is (0) for GSM7. Example: (8) for Unicode
@@ -643,11 +601,10 @@ pub struct BinaryData {
 }
 
 impl BinaryData {
-    pub fn new(hex: &str) -> BinaryData {
-        BinaryData {
-            data_coding: None,
-            esm_class: None,
+    pub fn new(hex: &str) -> Self {
+        Self {
             hex: hex.into(),
+            ..Default::default()
         }
     }
 }
@@ -724,25 +681,15 @@ pub struct BinaryMessage {
 }
 
 impl BinaryMessage {
-    pub fn new(destinations: Vec<Destination>) -> BinaryMessage {
-        BinaryMessage {
-            binary: None,
-            callback_data: None,
-            delivery_time_window: None,
+    pub fn new(destinations: Vec<Destination>) -> Self {
+        Self {
             destinations: Some(destinations),
-            flash: None,
-            from: None,
-            intermediate_report: None,
-            notify_content_type: None,
-            notify_url: None,
-            regional: None,
-            send_at: None,
-            validity_period: None,
+            ..Default::default()
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct SendRequestBody {
     /// Unique ID assigned to the request if messaging multiple recipients or sending multiple
@@ -774,18 +721,15 @@ pub struct SendRequestBody {
 }
 
 impl SendRequestBody {
-    pub fn new(messages: Vec<Message>) -> SendRequestBody {
-        SendRequestBody {
+    pub fn new(messages: Vec<Message>) -> Self {
+        Self {
             messages,
-            sending_speed_limit: None,
-            url_options: None,
-            bulk_id: None,
-            tracking: None,
+            ..Default::default()
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct SendBinaryRequestBody {
     /// The ID which uniquely identifies the request. Bulk ID will be received only when you send a
@@ -809,16 +753,15 @@ pub struct SendBinaryRequestBody {
 }
 
 impl SendBinaryRequestBody {
-    pub fn new(messages: Vec<BinaryMessage>) -> SendBinaryRequestBody {
-        SendBinaryRequestBody {
+    pub fn new(messages: Vec<BinaryMessage>) -> Self {
+        Self {
             messages: Some(messages),
-            sending_speed_limit: None,
-            bulk_id: None,
+            ..Default::default()
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SentMessageDetails {
     /// The ID that uniquely identifies the message sent.
@@ -835,7 +778,7 @@ pub struct SentMessageDetails {
     pub to: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SendResponseBody {
     /// The ID that uniquely identifies the request. Bulk ID will be received only when you send a
@@ -850,21 +793,21 @@ pub struct SendResponseBody {
 
 pub type SendBinaryResponseBody = SendResponseBody;
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 pub struct GetScheduledQueryParameters {
     #[validate(length(min = 1))]
     pub bulk_id: String,
 }
 
 impl GetScheduledQueryParameters {
-    pub fn new(bulk_id: &str) -> GetScheduledQueryParameters {
-        GetScheduledQueryParameters {
+    pub fn new(bulk_id: &str) -> Self {
+        Self {
             bulk_id: bulk_id.into(),
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetScheduledResponseBody {
     pub bulk_id: String,
@@ -872,7 +815,7 @@ pub struct GetScheduledResponseBody {
     pub send_at: String,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct GetLogsQueryParameters {
     /// The sender ID which can be alphanumeric or numeric.
@@ -926,29 +869,12 @@ pub struct GetLogsQueryParameters {
 }
 
 impl GetLogsQueryParameters {
-    pub fn new() -> GetLogsQueryParameters {
-        GetLogsQueryParameters {
-            from: None,
-            to: None,
-            bulk_id: None,
-            message_id: None,
-            general_status: None,
-            sent_since: None,
-            sent_until: None,
-            limit: None,
-            mcc: None,
-            mnc: None,
-        }
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 
-impl Default for GetLogsQueryParameters {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Log {
     /// Unique ID assigned to the request if messaging multiple recipients or sending multiple
@@ -1001,7 +927,7 @@ pub struct Log {
     pub to: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetLogsResponseBody {
     /// Collection of logs.
@@ -1009,25 +935,19 @@ pub struct GetLogsResponseBody {
     pub results: Option<Vec<Log>>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 pub struct GetInboundReportsQueryParameters {
     #[validate(range(max = 1000))]
     pub limit: Option<i32>,
 }
 
 impl GetInboundReportsQueryParameters {
-    pub fn new() -> GetInboundReportsQueryParameters {
-        GetInboundReportsQueryParameters { limit: None }
+    pub fn new() -> Self {
+        Self::default()
     }
 }
 
-impl Default for GetInboundReportsQueryParameters {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetInboundReportsResponseBody {
     /// The number of messages returned in the `results` array.
@@ -1043,7 +963,7 @@ pub struct GetInboundReportsResponseBody {
     pub results: Option<Vec<InboundSmsReport>>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct InboundSmsReport {
     /// Custom callback data sent over the notifyUrl.
@@ -1088,7 +1008,7 @@ pub struct InboundSmsReport {
     pub to: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 pub struct SendOverQueryParametersQueryParameters {
     /// Username for authentication.
     pub username: String,
@@ -1158,32 +1078,12 @@ pub struct SendOverQueryParametersQueryParameters {
 }
 
 impl SendOverQueryParametersQueryParameters {
-    pub fn new(
-        username: &str,
-        password: &str,
-        to: Vec<String>,
-    ) -> SendOverQueryParametersQueryParameters {
-        SendOverQueryParametersQueryParameters {
+    pub fn new(username: &str, password: &str, to: Vec<String>) -> Self {
+        Self {
             username: username.into(),
             password: password.into(),
-            bulk_id: None,
-            from: None,
             to,
-            text: None,
-            flash: None,
-            transliteration: None,
-            language_code: None,
-            intermediate_report: None,
-            notify_url: None,
-            notify_content_type: None,
-            callback_data: None,
-            validity_period: None,
-            send_at: None,
-            track: None,
-            process_key: None,
-            tracking_type: None,
-            india_dlt_content_template_id: None,
-            india_dlt_principal_entity_id: None,
+            ..Default::default()
         }
     }
 }
@@ -1192,7 +1092,7 @@ pub type SendOverQueryParametersResponseBody = SendResponseBody;
 
 pub type RescheduleQueryParameters = GetScheduledQueryParameters;
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct RescheduleRequestBody {
     /// Date and time when the message is to be sent. Used for scheduled SMS (see Scheduled SMS
@@ -1203,8 +1103,8 @@ pub struct RescheduleRequestBody {
 }
 
 impl RescheduleRequestBody {
-    pub fn new(send_at: &str) -> RescheduleRequestBody {
-        RescheduleRequestBody {
+    pub fn new(send_at: &str) -> Self {
+        Self {
             send_at: send_at.into(),
         }
     }
@@ -1213,18 +1113,19 @@ impl RescheduleRequestBody {
 pub type RescheduleResponseBody = GetScheduledResponseBody;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum ScheduledStatus {
-    PENDING,
-    PAUSED,
-    PROCESSING,
-    CANCELED,
-    FINISHED,
-    FAILED,
+    Pending,
+    Paused,
+    Processing,
+    Canceled,
+    Finished,
+    Failed,
 }
 
 pub type GetScheduledStatusQueryParameters = GetScheduledQueryParameters;
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetScheduledStatusResponseBody {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1243,14 +1144,14 @@ pub struct UpdateScheduledStatusRequestBody {
 }
 
 impl UpdateScheduledStatusRequestBody {
-    pub fn new(status: ScheduledStatus) -> UpdateScheduledStatusRequestBody {
-        UpdateScheduledStatusRequestBody { status }
+    pub fn new(status: ScheduledStatus) -> Self {
+        Self { status }
     }
 }
 
 pub type UpdateScheduledStatusResponseBody = GetScheduledStatusResponseBody;
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct TfaApplicationConfiguration {
     /// Indicates whether multiple PIN verification is allowed.
@@ -1287,7 +1188,7 @@ pub struct TfaApplicationConfiguration {
     pub verify_pin_limit: Option<String>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct TfaApplication {
     /// The ID of the application that represents your service, e.g. 2FA for login, 2FA for changing the password, etc.
@@ -1314,12 +1215,10 @@ pub type CreateTfaApplicationRequestBody = TfaApplication;
 pub type CreateTfaApplicationResponseBody = TfaApplication;
 
 impl CreateTfaApplicationRequestBody {
-    pub fn new(name: &str) -> CreateTfaApplicationRequestBody {
-        CreateTfaApplicationRequestBody {
-            application_id: None,
-            configuration: None,
-            enabled: None,
+    pub fn new(name: &str) -> Self {
+        Self {
             name: name.into(),
+            ..Default::default()
         }
     }
 }
@@ -1378,19 +1277,19 @@ pub enum TfaLanguage {
     ZhTw,
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Default, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize,
+)]
+#[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum PinType {
-    #[serde(rename = "NUMERIC")]
+    #[default]
     Numeric,
-    #[serde(rename = "ALPHA")]
     Alpha,
-    #[serde(rename = "HEX")]
     Hex,
-    #[serde(rename = "ALPHANUMERIC")]
     Alphanumeric,
 }
 
-#[derive(Clone, Debug, PartialEq, Default, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct TfaRegional {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1398,7 +1297,7 @@ pub struct TfaRegional {
     pub india_dlt: Option<IndiaDlt>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct TfaMessageTemplate {
     /// The ID of the application that represents your service (e.g. 2FA for login, 2FA for changing the password, etc.) for which the requested message has been created.
@@ -1447,19 +1346,12 @@ pub struct TfaMessageTemplate {
 }
 
 impl TfaMessageTemplate {
-    pub fn new(message_text: &str, pin_type: PinType, pin_length: i32) -> TfaMessageTemplate {
-        TfaMessageTemplate {
-            application_id: None,
-            language: None,
-            message_id: None,
+    pub fn new(message_text: &str, pin_type: PinType, pin_length: i32) -> Self {
+        Self {
             message_text: message_text.into(),
             pin_length,
-            pin_placeholder: None,
             pin_type,
-            regional: None,
-            repeat_dtmf: None,
-            sender_id: None,
-            speech_rate: None,
+            ..Default::default()
         }
     }
 }
@@ -1476,7 +1368,7 @@ pub type UpdateTfaMessageTemplateRequestBody = TfaMessageTemplate;
 
 pub type UpdateTfaMessageTemplateResponseBody = TfaMessageTemplate;
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct SendPinOverSmsQueryParameters {
     pub nc_needed: Option<bool>,
@@ -1488,13 +1380,7 @@ impl SendPinOverSmsQueryParameters {
     }
 }
 
-impl Default for SendPinOverSmsQueryParameters {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct SendPinOverSmsRequestBody {
     /// The ID of the application that represents your service, e.g. 2FA for login, 2FA for changing the password, etc.
@@ -1522,15 +1408,14 @@ impl SendPinOverSmsRequestBody {
     pub fn new(application_id: &str, message_id: &str, to: &str) -> Self {
         Self {
             application_id: application_id.into(),
-            from: None,
             message_id: message_id.into(),
-            placeholders: None,
             to: to.into(),
+            ..Default::default()
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct SendPinResponseBody {
     /// Call status, e.g. `PENDING_ACCEPTED`.
@@ -1556,7 +1441,7 @@ pub struct SendPinResponseBody {
 
 pub type SendPinOverSmsResponseBody = SendPinResponseBody;
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct ResendPinRequestBody {
     /// Key value pairs that will be replaced during message sending. Placeholder keys should NOT contain curly brackets and should NOT contain a pin placeholder. Valid example: "placeholders":{"firstName":"John"}
@@ -1567,12 +1452,6 @@ pub struct ResendPinRequestBody {
 impl ResendPinRequestBody {
     pub fn new() -> Self {
         Self { placeholders: None }
-    }
-}
-
-impl Default for ResendPinRequestBody {
-    fn default() -> Self {
-        Self::new()
     }
 }
 
@@ -1588,7 +1467,7 @@ pub type ResendPinOverVoiceRequestBody = ResendPinRequestBody;
 
 pub type ResendPinOverVoiceResponseBody = SendPinResponseBody;
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 pub struct VerifyPhoneNumberRequestBody {
     /// ID of the pin code that has to be verified.
     #[validate(length(min = 1))]
@@ -1601,7 +1480,7 @@ impl VerifyPhoneNumberRequestBody {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct VerifyPhoneNumberResponseBody {
     /// Number of remaining PIN attempts.
@@ -1621,7 +1500,7 @@ pub struct VerifyPhoneNumberResponseBody {
     pub verified: Option<bool>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 pub struct GetTfaVerificationStatusQueryParameters {
     /// Filter by msisdn (phone number) for which verification status is checked.
     pub msisdn: String,
@@ -1639,13 +1518,12 @@ impl GetTfaVerificationStatusQueryParameters {
     pub fn new(msisdn: &str) -> Self {
         Self {
             msisdn: msisdn.into(),
-            verified: None,
-            sent: None,
+            ..Default::default()
         }
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct TfaVerification {
     /// Phone number (MSISDN) for which verification status is checked.
@@ -1665,7 +1543,7 @@ pub struct TfaVerification {
     pub verified_at: Option<i64>,
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
+#[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
 pub struct GetTfaVerificationStatusResponseBody {
     /// Collection of verifications
