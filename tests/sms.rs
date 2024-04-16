@@ -138,7 +138,7 @@ fn preview_sms_multiple_blocking() {
 #[ignore]
 #[tokio::test]
 async fn sms_delivery_reports() {
-    let mut parameters = GetDeliveryReportsQueryParameters::new();
+    let mut parameters = DeliveryReportsQueryParameters::new();
     parameters.limit = Some(10);
 
     let response = test_sms_client()
@@ -197,7 +197,7 @@ async fn send_binary_sms() {
 #[ignore]
 #[tokio::test]
 async fn logs() {
-    let query_parameters = GetLogsQueryParameters::new();
+    let query_parameters = LogsQueryParameters::new();
     let response = test_sms_client().logs(query_parameters).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
@@ -206,7 +206,7 @@ async fn logs() {
 #[ignore]
 #[tokio::test]
 async fn inbound_reports() {
-    let query_parameters = GetInboundReportsQueryParameters::new();
+    let query_parameters = InboundReportsQueryParameters::new();
     let response = test_sms_client()
         .inbound_reports(query_parameters)
         .await
@@ -233,7 +233,7 @@ async fn send_over_query_parameters() {
 #[ignore]
 #[tokio::test]
 async fn scheduled() {
-    let query_parameters = GetScheduledStatusQueryParameters::new(DUMMY_BULK_ID);
+    let query_parameters = ScheduledStatusQueryParameters::new(DUMMY_BULK_ID);
 
     let response = test_sms_client()
         .scheduled_status(query_parameters)
@@ -246,7 +246,7 @@ async fn scheduled() {
 #[ignore]
 #[tokio::test]
 async fn scheduled_status() {
-    let query_parameters = GetScheduledStatusQueryParameters::new(DUMMY_BULK_ID);
+    let query_parameters = ScheduledStatusQueryParameters::new(DUMMY_BULK_ID);
 
     let response = test_sms_client()
         .scheduled_status(query_parameters)
@@ -484,7 +484,7 @@ async fn verify_phone_number() {
 #[ignore]
 #[tokio::test]
 async fn tfa_verification_status() {
-    let query_parameters = GetTfaVerificationStatusQueryParameters::new("555555555555");
+    let query_parameters = TfaVerificationStatusQueryParameters::new("555555555555");
     let response = test_sms_client()
         .tfa_verification_status("02CC3CAAFD733136AA15DFAC720A0C42", query_parameters)
         .await

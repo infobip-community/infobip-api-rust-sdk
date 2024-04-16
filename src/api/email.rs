@@ -14,11 +14,11 @@ use crate::api::{
 };
 use crate::configuration::Configuration;
 use crate::model::email::{
-    AddDomainRequestBody, AddDomainResponseBody, GetBulksQueryParameters, GetBulksResponseBody,
-    GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody, GetDomainResponseBody,
-    GetDomainsQueryParameters, GetDomainsResponseBody, GetLogsQueryParameters, GetLogsResponseBody,
-    GetScheduledStatusQueryParameters, GetScheduledStatusResponseBody, RescheduleQueryParameters,
-    RescheduleRequestBody, RescheduleResponseBody, SendRequestBody, SendResponseBody,
+    AddDomainRequestBody, AddDomainResponseBody, BulksQueryParameters, BulksResponseBody,
+    DeliveryReportsQueryParameters, DeliveryReportsResponseBody, DomainResponseBody,
+    DomainsQueryParameters, DomainsResponseBody, LogsQueryParameters, LogsResponseBody,
+    RescheduleQueryParameters, RescheduleRequestBody, RescheduleResponseBody,
+    ScheduledStatusQueryParameters, ScheduledStatusResponseBody, SendRequestBody, SendResponseBody,
     UpdateScheduledStatusQueryParameters, UpdateScheduledStatusRequestBody,
     UpdateScheduledStatusResponseBody, UpdateTrackingRequestBody, UpdateTrackingResponseBody,
     ValidateAddressRequestBody, ValidateAddressResponseBody,
@@ -213,14 +213,14 @@ impl EmailClient {
     /// ```no_run
     /// # use infobip_sdk::api::email::EmailClient;
     /// # use infobip_sdk::configuration::Configuration;
-    /// # use infobip_sdk::model::email::GetBulksQueryParameters;
+    /// # use infobip_sdk::model::email::BulksQueryParameters;
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = GetBulksQueryParameters::new("some-bulk-id");
+    /// let query_parameters = BulksQueryParameters::new("some-bulk-id");
     ///
     /// let response = client.bulks(query_parameters).await?;
     ///
@@ -230,8 +230,8 @@ impl EmailClient {
     /// ```
     pub async fn bulks(
         &self,
-        query_parameters: GetBulksQueryParameters,
-    ) -> Result<SdkResponse<GetBulksResponseBody>, SdkError> {
+        query_parameters: BulksQueryParameters,
+    ) -> Result<SdkResponse<BulksResponseBody>, SdkError> {
         query_parameters.validate()?;
 
         let parameters_map = HashMap::from([("bulkId".to_string(), query_parameters.bulk_id)]);
@@ -318,14 +318,14 @@ impl EmailClient {
     /// ```no_run
     /// # use infobip_sdk::api::email::EmailClient;
     /// # use infobip_sdk::configuration::Configuration;
-    /// # use infobip_sdk::model::email::GetScheduledStatusQueryParameters;
+    /// # use infobip_sdk::model::email::ScheduledStatusQueryParameters;
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_params = GetScheduledStatusQueryParameters::new("some-bulk-id");
+    /// let query_params = ScheduledStatusQueryParameters::new("some-bulk-id");
     ///
     /// let response = client.scheduled_status(query_params).await?;
     ///
@@ -335,8 +335,8 @@ impl EmailClient {
     /// ```
     pub async fn scheduled_status(
         &self,
-        query_parameters: GetScheduledStatusQueryParameters,
-    ) -> Result<SdkResponse<GetScheduledStatusResponseBody>, SdkError> {
+        query_parameters: ScheduledStatusQueryParameters,
+    ) -> Result<SdkResponse<ScheduledStatusResponseBody>, SdkError> {
         query_parameters.validate()?;
 
         let parameters_map = HashMap::from([("bulkId".to_string(), query_parameters.bulk_id)]);
@@ -417,20 +417,20 @@ impl EmailClient {
         }
     }
 
-    /// Get one-time delivery reports for all sent emails.
+    ///  one-time delivery reports for all sent emails.
     ///
     /// # Example
     /// ```no_run
     /// # use infobip_sdk::api::email::EmailClient;
     /// # use infobip_sdk::configuration::Configuration;
-    /// # use infobip_sdk::model::email::GetDeliveryReportsQueryParameters;
+    /// # use infobip_sdk::model::email::DeliveryReportsQueryParameters;
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_params = GetDeliveryReportsQueryParameters::default();
+    /// let query_params = DeliveryReportsQueryParameters::default();
     ///
     /// let response = client.delivery_reports(query_params).await?;
     ///
@@ -440,8 +440,8 @@ impl EmailClient {
     /// ```
     pub async fn delivery_reports(
         &self,
-        query_parameters: GetDeliveryReportsQueryParameters,
-    ) -> Result<SdkResponse<GetDeliveryReportsResponseBody>, SdkError> {
+        query_parameters: DeliveryReportsQueryParameters,
+    ) -> Result<SdkResponse<DeliveryReportsResponseBody>, SdkError> {
         query_parameters.validate()?;
 
         let mut parameters_map = HashMap::<String, String>::new();
@@ -477,21 +477,21 @@ impl EmailClient {
         }
     }
 
-    /// Get email logs of sent Email messagesId for request. Email logs
+    ///  email logs of sent Email messagesId for request. Email logs
     /// are available for the last 48 hours.
     ///
     /// # Example
     /// ```no_run
     /// # use infobip_sdk::api::email::EmailClient;
     /// # use infobip_sdk::configuration::Configuration;
-    /// # use infobip_sdk::model::email::GetLogsQueryParameters;
+    /// # use infobip_sdk::model::email::LogsQueryParameters;
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_params = GetLogsQueryParameters::default();
+    /// let query_params = LogsQueryParameters::default();
     ///
     /// let response = client.logs(query_params).await?;
     ///
@@ -501,8 +501,8 @@ impl EmailClient {
     /// ```
     pub async fn logs(
         &self,
-        query_parameters: GetLogsQueryParameters,
-    ) -> Result<SdkResponse<GetLogsResponseBody>, SdkError> {
+        query_parameters: LogsQueryParameters,
+    ) -> Result<SdkResponse<LogsResponseBody>, SdkError> {
         query_parameters.validate()?;
 
         let mut parameters_map = HashMap::<String, String>::new();
@@ -601,21 +601,21 @@ impl EmailClient {
         }
     }
 
-    /// Get all domains associated with the account. It also provides details of the
+    ///  all domains associated with the account. It also provides details of the
     /// retrieved domain like the DNS records, tracking details, active/blocked status, etc.
     ///
     /// # Example
     /// ```no_run
     /// # use infobip_sdk::api::email::EmailClient;
     /// # use infobip_sdk::configuration::Configuration;
-    /// # use infobip_sdk::model::email::GetDomainsQueryParameters;
+    /// # use infobip_sdk::model::email::DomainsQueryParameters;
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = EmailClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_params = GetDomainsQueryParameters::default();
+    /// let query_params = DomainsQueryParameters::default();
     ///
     /// let response = client.domains(query_params).await?;
     ///
@@ -625,8 +625,8 @@ impl EmailClient {
     /// ```
     pub async fn domains(
         &self,
-        query_parameters: GetDomainsQueryParameters,
-    ) -> Result<SdkResponse<GetDomainsResponseBody>, SdkError> {
+        query_parameters: DomainsQueryParameters,
+    ) -> Result<SdkResponse<DomainsResponseBody>, SdkError> {
         query_parameters.validate()?;
 
         let mut parameters_map = HashMap::<String, String>::new();
@@ -708,7 +708,7 @@ impl EmailClient {
         }
     }
 
-    /// Get the details of the domain like the DNS records, tracking details, active/blocked
+    ///  the details of the domain like the DNS records, tracking details, active/blocked
     /// status, etc.
     ///
     /// # Example
@@ -730,7 +730,7 @@ impl EmailClient {
     pub async fn domain(
         &self,
         domain_name: &str,
-    ) -> Result<SdkResponse<GetDomainResponseBody>, SdkError> {
+    ) -> Result<SdkResponse<DomainResponseBody>, SdkError> {
         let path = PATH_GET_DOMAIN.replace("{domainName}", domain_name);
 
         let response = send_no_body_request(

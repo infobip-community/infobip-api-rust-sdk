@@ -94,7 +94,7 @@ async fn test_bulks_valid() {
 
     let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_params = GetBulksQueryParameters::new("bulk-id");
+    let query_params = BulksQueryParameters::new("bulk-id");
 
     let response = client.bulks(query_params).await.unwrap();
 
@@ -106,7 +106,7 @@ async fn test_bulks_valid() {
 async fn bulks_invalid() {
     let client = EmailClient::with_configuration(test_configuration(DUMMY_BASE_URL));
 
-    let query_params = GetBulksQueryParameters::new("");
+    let query_params = BulksQueryParameters::new("");
 
     let error = client.bulks(query_params).await.unwrap_err();
 
@@ -190,7 +190,7 @@ async fn scheduled_status_valid() {
 
     let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_parameters = GetScheduledStatusQueryParameters::new("bulk-id");
+    let query_parameters = ScheduledStatusQueryParameters::new("bulk-id");
 
     let response = client.scheduled_status(query_parameters).await.unwrap();
 
@@ -274,7 +274,7 @@ async fn delivery_reports_valid() {
 
     let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_parameters = GetDeliveryReportsQueryParameters::default();
+    let query_parameters = DeliveryReportsQueryParameters::default();
 
     let response = client.delivery_reports(query_parameters).await.unwrap();
 
@@ -322,7 +322,7 @@ async fn logs_valid() {
 
     let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_parameters = GetLogsQueryParameters::default();
+    let query_parameters = LogsQueryParameters::default();
 
     let response = client.logs(query_parameters).await.unwrap();
 
@@ -405,7 +405,7 @@ async fn domains_valid() {
 
     let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_parameters = GetDomainsQueryParameters::default();
+    let query_parameters = DomainsQueryParameters::default();
 
     let response = client.domains(query_parameters).await.unwrap();
 

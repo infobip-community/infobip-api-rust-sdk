@@ -11,8 +11,8 @@ use crate::api::{
 };
 use crate::configuration::Configuration;
 use crate::model::whatsapp::{
-    CreateTemplateRequestBody, CreateTemplateResponseBody, GetTemplatesResponseBody,
-    SendAudioRequestBody, SendAudioResponseBody, SendContactRequestBody, SendContactResponseBody,
+    CreateTemplateRequestBody, CreateTemplateResponseBody, SendAudioRequestBody,
+    SendAudioResponseBody, SendContactRequestBody, SendContactResponseBody,
     SendDocumentRequestBody, SendDocumentResponseBody, SendImageRequestBody, SendImageResponseBody,
     SendInteractiveButtonsRequestBody, SendInteractiveButtonsResponseBody,
     SendInteractiveListRequestBody, SendInteractiveListResponseBody,
@@ -20,7 +20,7 @@ use crate::model::whatsapp::{
     SendInteractiveProductRequestBody, SendInteractiveProductResponseBody, SendLocationRequestBody,
     SendLocationResponseBody, SendStickerRequestBody, SendStickerResponseBody,
     SendTemplateRequestBody, SendTemplateResponseBody, SendTextRequestBody, SendTextResponseBody,
-    SendVideoRequestBody, SendVideoResponseBody,
+    SendVideoRequestBody, SendVideoResponseBody, TemplatesResponseBody,
 };
 
 pub const PATH_CREATE_TEMPLATE: &str = "/whatsapp/2/senders/{sender}/templates";
@@ -783,7 +783,7 @@ impl WhatsAppClient {
         }
     }
 
-    /// Get all the templates and their statuses for a given sender.
+    ///  all the templates and their statuses for a given sender.
     ///
     /// # Example
     /// ```no_run
@@ -804,7 +804,7 @@ impl WhatsAppClient {
     pub async fn templates(
         &self,
         sender: &str,
-    ) -> Result<SdkResponse<GetTemplatesResponseBody>, SdkError> {
+    ) -> Result<SdkResponse<TemplatesResponseBody>, SdkError> {
         let path = PATH_GET_TEMPLATES.replace("{sender}", sender);
 
         let response = send_no_body_request(

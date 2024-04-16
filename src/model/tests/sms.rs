@@ -31,7 +31,7 @@ fn sms_preview_request_body_invalid_transliteration() {
 
 #[test]
 fn delivery_reports_query_parameters_valid() {
-    let mut parameters = GetDeliveryReportsQueryParameters::new();
+    let mut parameters = DeliveryReportsQueryParameters::new();
     parameters.limit = Some(10);
 
     assert!(parameters.validate().is_ok())
@@ -39,7 +39,7 @@ fn delivery_reports_query_parameters_valid() {
 
 #[test]
 fn delivery_reports_query_parameters_big_limit() {
-    let mut parameters = GetDeliveryReportsQueryParameters::new();
+    let mut parameters = DeliveryReportsQueryParameters::new();
     parameters.limit = Some(10000);
 
     assert!(parameters.validate().is_err())
@@ -305,21 +305,21 @@ fn reschedule_request_body_empty_send_at() {
 
 #[test]
 fn scheduled_query_parameters_valid() {
-    let query_parameters = GetScheduledQueryParameters::new("some_bulk_id");
+    let query_parameters = ScheduledQueryParameters::new("some_bulk_id");
 
     assert!(query_parameters.validate().is_ok());
 }
 
 #[test]
 fn scheduled_query_parameters_empty_bulk_id() {
-    let query_parameters = GetScheduledQueryParameters::new("");
+    let query_parameters = ScheduledQueryParameters::new("");
 
     assert!(query_parameters.validate().is_err());
 }
 
 #[test]
 fn inbound_reports_query_parameters_valid() {
-    let mut query_parameters = GetInboundReportsQueryParameters::new();
+    let mut query_parameters = InboundReportsQueryParameters::new();
     query_parameters.limit = Some(10);
 
     assert!(query_parameters.validate().is_ok());
@@ -327,7 +327,7 @@ fn inbound_reports_query_parameters_valid() {
 
 #[test]
 fn inbound_reports_query_parameters_big_limit() {
-    let mut query_parameters = GetInboundReportsQueryParameters::new();
+    let mut query_parameters = InboundReportsQueryParameters::new();
     query_parameters.limit = Some(10001);
 
     assert!(query_parameters.validate().is_err());

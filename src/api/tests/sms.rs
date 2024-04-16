@@ -207,7 +207,7 @@ async fn test_delivery_reports_valid() {
 
     let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
-    let mut query_parameters = GetDeliveryReportsQueryParameters::new();
+    let mut query_parameters = DeliveryReportsQueryParameters::new();
     query_parameters.limit = Some(10);
 
     let response = client.delivery_reports(query_parameters).await.unwrap();
@@ -225,7 +225,7 @@ async fn test_delivery_reports_valid() {
 async fn test_delivery_reports_bad_parameters() {
     let client = SmsClient::with_configuration(test_configuration(DUMMY_BASE_URL));
 
-    let mut query_parameters = GetDeliveryReportsQueryParameters::new();
+    let mut query_parameters = DeliveryReportsQueryParameters::new();
     query_parameters.limit = Some(10000);
 
     let error = client.delivery_reports(query_parameters).await.unwrap_err();
@@ -401,7 +401,7 @@ async fn test_scheduled_valid() {
 
     let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_parameters = GetScheduledQueryParameters::new("BULK-ID-123-xyz");
+    let query_parameters = ScheduledQueryParameters::new("BULK-ID-123-xyz");
 
     let response = client.scheduled(query_parameters).await.unwrap();
 
@@ -413,7 +413,7 @@ async fn test_scheduled_valid() {
 async fn test_scheduled_empty_bulk_id() {
     let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
-    let query_parameters = GetScheduledQueryParameters::new("");
+    let query_parameters = ScheduledQueryParameters::new("");
 
     assert!(client.scheduled(query_parameters).await.is_err());
 }
@@ -495,7 +495,7 @@ async fn test_scheduled_status_valid() {
 
     let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_parameters = GetScheduledStatusQueryParameters::new("BULK-ID-123-xyz");
+    let query_parameters = ScheduledStatusQueryParameters::new("BULK-ID-123-xyz");
 
     let response = client.scheduled_status(query_parameters).await.unwrap();
 
@@ -508,7 +508,7 @@ async fn test_scheduled_status_valid() {
 async fn test_scheduled_status_empty_bulk_id() {
     let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
-    let query_parameters = GetScheduledStatusQueryParameters::new("");
+    let query_parameters = ScheduledStatusQueryParameters::new("");
 
     assert!(client.scheduled_status(query_parameters).await.is_err());
 }
@@ -594,7 +594,7 @@ async fn test_inbound_reports_valid() {
 
     let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_parameters = GetInboundReportsQueryParameters::new();
+    let query_parameters = InboundReportsQueryParameters::new();
 
     let response = client.inbound_reports(query_parameters).await.unwrap();
 
@@ -606,7 +606,7 @@ async fn test_inbound_reports_valid() {
 async fn test_inbound_reports_big_limit() {
     let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
-    let mut query_parameters = GetInboundReportsQueryParameters::new();
+    let mut query_parameters = InboundReportsQueryParameters::new();
     query_parameters.limit = Some(1001);
 
     assert!(client.inbound_reports(query_parameters).await.is_err());
@@ -687,7 +687,7 @@ async fn test_logs_valid() {
 
     let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_parameters = GetLogsQueryParameters::new();
+    let query_parameters = LogsQueryParameters::new();
 
     let response = client.logs(query_parameters).await.unwrap();
 
@@ -699,7 +699,7 @@ async fn test_logs_valid() {
 async fn test_logs_big_limit() {
     let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
-    let mut query_parameters = GetLogsQueryParameters::new();
+    let mut query_parameters = LogsQueryParameters::new();
     query_parameters.limit = Some(1001);
 
     assert!(client.logs(query_parameters).await.is_err());
@@ -1282,7 +1282,7 @@ async fn test_tfa_verification_status_valid() {
 
     let client = SmsClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_parameters = GetTfaVerificationStatusQueryParameters::new("41793026727");
+    let query_parameters = TfaVerificationStatusQueryParameters::new("41793026727");
 
     let response = client
         .tfa_verification_status("16A8B5FE2BCD6CA716A2D780CB3F3390", query_parameters)
@@ -1297,7 +1297,7 @@ async fn test_tfa_verification_status_valid() {
 async fn test_tfa_verification_status_empty_msisdn() {
     let client = SmsClient::with_configuration(test_configuration("https://some.url"));
 
-    let query_parameters = GetTfaVerificationStatusQueryParameters::new("");
+    let query_parameters = TfaVerificationStatusQueryParameters::new("");
 
     assert!(client
         .tfa_verification_status("some-app-id", query_parameters)

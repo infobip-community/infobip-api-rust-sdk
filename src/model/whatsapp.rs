@@ -1944,7 +1944,7 @@ pub struct Template {
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GetTemplatesResponseBody {
+pub struct TemplatesResponseBody {
     /// List of all templates for given sender.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub templates: Option<Vec<Template>>,

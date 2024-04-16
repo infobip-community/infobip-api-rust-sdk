@@ -103,7 +103,7 @@ pub struct PreviewResponseBody {
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-pub struct GetDeliveryReportsQueryParameters {
+pub struct DeliveryReportsQueryParameters {
     /// Unique ID assigned to the request if messaging multiple recipients or sending multiple
     /// messages via a single API request.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -120,7 +120,7 @@ pub struct GetDeliveryReportsQueryParameters {
     pub limit: Option<i32>,
 }
 
-impl GetDeliveryReportsQueryParameters {
+impl DeliveryReportsQueryParameters {
     pub fn new() -> Self {
         Self::default()
     }
@@ -247,7 +247,7 @@ pub struct Report {
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GetDeliveryReportsResponseBody {
+pub struct DeliveryReportsResponseBody {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub results: Option<Vec<Report>>,
 }
@@ -794,12 +794,12 @@ pub struct SendResponseBody {
 pub type SendBinaryResponseBody = SendResponseBody;
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
-pub struct GetScheduledQueryParameters {
+pub struct ScheduledQueryParameters {
     #[validate(length(min = 1))]
     pub bulk_id: String,
 }
 
-impl GetScheduledQueryParameters {
+impl ScheduledQueryParameters {
     pub fn new(bulk_id: &str) -> Self {
         Self {
             bulk_id: bulk_id.into(),
@@ -809,7 +809,7 @@ impl GetScheduledQueryParameters {
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GetScheduledResponseBody {
+pub struct ScheduledResponseBody {
     pub bulk_id: String,
 
     pub send_at: String,
@@ -817,7 +817,7 @@ pub struct GetScheduledResponseBody {
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-pub struct GetLogsQueryParameters {
+pub struct LogsQueryParameters {
     /// The sender ID which can be alphanumeric or numeric.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub from: Option<String>,
@@ -868,7 +868,7 @@ pub struct GetLogsQueryParameters {
     pub mnc: Option<String>,
 }
 
-impl GetLogsQueryParameters {
+impl LogsQueryParameters {
     pub fn new() -> Self {
         Self::default()
     }
@@ -929,19 +929,19 @@ pub struct Log {
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GetLogsResponseBody {
+pub struct LogsResponseBody {
     /// Collection of logs.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub results: Option<Vec<Log>>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
-pub struct GetInboundReportsQueryParameters {
+pub struct InboundReportsQueryParameters {
     #[validate(range(max = 1000))]
     pub limit: Option<i32>,
 }
 
-impl GetInboundReportsQueryParameters {
+impl InboundReportsQueryParameters {
     pub fn new() -> Self {
         Self::default()
     }
@@ -949,7 +949,7 @@ impl GetInboundReportsQueryParameters {
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GetInboundReportsResponseBody {
+pub struct InboundReportsResponseBody {
     /// The number of messages returned in the `results` array.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_count: Option<i32>,
@@ -1090,7 +1090,7 @@ impl SendOverQueryParametersQueryParameters {
 
 pub type SendOverQueryParametersResponseBody = SendResponseBody;
 
-pub type RescheduleQueryParameters = GetScheduledQueryParameters;
+pub type RescheduleQueryParameters = ScheduledQueryParameters;
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
@@ -1110,7 +1110,7 @@ impl RescheduleRequestBody {
     }
 }
 
-pub type RescheduleResponseBody = GetScheduledResponseBody;
+pub type RescheduleResponseBody = ScheduledResponseBody;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
@@ -1123,11 +1123,11 @@ pub enum ScheduledStatus {
     Failed,
 }
 
-pub type GetScheduledStatusQueryParameters = GetScheduledQueryParameters;
+pub type ScheduledStatusQueryParameters = ScheduledQueryParameters;
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GetScheduledStatusResponseBody {
+pub struct ScheduledStatusResponseBody {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bulk_id: Option<String>,
 
@@ -1149,7 +1149,7 @@ impl UpdateScheduledStatusRequestBody {
     }
 }
 
-pub type UpdateScheduledStatusResponseBody = GetScheduledStatusResponseBody;
+pub type UpdateScheduledStatusResponseBody = ScheduledStatusResponseBody;
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
@@ -1208,7 +1208,7 @@ pub struct TfaApplication {
     pub name: String,
 }
 
-pub type GetTfaApplicationsResponseBody = Vec<TfaApplication>;
+pub type TfaApplicationsResponseBody = Vec<TfaApplication>;
 
 pub type CreateTfaApplicationRequestBody = TfaApplication;
 
@@ -1223,7 +1223,7 @@ impl CreateTfaApplicationRequestBody {
     }
 }
 
-pub type GetTfaApplicationResponseBody = TfaApplication;
+pub type TfaApplicationResponseBody = TfaApplication;
 
 pub type UpdateTfaApplicationRequestBody = TfaApplication;
 
@@ -1356,13 +1356,13 @@ impl TfaMessageTemplate {
     }
 }
 
-pub type GetTfaMessageTemplatesResponseBody = Vec<TfaMessageTemplate>;
+pub type TfaMessageTemplatesResponseBody = Vec<TfaMessageTemplate>;
 
 pub type CreateTfaMessageTemplateRequestBody = TfaMessageTemplate;
 
 pub type CreateTfaMessageTemplateResponseBody = TfaMessageTemplate;
 
-pub type GetTfaMessageTemplateResponseBody = TfaMessageTemplate;
+pub type TfaMessageTemplateResponseBody = TfaMessageTemplate;
 
 pub type UpdateTfaMessageTemplateRequestBody = TfaMessageTemplate;
 
@@ -1501,7 +1501,7 @@ pub struct VerifyPhoneNumberResponseBody {
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
-pub struct GetTfaVerificationStatusQueryParameters {
+pub struct TfaVerificationStatusQueryParameters {
     /// Filter by msisdn (phone number) for which verification status is checked.
     pub msisdn: String,
 
@@ -1514,7 +1514,7 @@ pub struct GetTfaVerificationStatusQueryParameters {
     pub sent: Option<bool>,
 }
 
-impl GetTfaVerificationStatusQueryParameters {
+impl TfaVerificationStatusQueryParameters {
     pub fn new(msisdn: &str) -> Self {
         Self {
             msisdn: msisdn.into(),
@@ -1545,7 +1545,7 @@ pub struct TfaVerification {
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-pub struct GetTfaVerificationStatusResponseBody {
+pub struct TfaVerificationStatusResponseBody {
     /// Collection of verifications
     #[serde(skip_serializing_if = "Option::is_none")]
     pub verifications: Option<Vec<TfaVerification>>,

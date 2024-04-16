@@ -227,12 +227,12 @@ pub struct SendResponseBody {
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
-pub struct GetBulksQueryParameters {
+pub struct BulksQueryParameters {
     #[validate(length(min = 1))]
     pub bulk_id: String,
 }
 
-impl GetBulksQueryParameters {
+impl BulksQueryParameters {
     pub fn new(bulk_id: &str) -> Self {
         Self {
             bulk_id: bulk_id.into(),
@@ -242,7 +242,7 @@ impl GetBulksQueryParameters {
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GetBulksResponseBody {
+pub struct BulksResponseBody {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_bulk_id: Option<String>,
 
@@ -260,7 +260,7 @@ pub struct BulkInfo {
     pub send_at: Option<u64>,
 }
 
-pub type RescheduleQueryParameters = GetBulksQueryParameters;
+pub type RescheduleQueryParameters = BulksQueryParameters;
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
@@ -279,7 +279,7 @@ impl RescheduleRequestBody {
 
 pub type RescheduleResponseBody = BulkInfo;
 
-pub type GetScheduledStatusQueryParameters = GetBulksQueryParameters;
+pub type ScheduledStatusQueryParameters = BulksQueryParameters;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
@@ -303,7 +303,7 @@ pub struct BulkStatusInfo {
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GetScheduledStatusResponseBody {
+pub struct ScheduledStatusResponseBody {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub external_bulk_id: Option<String>,
 
@@ -311,7 +311,7 @@ pub struct GetScheduledStatusResponseBody {
     pub bulks: Option<Vec<BulkStatusInfo>>,
 }
 
-pub type UpdateScheduledStatusQueryParameters = GetBulksQueryParameters;
+pub type UpdateScheduledStatusQueryParameters = BulksQueryParameters;
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
@@ -329,7 +329,7 @@ pub type UpdateScheduledStatusResponseBody = BulkStatusInfo;
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-pub struct GetDeliveryReportsQueryParameters {
+pub struct DeliveryReportsQueryParameters {
     /// Bulk ID for which report is requested.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bulk_id: Option<String>,
@@ -343,7 +343,7 @@ pub struct GetDeliveryReportsQueryParameters {
     pub limit: Option<i32>,
 }
 
-impl GetDeliveryReportsQueryParameters {
+impl DeliveryReportsQueryParameters {
     pub fn new() -> Self {
         Self::default()
     }
@@ -403,14 +403,14 @@ pub struct Report {
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GetDeliveryReportsResponseBody {
+pub struct DeliveryReportsResponseBody {
     #[serde(rename = "results", skip_serializing_if = "Option::is_none")]
     pub results: Option<Vec<Report>>,
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-pub struct GetLogsQueryParameters {
+pub struct LogsQueryParameters {
     /// The ID that uniquely identifies the sent email.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<String>,
@@ -446,7 +446,7 @@ pub struct GetLogsQueryParameters {
     pub limit: Option<i32>,
 }
 
-impl GetLogsQueryParameters {
+impl LogsQueryParameters {
     pub fn new() -> Self {
         Self::default()
     }
@@ -499,7 +499,7 @@ pub struct Log {
 
 #[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
-pub struct GetLogsResponseBody {
+pub struct LogsResponseBody {
     #[serde(rename = "results", skip_serializing_if = "Option::is_none")]
     pub results: Option<Vec<Log>>,
 }
@@ -561,7 +561,7 @@ pub struct ValidateAddressResponseBody {
 }
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
-pub struct GetDomainsQueryParameters {
+pub struct DomainsQueryParameters {
     /// Maximum number of domains to be viewed per page. Default value is 10 with a maximum of 20 records per page.
     #[validate(range(min = 1, max = 20))]
     pub size: Option<i32>,
@@ -571,7 +571,7 @@ pub struct GetDomainsQueryParameters {
     pub page: Option<i32>,
 }
 
-impl GetDomainsQueryParameters {
+impl DomainsQueryParameters {
     pub fn new() -> Self {
         Self::default()
     }
@@ -663,7 +663,7 @@ pub struct Paging {
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct GetDomainsResponseBody {
+pub struct DomainsResponseBody {
     /// Pagination details like page number, page size, etc.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub paging: Option<Paging>,
@@ -702,7 +702,7 @@ impl AddDomainRequestBody {
 
 pub type AddDomainResponseBody = Domain;
 
-pub type GetDomainResponseBody = Domain;
+pub type DomainResponseBody = Domain;
 
 #[derive(Clone, Debug, Default, PartialEq, Eq, Serialize, Deserialize, Validate)]
 #[serde(rename_all = "camelCase")]
