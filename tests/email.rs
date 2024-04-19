@@ -61,13 +61,10 @@ async fn send_bulk() {
 
 #[ignore]
 #[tokio::test]
-async fn get_bulks() {
-    let query_params = GetBulksQueryParameters::new("test-bulk-id-rust-003");
+async fn bulks() {
+    let query_params = BulksQueryParameters::new("test-bulk-id-rust-003");
 
-    let response = get_test_email_client()
-        .get_bulks(query_params)
-        .await
-        .unwrap();
+    let response = get_test_email_client().bulks(query_params).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
 }
@@ -94,11 +91,11 @@ async fn reschedule() {
 
 #[ignore]
 #[tokio::test]
-async fn get_scheduled_status() {
-    let query_params = GetScheduledStatusQueryParameters::new("test-bulk-id-rust-003");
+async fn scheduled_status() {
+    let query_params = ScheduledStatusQueryParameters::new("test-bulk-id-rust-003");
 
     let response = get_test_email_client()
-        .get_scheduled_status(query_params)
+        .scheduled_status(query_params)
         .await
         .unwrap();
 
@@ -109,7 +106,7 @@ async fn get_scheduled_status() {
 #[tokio::test]
 async fn update_scheduled_status() {
     let query_params = UpdateScheduledStatusQueryParameters::new("test-bulk-id-rust-003");
-    let request_body = UpdateScheduledStatusRequestBody::new(BulkStatus::CANCELED);
+    let request_body = UpdateScheduledStatusRequestBody::new(BulkStatus::Canceled);
 
     let response = get_test_email_client()
         .update_scheduled_status(query_params, request_body)
@@ -121,11 +118,11 @@ async fn update_scheduled_status() {
 
 #[ignore]
 #[tokio::test]
-async fn get_delivery_reports() {
-    let query_params = GetDeliveryReportsQueryParameters::default();
+async fn delivery_reports() {
+    let query_params = DeliveryReportsQueryParameters::default();
 
     let response = get_test_email_client()
-        .get_delivery_reports(query_params)
+        .delivery_reports(query_params)
         .await
         .unwrap();
 
@@ -134,13 +131,10 @@ async fn get_delivery_reports() {
 
 #[ignore]
 #[tokio::test]
-async fn get_logs() {
-    let query_params = GetLogsQueryParameters::default();
+async fn logs() {
+    let query_params = LogsQueryParameters::default();
 
-    let response = get_test_email_client()
-        .get_logs(query_params)
-        .await
-        .unwrap();
+    let response = get_test_email_client().logs(query_params).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     println!("{}", serde_json::to_string_pretty(&response.body).unwrap());
@@ -161,13 +155,10 @@ async fn validate_address() {
 
 #[ignore]
 #[tokio::test]
-async fn get_domains() {
-    let query_params = GetDomainsQueryParameters::default();
+async fn domains() {
+    let query_params = DomainsQueryParameters::default();
 
-    let response = get_test_email_client()
-        .get_domains(query_params)
-        .await
-        .unwrap();
+    let response = get_test_email_client().domains(query_params).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     println!("{}", serde_json::to_string_pretty(&response.body).unwrap());
@@ -190,9 +181,9 @@ async fn add_domain() {
 
 #[ignore]
 #[tokio::test]
-async fn get_domain() {
+async fn domain() {
     let response = get_test_email_client()
-        .get_domain("test-domain-rust-001.com")
+        .domain("test-domain-rust-001.com")
         .await
         .unwrap();
 

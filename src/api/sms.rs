@@ -11,24 +11,22 @@ use crate::api::{
 use crate::model::sms::{
     CreateTfaApplicationRequestBody, CreateTfaApplicationResponseBody,
     CreateTfaMessageTemplateRequestBody, CreateTfaMessageTemplateResponseBody,
-    GetDeliveryReportsQueryParameters, GetDeliveryReportsResponseBody,
-    GetInboundReportsQueryParameters, GetInboundReportsResponseBody, GetLogsQueryParameters,
-    GetLogsResponseBody, GetScheduledQueryParameters, GetScheduledResponseBody,
-    GetScheduledStatusQueryParameters, GetScheduledStatusResponseBody,
-    GetTfaApplicationResponseBody, GetTfaApplicationsResponseBody,
-    GetTfaMessageTemplateResponseBody, GetTfaMessageTemplatesResponseBody,
-    GetTfaVerificationStatusQueryParameters, GetTfaVerificationStatusResponseBody,
-    RescheduleQueryParameters, RescheduleRequestBody, RescheduleResponseBody,
-    ResendPinOverSmsRequestBody, ResendPinOverSmsResponseBody, ResendPinOverVoiceRequestBody,
-    ResendPinOverVoiceResponseBody, SendBinaryRequestBody, SendBinaryResponseBody,
+    DeliveryReportsQueryParameters, DeliveryReportsResponseBody, InboundReportsQueryParameters,
+    InboundReportsResponseBody, LogsQueryParameters, LogsResponseBody, RescheduleQueryParameters,
+    RescheduleRequestBody, RescheduleResponseBody, ResendPinOverSmsRequestBody,
+    ResendPinOverSmsResponseBody, ResendPinOverVoiceRequestBody, ResendPinOverVoiceResponseBody,
+    ScheduledQueryParameters, ScheduledResponseBody, ScheduledStatusQueryParameters,
+    ScheduledStatusResponseBody, SendBinaryRequestBody, SendBinaryResponseBody,
     SendOverQueryParametersQueryParameters, SendOverQueryParametersResponseBody,
     SendPinOverSmsQueryParameters, SendPinOverSmsRequestBody, SendPinOverSmsResponseBody,
     SendPinOverVoiceRequestBody, SendPinOverVoiceResponseBody, SendRequestBody, SendResponseBody,
-    UpdateScheduledStatusQueryParameters, UpdateScheduledStatusRequestBody,
-    UpdateScheduledStatusResponseBody, UpdateTfaApplicationRequestBody,
-    UpdateTfaApplicationResponseBody, UpdateTfaMessageTemplateRequestBody,
-    UpdateTfaMessageTemplateResponseBody, VerifyPhoneNumberRequestBody,
-    VerifyPhoneNumberResponseBody,
+    TfaApplicationResponseBody, TfaApplicationsResponseBody, TfaMessageTemplateResponseBody,
+    TfaMessageTemplatesResponseBody, TfaVerificationStatusQueryParameters,
+    TfaVerificationStatusResponseBody, UpdateScheduledStatusQueryParameters,
+    UpdateScheduledStatusRequestBody, UpdateScheduledStatusResponseBody,
+    UpdateTfaApplicationRequestBody, UpdateTfaApplicationResponseBody,
+    UpdateTfaMessageTemplateRequestBody, UpdateTfaMessageTemplateResponseBody,
+    VerifyPhoneNumberRequestBody, VerifyPhoneNumberResponseBody,
 };
 use crate::{
     configuration::Configuration,
@@ -128,7 +126,7 @@ impl SmsClient {
         }
     }
 
-    /// Get delivery reports for recently sent SMS messages.
+    ///  delivery reports for recently sent SMS messages.
     ///
     /// If you are for any reason unable to receive real-time delivery reports on your webhook
     /// endpoint, you can use this API method to learn if and when the message has been delivered
@@ -140,24 +138,24 @@ impl SmsClient {
     /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
-    /// # use infobip_sdk::model::sms::GetDeliveryReportsQueryParameters;
+    /// # use infobip_sdk::model::sms::DeliveryReportsQueryParameters;
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = GetDeliveryReportsQueryParameters::new();
+    /// let query_parameters = DeliveryReportsQueryParameters::new();
     ///
-    /// let response = sms_client.get_delivery_reports(query_parameters).await?;
+    /// let response = sms_client.delivery_reports(query_parameters).await?;
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_delivery_reports(
+    pub async fn delivery_reports(
         &self,
-        query_parameters: GetDeliveryReportsQueryParameters,
-    ) -> Result<SdkResponse<GetDeliveryReportsResponseBody>, SdkError> {
+        query_parameters: DeliveryReportsQueryParameters,
+    ) -> Result<SdkResponse<DeliveryReportsResponseBody>, SdkError> {
         query_parameters.validate()?;
 
         let mut parameters_map = HashMap::<String, String>::new();
@@ -211,9 +209,12 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let mut message = Message::new(vec![Destination::new("555555555555")]);
-    /// message.text = Some("Hello Rustacean!".to_string());
-    /// message.from = Some("Infobip".to_string());
+    /// let message = Message {
+    ///     destinations: Some(vec![Destination::new("555555555555")]),
+    ///     text: Some("Hello Rustacean!".into()),
+    ///     from: Some("Infobip".into()),
+    ///     ..Default::default()
+    /// };
     ///
     /// let request_body = SendRequestBody::new(vec![message]);
     ///
@@ -263,8 +264,11 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let mut message = BinaryMessage::new(vec![Destination::new("555555555555")]);
-    /// message.binary = Some(BinaryData::new("0f c2 4a bf 34 13 ba"));
+    /// let message = BinaryMessage {
+    ///     destinations: Some(vec![Destination::new("555555555555")]),
+    ///     binary: Some(BinaryData::new("0f c2 4a bf 34 13 ba")),
+    ///     ..Default::default()
+    /// };
     ///
     /// let request_body = SendBinaryRequestBody::new(vec![message]);
     ///
@@ -308,25 +312,25 @@ impl SmsClient {
     /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
-    /// # use infobip_sdk::model::sms::GetScheduledQueryParameters;
+    /// # use infobip_sdk::model::sms::ScheduledQueryParameters;
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = GetScheduledQueryParameters::new("dummy-bulk-id");
+    /// let query_parameters = ScheduledQueryParameters::new("dummy-bulk-id");
     ///
-    /// let response = sms_client.get_scheduled(query_parameters).await?;
+    /// let response = sms_client.scheduled(query_parameters).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// }
     /// ```
-    pub async fn get_scheduled(
+    pub async fn scheduled(
         &self,
-        query_parameters: GetScheduledQueryParameters,
-    ) -> Result<SdkResponse<GetScheduledResponseBody>, SdkError> {
+        query_parameters: ScheduledQueryParameters,
+    ) -> Result<SdkResponse<ScheduledResponseBody>, SdkError> {
         query_parameters.validate()?;
 
         let parameters_map =
@@ -356,31 +360,31 @@ impl SmsClient {
 
     /// Use this method for displaying logs for example in the user interface. Available are the
     /// logs for the last 48 hours and you can only retrieve maximum of 1000 logs per call.
-    /// See `get_delivery_reports` if your use case is to verify message delivery.
+    /// See `delivery_reports` if your use case is to verify message delivery.
     ///
     /// # Example
     /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
-    /// # use infobip_sdk::model::sms::GetLogsQueryParameters;
+    /// # use infobip_sdk::model::sms::LogsQueryParameters;
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = GetLogsQueryParameters::new();
+    /// let query_parameters = LogsQueryParameters::new();
     ///
-    /// let response = sms_client.get_logs(query_parameters).await?;
+    /// let response = sms_client.logs(query_parameters).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_logs(
+    pub async fn logs(
         &self,
-        query_parameters: GetLogsQueryParameters,
-    ) -> Result<SdkResponse<GetLogsResponseBody>, SdkError> {
+        query_parameters: LogsQueryParameters,
+    ) -> Result<SdkResponse<LogsResponseBody>, SdkError> {
         query_parameters.validate()?;
 
         let mut parameters_map = HashMap::<String, String>::new();
@@ -446,25 +450,25 @@ impl SmsClient {
     /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
-    /// # use infobip_sdk::model::sms::GetInboundReportsQueryParameters;
+    /// # use infobip_sdk::model::sms::InboundReportsQueryParameters;
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = GetInboundReportsQueryParameters::new();
+    /// let query_parameters = InboundReportsQueryParameters::new();
     ///
-    /// let response = sms_client.get_inbound_reports(query_parameters).await?;
+    /// let response = sms_client.inbound_reports(query_parameters).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_inbound_reports(
+    pub async fn inbound_reports(
         &self,
-        query_parameters: GetInboundReportsQueryParameters,
-    ) -> Result<SdkResponse<GetInboundReportsResponseBody>, SdkError> {
+        query_parameters: InboundReportsQueryParameters,
+    ) -> Result<SdkResponse<InboundReportsResponseBody>, SdkError> {
         query_parameters.validate()?;
 
         let mut parameters_map = HashMap::<String, String>::new();
@@ -673,31 +677,31 @@ impl SmsClient {
         }
     }
 
-    /// Get the status of scheduled messages.
+    ///  the status of scheduled messages.
     ///
     /// # Example
     /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
-    /// # use infobip_sdk::model::sms::GetScheduledStatusQueryParameters;
+    /// # use infobip_sdk::model::sms::ScheduledStatusQueryParameters;
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = GetScheduledStatusQueryParameters::new("some-bulk-id");
+    /// let query_parameters = ScheduledStatusQueryParameters::new("some-bulk-id");
     ///
-    /// let response = sms_client.get_scheduled_status(query_parameters).await?;
+    /// let response = sms_client.scheduled_status(query_parameters).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_scheduled_status(
+    pub async fn scheduled_status(
         &self,
-        query_parameters: GetScheduledStatusQueryParameters,
-    ) -> Result<SdkResponse<GetScheduledStatusResponseBody>, SdkError> {
+        query_parameters: ScheduledStatusQueryParameters,
+    ) -> Result<SdkResponse<ScheduledStatusResponseBody>, SdkError> {
         query_parameters.validate()?;
 
         let parameters_map =
@@ -740,7 +744,7 @@ impl SmsClient {
     /// let sms_client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let query_parameters = UpdateScheduledStatusQueryParameters::new("some-bulk-id");
-    /// let request_body = UpdateScheduledStatusRequestBody::new(ScheduledStatus::CANCELED);
+    /// let request_body = UpdateScheduledStatusRequestBody::new(ScheduledStatus::Canceled);
     ///
     /// let response = sms_client.update_scheduled_status(query_parameters, request_body).await?;
     ///
@@ -781,7 +785,7 @@ impl SmsClient {
         }
     }
 
-    /// Get a list of your 2FA applications.
+    ///  a list of your 2FA applications.
     ///
     /// # Example
     /// ```no_run
@@ -793,14 +797,14 @@ impl SmsClient {
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let response = client.get_tfa_applications().await?;
+    /// let response = client.tfa_applications().await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
-    pub async fn get_tfa_applications(
+    pub async fn tfa_applications(
         &self,
-    ) -> Result<SdkResponse<GetTfaApplicationsResponseBody>, SdkError> {
+    ) -> Result<SdkResponse<TfaApplicationsResponseBody>, SdkError> {
         let response = send_no_body_request(
             &self.http_client,
             &self.configuration,
@@ -869,7 +873,7 @@ impl SmsClient {
         }
     }
 
-    /// Get a single 2FA application to see its configuration details.
+    ///  a single 2FA application to see its configuration details.
     /// # Example
     /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
@@ -881,16 +885,16 @@ impl SmsClient {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
-    /// let response = client.get_tfa_application(application_id).await?;
+    /// let response = client.tfa_application(application_id).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_tfa_application(
+    pub async fn tfa_application(
         &self,
         application_id: &str,
-    ) -> Result<SdkResponse<GetTfaApplicationResponseBody>, SdkError> {
+    ) -> Result<SdkResponse<TfaApplicationResponseBody>, SdkError> {
         let path = &PATH_GET_TFA_APPLICATION.replace("{appId}", application_id);
 
         let response = send_no_body_request(
@@ -965,7 +969,7 @@ impl SmsClient {
         }
     }
 
-    /// Get all message templates in a 2FA application.
+    ///  all message templates in a 2FA application.
     /// # Example
     /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
@@ -977,16 +981,16 @@ impl SmsClient {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
-    /// let response = client.get_tfa_message_templates(application_id).await?;
+    /// let response = client.tfa_message_templates(application_id).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_tfa_message_templates(
+    pub async fn tfa_message_templates(
         &self,
         application_id: &str,
-    ) -> Result<SdkResponse<GetTfaMessageTemplatesResponseBody>, SdkError> {
+    ) -> Result<SdkResponse<TfaMessageTemplatesResponseBody>, SdkError> {
         let path = &PATH_GET_TFA_MESSAGE_TEMPLATES.replace("{appId}", application_id);
 
         let response = send_no_body_request(
@@ -1062,7 +1066,7 @@ impl SmsClient {
         }
     }
 
-    /// Get a single 2FA message template from an application to see its configuration details.
+    ///  a single 2FA message template from an application to see its configuration details.
     /// # Example
     /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
@@ -1075,17 +1079,17 @@ impl SmsClient {
     ///
     /// let application_id = "02CC3CAAFD733136AA15DFAC720A0C42";
     /// let template_id = "02CC3CAAFD733136AA15DFAC720A0C42";
-    /// let response = client.get_tfa_message_template(application_id, template_id).await?;
+    /// let response = client.tfa_message_template(application_id, template_id).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_tfa_message_template(
+    pub async fn tfa_message_template(
         &self,
         application_id: &str,
         template_id: &str,
-    ) -> Result<SdkResponse<GetTfaMessageTemplateResponseBody>, SdkError> {
+    ) -> Result<SdkResponse<TfaMessageTemplateResponseBody>, SdkError> {
         let path = &PATH_GET_TFA_MESSAGE_TEMPLATE
             .replace("{appId}", application_id)
             .replace("{msgId}", template_id);
@@ -1429,26 +1433,26 @@ impl SmsClient {
     /// ```no_run
     /// # use infobip_sdk::api::sms::SmsClient;
     /// # use infobip_sdk::configuration::Configuration;
-    /// # use infobip_sdk::model::sms::{GetTfaVerificationStatusQueryParameters,
-    /// #         GetTfaVerificationStatusResponseBody};
+    /// # use infobip_sdk::model::sms::{TfaVerificationStatusQueryParameters,
+    /// #         TfaVerificationStatusResponseBody};
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let client = SmsClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let query_parameters = GetTfaVerificationStatusQueryParameters::new("555555555555");
-    /// let response = client.get_tfa_verification_status("some-application-id", query_parameters).await?;
+    /// let query_parameters = TfaVerificationStatusQueryParameters::new("555555555555");
+    /// let response = client.tfa_verification_status("some-application-id", query_parameters).await?;
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_tfa_verification_status(
+    pub async fn tfa_verification_status(
         &self,
         app_id: &str,
-        query_parameters: GetTfaVerificationStatusQueryParameters,
-    ) -> Result<SdkResponse<GetTfaVerificationStatusResponseBody>, SdkError> {
+        query_parameters: TfaVerificationStatusQueryParameters,
+    ) -> Result<SdkResponse<TfaVerificationStatusResponseBody>, SdkError> {
         let path = &PATH_GET_TFA_VERIFICATION_STATUS.replace("{appId}", app_id);
 
         query_parameters.validate()?;

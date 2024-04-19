@@ -67,14 +67,14 @@ fn tets_send_request_body_long_callback_data() {
 
 #[test]
 fn test_get_bulks_query_parameters_valid() {
-    let query_params = GetBulksQueryParameters::new("some-bulk-id");
+    let query_params = BulksQueryParameters::new("some-bulk-id");
 
     assert!(query_params.validate().is_ok());
 }
 
 #[test]
 fn test_get_bulks_query_parameters_no_bulk_id() {
-    let query_params = GetBulksQueryParameters::new("");
+    let query_params = BulksQueryParameters::new("");
 
     assert!(query_params.validate().is_err());
 }
@@ -123,14 +123,14 @@ fn test_validate_address_request_body_no_to() {
 
 #[test]
 fn test_get_domains_query_parameters_valid() {
-    let query_params = GetDomainsQueryParameters::new();
+    let query_params = DomainsQueryParameters::new();
 
     assert!(query_params.validate().is_ok());
 }
 
 #[test]
 fn test_get_domains_query_parameters_invalid_page() {
-    let mut query_params = GetDomainsQueryParameters::new();
+    let mut query_params = DomainsQueryParameters::new();
     query_params.page = Some(0);
 
     assert!(query_params.validate().is_err());
@@ -138,7 +138,7 @@ fn test_get_domains_query_parameters_invalid_page() {
 
 #[test]
 fn test_get_domains_query_parameters_invalid_page_size() {
-    let mut query_params = GetDomainsQueryParameters::new();
+    let mut query_params = DomainsQueryParameters::new();
     query_params.size = Some(21);
 
     assert!(query_params.validate().is_err());

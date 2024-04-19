@@ -53,7 +53,7 @@ fn mock_blocking_json_endpoint(
     server
 }
 
-fn get_test_configuration(server_url: &str) -> Configuration {
+fn test_configuration(server_url: &str) -> Configuration {
     Configuration::with_api_key(
         server_url.to_string(),
         ApiKey {

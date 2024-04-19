@@ -1,5 +1,5 @@
 use crate::api::email::*;
-use crate::api::tests::{get_test_configuration, mock_json_endpoint};
+use crate::api::tests::{mock_json_endpoint, test_configuration};
 use crate::api::SdkError;
 use crate::model::email::*;
 
@@ -45,7 +45,7 @@ async fn test_send_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body = SendRequestBody::new("some@mail.com");
 
@@ -57,7 +57,7 @@ async fn test_send_valid() {
 
 #[tokio::test]
 async fn test_send_invalid_request() {
-    let client = EmailClient::with_configuration(get_test_configuration(DUMMY_BASE_URL));
+    let client = EmailClient::with_configuration(test_configuration(DUMMY_BASE_URL));
 
     let request_body = SendRequestBody::new("");
 
@@ -71,7 +71,7 @@ async fn test_send_invalid_request() {
 }
 
 #[tokio::test]
-async fn test_get_bulks_valid() {
+async fn test_bulks_valid() {
     let expected_response = r#"
     {
       "externalBulkId": "string",
@@ -92,23 +92,23 @@ async fn test_get_bulks_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_params = GetBulksQueryParameters::new("bulk-id");
+    let query_params = BulksQueryParameters::new("bulk-id");
 
-    let response = client.get_bulks(query_params).await.unwrap();
+    let response = client.bulks(query_params).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
     assert!(!response.body.bulks.unwrap().is_empty());
 }
 
 #[tokio::test]
-async fn get_bulks_invalid() {
-    let client = EmailClient::with_configuration(get_test_configuration(DUMMY_BASE_URL));
+async fn bulks_invalid() {
+    let client = EmailClient::with_configuration(test_configuration(DUMMY_BASE_URL));
 
-    let query_params = GetBulksQueryParameters::new("");
+    let query_params = BulksQueryParameters::new("");
 
-    let error = client.get_bulks(query_params).await.unwrap_err();
+    let error = client.bulks(query_params).await.unwrap_err();
 
     if let SdkError::Validation(validation_error) = error {
         assert!(!validation_error.errors().is_empty());
@@ -134,7 +134,7 @@ async fn reschedule_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
     let query_parameters = RescheduleQueryParameters::new("bulk-id");
     let request_body = RescheduleRequestBody::new("2022-10-03T20:27:41Z");
@@ -149,7 +149,7 @@ async fn reschedule_valid() {
 
 #[tokio::test]
 async fn reschedule_no_bulk_id() {
-    let client = EmailClient::with_configuration(get_test_configuration(DUMMY_BASE_URL));
+    let client = EmailClient::with_configuration(test_configuration(DUMMY_BASE_URL));
 
     let query_parameters = RescheduleQueryParameters::new("");
     let request_body = RescheduleRequestBody::new("2022-10-03T20:27:41Z");
@@ -167,7 +167,7 @@ async fn reschedule_no_bulk_id() {
 }
 
 #[tokio::test]
-async fn get_scheduled_status_valid() {
+async fn scheduled_status_valid() {
     let expected_response = r#"
     {
       "externalBulkId": "string",
@@ -188,11 +188,11 @@ async fn get_scheduled_status_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_parameters = GetScheduledStatusQueryParameters::new("bulk-id");
+    let query_parameters = ScheduledStatusQueryParameters::new("bulk-id");
 
-    let response = client.get_scheduled_status(query_parameters).await.unwrap();
+    let response = client.scheduled_status(query_parameters).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
 }
@@ -214,10 +214,10 @@ async fn update_scheduled_status_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
     let query_parameters = UpdateScheduledStatusQueryParameters::new("bulk-id");
-    let request_body = UpdateScheduledStatusRequestBody::new(BulkStatus::CANCELED);
+    let request_body = UpdateScheduledStatusRequestBody::new(BulkStatus::Canceled);
 
     let response = client
         .update_scheduled_status(query_parameters, request_body)
@@ -228,7 +228,7 @@ async fn update_scheduled_status_valid() {
 }
 
 #[tokio::test]
-async fn get_delivery_reports_valid() {
+async fn delivery_reports_valid() {
     let expected_response = r#"
     {
       "results": [
@@ -272,17 +272,17 @@ async fn get_delivery_reports_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_parameters = GetDeliveryReportsQueryParameters::default();
+    let query_parameters = DeliveryReportsQueryParameters::default();
 
-    let response = client.get_delivery_reports(query_parameters).await.unwrap();
+    let response = client.delivery_reports(query_parameters).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
 }
 
 #[tokio::test]
-async fn get_logs_valid() {
+async fn logs_valid() {
     let expected_response = r#"
     {
       "results": [
@@ -320,11 +320,11 @@ async fn get_logs_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_parameters = GetLogsQueryParameters::default();
+    let query_parameters = LogsQueryParameters::default();
 
-    let response = client.get_logs(query_parameters).await.unwrap();
+    let response = client.logs(query_parameters).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
 }
@@ -351,7 +351,7 @@ async fn validate_address_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body = ValidateAddressRequestBody::new("address@email.com");
 
@@ -361,7 +361,7 @@ async fn validate_address_valid() {
 }
 
 #[tokio::test]
-async fn get_domains_valid() {
+async fn domains_valid() {
     let expected_response = r#"
     {
       "paging": {
@@ -403,11 +403,11 @@ async fn get_domains_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
-    let query_parameters = GetDomainsQueryParameters::default();
+    let query_parameters = DomainsQueryParameters::default();
 
-    let response = client.get_domains(query_parameters).await.unwrap();
+    let response = client.domains(query_parameters).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
 }
@@ -445,7 +445,7 @@ async fn add_domain_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body = AddDomainRequestBody::new("domain.com");
 
@@ -455,7 +455,7 @@ async fn add_domain_valid() {
 }
 
 #[tokio::test]
-async fn get_domain_valid() {
+async fn domain_valid() {
     let expected_response = r#"
     {
       "domainId": 1,
@@ -490,9 +490,9 @@ async fn get_domain_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
-    let response = client.get_domain(domain_name).await.unwrap();
+    let response = client.domain(domain_name).await.unwrap();
 
     assert_eq!(response.status, reqwest::StatusCode::OK);
 }
@@ -510,7 +510,7 @@ async fn delete_domain_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
     let status = client.delete_domain(domain_name).await.unwrap();
 
@@ -553,7 +553,7 @@ async fn update_tracking_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
     let request_body = UpdateTrackingRequestBody::default();
 
@@ -578,7 +578,7 @@ async fn verify_domain_valid() {
     )
     .await;
 
-    let client = EmailClient::with_configuration(get_test_configuration(&server.base_url()));
+    let client = EmailClient::with_configuration(test_configuration(&server.base_url()));
 
     let status = client.verify_domain(domain_name).await.unwrap();
 

@@ -15,21 +15,21 @@ use infobip_sdk::model::sms::*;
 const DUMMY_TEXT: &str = "Dummy text for tests. Some special chars: áéíø";
 const DUMMY_BULK_ID: &str = "dummy-rust-sdk-bulk-id-3";
 
-fn get_test_sms_client() -> SmsClient {
+fn test_sms_client() -> SmsClient {
     SmsClient::with_configuration(
         configuration::Configuration::from_env_api_key()
             .expect("failed to build default test SMS client"),
     )
 }
 
-fn get_test_blocking_sms_client() -> BlockingSmsClient {
+fn test_blocking_sms_client() -> BlockingSmsClient {
     BlockingSmsClient::with_configuration(
         configuration::Configuration::from_env_api_key()
             .expect("failed to build default test blocking SMS client"),
     )
 }
 
-fn get_test_destination_number() -> String {
+fn test_destination_number() -> String {
     env::var("IB_TEST_DESTINATION_NUMBER").expect("failed to load test destination number")
 }
 
@@ -38,7 +38,7 @@ fn get_test_destination_number() -> String {
 async fn preview_sms() {
     let request_body = PreviewRequestBody::new(DUMMY_TEXT);
 
-    let response = get_test_sms_client().preview(request_body).await.unwrap();
+    let response = test_sms_client().preview(request_body).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     assert!(!response.body.previews.unwrap().is_empty());
@@ -49,9 +49,7 @@ async fn preview_sms() {
 fn preview_sms_blocking() {
     let request_body = PreviewRequestBody::new(DUMMY_TEXT);
 
-    let response = get_test_blocking_sms_client()
-        .preview(request_body)
-        .unwrap();
+    let response = test_blocking_sms_client().preview(request_body).unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     assert!(!response.body.previews.unwrap().is_empty());
@@ -60,7 +58,7 @@ fn preview_sms_blocking() {
 #[ignore]
 #[tokio::test]
 async fn preview_sms_multiple() {
-    let sms_client = get_test_sms_client();
+    let sms_client = test_sms_client();
 
     let request_body1 = PreviewRequestBody::new(DUMMY_TEXT);
     let request_body2 = PreviewRequestBody::new(DUMMY_TEXT);
@@ -115,7 +113,7 @@ async fn preview_sms_multiple() {
 #[ignore]
 #[test]
 fn preview_sms_multiple_blocking() {
-    let sms_client = get_test_blocking_sms_client();
+    let sms_client = test_blocking_sms_client();
 
     let request_body1 = PreviewRequestBody::new(DUMMY_TEXT);
     let request_body2 = PreviewRequestBody::new(DUMMY_TEXT);
@@ -139,12 +137,12 @@ fn preview_sms_multiple_blocking() {
 
 #[ignore]
 #[tokio::test]
-async fn get_sms_delivery_reports() {
-    let mut parameters = GetDeliveryReportsQueryParameters::new();
+async fn sms_delivery_reports() {
+    let mut parameters = DeliveryReportsQueryParameters::new();
     parameters.limit = Some(10);
 
-    let response = get_test_sms_client()
-        .get_delivery_reports(parameters)
+    let response = test_sms_client()
+        .delivery_reports(parameters)
         .await
         .unwrap();
 
@@ -154,12 +152,12 @@ async fn get_sms_delivery_reports() {
 #[ignore]
 #[tokio::test]
 async fn send_sms() {
-    let mut message = Message::new(vec![Destination::new(&get_test_destination_number())]);
+    let mut message = Message::new(vec![Destination::new(&test_destination_number())]);
     message.text = Some(DUMMY_TEXT.into());
 
     let request_body = SendRequestBody::new(vec![message]);
 
-    let response = get_test_sms_client().send(request_body).await.unwrap();
+    let response = test_sms_client().send(request_body).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     assert_eq!(response.body.messages.unwrap().len(), 1usize);
@@ -168,14 +166,14 @@ async fn send_sms() {
 #[ignore]
 #[tokio::test]
 async fn send_bulk_sms() {
-    let mut message = Message::new(vec![Destination::new(&get_test_destination_number())]);
+    let mut message = Message::new(vec![Destination::new(&test_destination_number())]);
     message.text = Some(DUMMY_TEXT.into());
     message.send_at = Some("2022-10-10T00:00:00Z".to_string());
 
     let mut request_body = SendRequestBody::new(vec![message]);
     request_body.bulk_id = Some(DUMMY_BULK_ID.into());
 
-    let response = get_test_sms_client().send(request_body).await.unwrap();
+    let response = test_sms_client().send(request_body).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     assert_eq!(response.body.messages.unwrap().len(), 1usize);
@@ -184,16 +182,13 @@ async fn send_bulk_sms() {
 #[ignore]
 #[tokio::test]
 async fn send_binary_sms() {
-    let mut message = BinaryMessage::new(vec![Destination::new(&get_test_destination_number())]);
+    let mut message = BinaryMessage::new(vec![Destination::new(&test_destination_number())]);
     message.binary = Some(BinaryData::new("0f c2 4a bf 34 13 ba"));
 
     let mut request_body = SendBinaryRequestBody::new(vec![message]);
     request_body.bulk_id = Some("test-bulk-id-5319".to_string());
 
-    let response = get_test_sms_client()
-        .send_binary(request_body)
-        .await
-        .unwrap();
+    let response = test_sms_client().send_binary(request_body).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
     assert_eq!(response.body.messages.unwrap().len(), 1usize);
@@ -201,22 +196,19 @@ async fn send_binary_sms() {
 
 #[ignore]
 #[tokio::test]
-async fn get_logs() {
-    let query_parameters = GetLogsQueryParameters::new();
-    let response = get_test_sms_client()
-        .get_logs(query_parameters)
-        .await
-        .unwrap();
+async fn logs() {
+    let query_parameters = LogsQueryParameters::new();
+    let response = test_sms_client().logs(query_parameters).await.unwrap();
 
     assert_eq!(response.status, StatusCode::OK);
 }
 
 #[ignore]
 #[tokio::test]
-async fn get_inbound_reports() {
-    let query_parameters = GetInboundReportsQueryParameters::new();
-    let response = get_test_sms_client()
-        .get_inbound_reports(query_parameters)
+async fn inbound_reports() {
+    let query_parameters = InboundReportsQueryParameters::new();
+    let response = test_sms_client()
+        .inbound_reports(query_parameters)
         .await
         .unwrap();
 
@@ -230,7 +222,7 @@ async fn send_over_query_parameters() {
     let query_parameters =
         SendOverQueryParametersQueryParameters::new("username", "password", destinations);
 
-    let response = get_test_sms_client()
+    let response = test_sms_client()
         .send_over_query_parameters(query_parameters)
         .await
         .unwrap();
@@ -240,11 +232,11 @@ async fn send_over_query_parameters() {
 
 #[ignore]
 #[tokio::test]
-async fn get_scheduled() {
-    let query_parameters = GetScheduledStatusQueryParameters::new(DUMMY_BULK_ID);
+async fn scheduled() {
+    let query_parameters = ScheduledStatusQueryParameters::new(DUMMY_BULK_ID);
 
-    let response = get_test_sms_client()
-        .get_scheduled_status(query_parameters)
+    let response = test_sms_client()
+        .scheduled_status(query_parameters)
         .await
         .unwrap();
 
@@ -253,11 +245,11 @@ async fn get_scheduled() {
 
 #[ignore]
 #[tokio::test]
-async fn get_scheduled_status() {
-    let query_parameters = GetScheduledStatusQueryParameters::new(DUMMY_BULK_ID);
+async fn scheduled_status() {
+    let query_parameters = ScheduledStatusQueryParameters::new(DUMMY_BULK_ID);
 
-    let response = get_test_sms_client()
-        .get_scheduled_status(query_parameters)
+    let response = test_sms_client()
+        .scheduled_status(query_parameters)
         .await
         .unwrap();
 
@@ -270,7 +262,7 @@ async fn reschedule() {
     let query_parameters = RescheduleQueryParameters::new(DUMMY_BULK_ID);
     let request_body = RescheduleRequestBody::new("2022-10-02T00:00:00");
 
-    let response = get_test_sms_client()
+    let response = test_sms_client()
         .reschedule(query_parameters, request_body)
         .await
         .unwrap();
@@ -282,9 +274,9 @@ async fn reschedule() {
 #[tokio::test]
 async fn update_scheduled_status() {
     let query_parameters = UpdateScheduledStatusQueryParameters::new(DUMMY_BULK_ID);
-    let request_body = UpdateScheduledStatusRequestBody::new(ScheduledStatus::CANCELED);
+    let request_body = UpdateScheduledStatusRequestBody::new(ScheduledStatus::Canceled);
 
-    let response = get_test_sms_client()
+    let response = test_sms_client()
         .update_scheduled_status(query_parameters, request_body)
         .await
         .unwrap();
@@ -293,8 +285,8 @@ async fn update_scheduled_status() {
 
 #[ignore]
 #[tokio::test]
-async fn get_tfa_applications() {
-    let response = get_test_sms_client().get_tfa_applications().await.unwrap();
+async fn tfa_applications() {
+    let response = test_sms_client().tfa_applications().await.unwrap();
 
     println!("{:?}", response.body);
     assert_eq!(response.status, StatusCode::OK);
@@ -305,7 +297,7 @@ async fn get_tfa_applications() {
 async fn create_tfa_application() {
     let request_body = CreateTfaApplicationRequestBody::new("rust-application");
 
-    let response = get_test_sms_client()
+    let response = test_sms_client()
         .create_tfa_application(request_body)
         .await
         .unwrap();
@@ -316,9 +308,9 @@ async fn create_tfa_application() {
 
 #[ignore]
 #[tokio::test]
-async fn get_tfa_application() {
-    let response = get_test_sms_client()
-        .get_tfa_application("02CC3CAAFD733136AA15DFAC720A0C42")
+async fn tfa_application() {
+    let response = test_sms_client()
+        .tfa_application("02CC3CAAFD733136AA15DFAC720A0C42")
         .await
         .unwrap();
 
@@ -340,7 +332,7 @@ async fn update_tfa_application() {
     let mut request_body = UpdateTfaApplicationRequestBody::new("rust-application-2");
     request_body.configuration = Some(configuration);
 
-    let response = get_test_sms_client()
+    let response = test_sms_client()
         .update_tfa_application("02CC3CAAFD733136AA15DFAC720A0C42", request_body)
         .await
         .unwrap();
@@ -351,9 +343,9 @@ async fn update_tfa_application() {
 
 #[ignore]
 #[tokio::test]
-async fn get_tfa_message_templates() {
-    let response = get_test_sms_client()
-        .get_tfa_message_templates("02CC3CAAFD733136AA15DFAC720A0C42")
+async fn tfa_message_templates() {
+    let response = test_sms_client()
+        .tfa_message_templates("02CC3CAAFD733136AA15DFAC720A0C42")
         .await
         .unwrap();
 
@@ -367,7 +359,7 @@ async fn create_tfa_message_template() {
     let request_body =
         CreateTfaMessageTemplateRequestBody::new("Your Rust PIN 2 is {{pin}}", PinType::Numeric, 6);
 
-    let response = get_test_sms_client()
+    let response = test_sms_client()
         .create_tfa_message_template("02CC3CAAFD733136AA15DFAC720A0C42", request_body)
         .await
         .unwrap();
@@ -378,9 +370,9 @@ async fn create_tfa_message_template() {
 
 #[ignore]
 #[tokio::test]
-async fn get_tfa_message_template() {
-    let response = get_test_sms_client()
-        .get_tfa_message_template(
+async fn tfa_message_template() {
+    let response = test_sms_client()
+        .tfa_message_template(
             "02CC3CAAFD733136AA15DFAC720A0C42",
             "44A45DA3067F882BB4D87D6A48F9681E",
         )
@@ -397,7 +389,7 @@ async fn update_tfa_message_template() {
     let request_body =
         UpdateTfaMessageTemplateRequestBody::new("Your Rust PIN 3 is {{pin}}", PinType::Numeric, 6);
 
-    let response = get_test_sms_client()
+    let response = test_sms_client()
         .update_tfa_message_template(
             "02CC3CAAFD733136AA15DFAC720A0C42",
             "44A45DA3067F882BB4D87D6A48F9681E",
@@ -420,7 +412,7 @@ async fn send_pin_over_sms() {
         "555555555555",
     );
 
-    let response = get_test_sms_client()
+    let response = test_sms_client()
         .send_pin_over_sms(query_parameters, request_body)
         .await
         .unwrap();
@@ -434,7 +426,7 @@ async fn send_pin_over_sms() {
 async fn resend_pin_over_sms() {
     let request_body = ResendPinOverSmsRequestBody::default();
 
-    let response = get_test_sms_client()
+    let response = test_sms_client()
         .resend_pin_over_sms("AAA30929B83F2ED86CC34781BCB7A546", request_body)
         .await
         .unwrap();
@@ -452,7 +444,7 @@ async fn send_pin_over_voice() {
         "555555555555",
     );
 
-    let response = get_test_sms_client()
+    let response = test_sms_client()
         .send_pin_over_voice(request_body)
         .await
         .unwrap();
@@ -466,7 +458,7 @@ async fn send_pin_over_voice() {
 async fn resend_pin_over_voice() {
     let request_body = ResendPinOverVoiceRequestBody::default();
 
-    let response = get_test_sms_client()
+    let response = test_sms_client()
         .resend_pin_over_voice("AAA30929B83F2ED86CC34781BCB7A546", request_body)
         .await
         .unwrap();
@@ -480,7 +472,7 @@ async fn resend_pin_over_voice() {
 async fn verify_phone_number() {
     let request_body = VerifyPhoneNumberRequestBody::new("123456");
 
-    let response = get_test_sms_client()
+    let response = test_sms_client()
         .verify_phone_number("AAA30929B83F2ED86CC34781BCB7A546", request_body)
         .await
         .unwrap();
@@ -491,10 +483,10 @@ async fn verify_phone_number() {
 
 #[ignore]
 #[tokio::test]
-async fn get_tfa_verification_status() {
-    let query_parameters = GetTfaVerificationStatusQueryParameters::new("555555555555");
-    let response = get_test_sms_client()
-        .get_tfa_verification_status("02CC3CAAFD733136AA15DFAC720A0C42", query_parameters)
+async fn tfa_verification_status() {
+    let query_parameters = TfaVerificationStatusQueryParameters::new("555555555555");
+    let response = test_sms_client()
+        .tfa_verification_status("02CC3CAAFD733136AA15DFAC720A0C42", query_parameters)
         .await
         .unwrap();
 

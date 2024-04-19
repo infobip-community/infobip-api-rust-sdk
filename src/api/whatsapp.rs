@@ -11,8 +11,8 @@ use crate::api::{
 };
 use crate::configuration::Configuration;
 use crate::model::whatsapp::{
-    CreateTemplateRequestBody, CreateTemplateResponseBody, GetTemplatesResponseBody,
-    SendAudioRequestBody, SendAudioResponseBody, SendContactRequestBody, SendContactResponseBody,
+    CreateTemplateRequestBody, CreateTemplateResponseBody, SendAudioRequestBody,
+    SendAudioResponseBody, SendContactRequestBody, SendContactResponseBody,
     SendDocumentRequestBody, SendDocumentResponseBody, SendImageRequestBody, SendImageResponseBody,
     SendInteractiveButtonsRequestBody, SendInteractiveButtonsResponseBody,
     SendInteractiveListRequestBody, SendInteractiveListResponseBody,
@@ -20,7 +20,7 @@ use crate::model::whatsapp::{
     SendInteractiveProductRequestBody, SendInteractiveProductResponseBody, SendLocationRequestBody,
     SendLocationResponseBody, SendStickerRequestBody, SendStickerResponseBody,
     SendTemplateRequestBody, SendTemplateResponseBody, SendTextRequestBody, SendTextResponseBody,
-    SendVideoRequestBody, SendVideoResponseBody,
+    SendVideoRequestBody, SendVideoResponseBody, TemplatesResponseBody,
 };
 
 pub const PATH_CREATE_TEMPLATE: &str = "/whatsapp/2/senders/{sender}/templates";
@@ -43,15 +43,15 @@ pub const PATH_SEND_VIDEO: &str = "/whatsapp/1/message/video";
 
 /// Main asynchronous client for the Infobip WhatsApp channel.
 #[derive(Clone, Debug)]
-pub struct WhatsappClient {
+pub struct WhatsAppClient {
     pub configuration: Configuration,
     pub http_client: reqwest::Client,
 }
 
-impl WhatsappClient {
-    /// Builds and returns a new asynchronous `WhatsappClient` with a specified configuration.
+impl WhatsAppClient {
+    /// Builds and returns a new asynchronous `WhatsAppClient` with a specified configuration.
     pub fn with_configuration(configuration: Configuration) -> Self {
-        WhatsappClient {
+        WhatsAppClient {
             configuration,
             http_client: reqwest::Client::new(),
         }
@@ -81,14 +81,14 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendTextRequestBody, TextContent};
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendTextRequestBody::new(
     ///     "44444444444",
@@ -129,14 +129,14 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendDocumentRequestBody, DocumentContent};
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendDocumentRequestBody::new(
     ///     "44444444444",
@@ -182,14 +182,14 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendImageRequestBody, ImageContent};
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendImageRequestBody::new(
     ///     "44444444444",
@@ -230,14 +230,14 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendAudioRequestBody, AudioContent};
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendAudioRequestBody::new(
     ///     "44444444444",
@@ -278,14 +278,14 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendVideoRequestBody, VideoContent};
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendVideoRequestBody::new(
     ///     "44444444444",
@@ -326,14 +326,14 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendStickerRequestBody, StickerContent};
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendStickerRequestBody::new(
     ///     "44444444444",
@@ -379,14 +379,14 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendLocationRequestBody, LocationContent};
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let request_body = SendLocationRequestBody::new(
     ///     "44444444444",
@@ -432,14 +432,14 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{SendContactRequestBody, ContactContent, Contact, ContactName};
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let contact = Contact::new(ContactName::new("John", "Doe"));
     /// let request_body = SendContactRequestBody::new(
@@ -486,7 +486,7 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{
     /// #     SendInteractiveButtonsRequestBody,
@@ -499,7 +499,7 @@ impl WhatsappClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let button = InteractiveButton::new_reply_button("1", "button1");
     /// let body = InteractiveBody::new("Hello World");
@@ -547,7 +547,7 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{
     /// #     SendInteractiveListRequestBody,
@@ -561,7 +561,7 @@ impl WhatsappClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let body = InteractiveBody::new("Hello World");
     /// let row = InteractiveRow::new("1", "row1");
@@ -610,7 +610,7 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{
     /// #     SendInteractiveProductRequestBody, InteractiveProductAction, InteractiveProductContent
@@ -619,7 +619,7 @@ impl WhatsappClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let action = InteractiveProductAction::new("1", "2");
     /// let request_body = SendInteractiveProductRequestBody::new(
@@ -665,7 +665,7 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{
     /// #     InteractiveBody,
@@ -679,7 +679,7 @@ impl WhatsappClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let header = InteractiveMultiproductHeader::new_text_header("header1");
     /// let body = InteractiveBody::new("Hello World");
@@ -728,7 +728,7 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{
     /// #     CreateTemplateRequestBody,
@@ -741,7 +741,7 @@ impl WhatsappClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let structure = TemplateStructure::new(TemplateBody::new("Hello World"));
     /// let request_body = CreateTemplateRequestBody::new(
@@ -783,28 +783,28 @@ impl WhatsappClient {
         }
     }
 
-    /// Get all the templates and their statuses for a given sender.
+    ///  all the templates and their statuses for a given sender.
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
-    /// let response = wa_client.get_templates("12345789101112").await.unwrap();
+    /// let response = wa_client.templates("12345789101112").await.unwrap();
     ///
     /// assert_eq!(response.status, StatusCode::OK);
     /// # Ok(())
     /// # }
     /// ```
-    pub async fn get_templates(
+    pub async fn templates(
         &self,
         sender: &str,
-    ) -> Result<SdkResponse<GetTemplatesResponseBody>, SdkError> {
+    ) -> Result<SdkResponse<TemplatesResponseBody>, SdkError> {
         let path = PATH_GET_TEMPLATES.replace("{sender}", sender);
 
         let response = send_no_body_request(
@@ -841,13 +841,13 @@ impl WhatsappClient {
     ///
     /// # Example
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use reqwest::StatusCode;
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let status = wa_client.delete_template(
     ///     "1234567891011",
@@ -894,7 +894,7 @@ impl WhatsappClient {
     /// # Example
     ///
     /// ```no_run
-    /// # use infobip_sdk::api::whatsapp::WhatsappClient;
+    /// # use infobip_sdk::api::whatsapp::WhatsAppClient;
     /// # use infobip_sdk::configuration::Configuration;
     /// # use infobip_sdk::model::whatsapp::{
     /// #     FailoverMessage,
@@ -908,11 +908,11 @@ impl WhatsappClient {
     /// #
     /// # #[tokio::main]
     /// # async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    /// let wa_client = WhatsappClient::with_configuration(Configuration::from_env_api_key()?);
+    /// let wa_client = WhatsAppClient::with_configuration(Configuration::from_env_api_key()?);
     ///
     /// let body = TemplateBodyContent::new(vec!["placeholder1".to_string()]);
     /// let data = TemplateData::new(body);
-    /// let content = TemplateContent::new("template_name", data, &TemplateLanguage::EnUs.to_string());
+    /// let content = TemplateContent::new("template_name", data, TemplateLanguage::EnUs);
     /// let message = FailoverMessage::new(
     ///     "1234567891011",
     ///     "1234567891012",
