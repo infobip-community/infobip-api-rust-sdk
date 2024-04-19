@@ -1,0 +1,28 @@
+name: Publish to Cargo
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+    CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
+
+jobs:
+  publish-crate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v3
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+
+      - name: Publish to Cargo
+        run: cargo publish --no-verify --token ${CRATES_TOKEN}
+        env:
+          CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
